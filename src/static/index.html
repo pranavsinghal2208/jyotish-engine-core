@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmic OS — Vedic Intelligence</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="numerology-feedback.css">\n    <link rel="stylesheet" href="onboarding_styles.css">
+    <link rel="stylesheet" href="numerology-feedback.css">
+    <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -72,7 +73,7 @@
             <div class="landing-trust">
                 <span class="trust-item trust-proof">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    12,847 charts read
+                    142 profiles in the atlas
                 </span>
                 <span class="trust-item">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -152,10 +153,6 @@
     ══════════════════════════════ -->
     <div id="resultsScreen" class="results-screen hidden">
 
-        
-    <!-- Alert Banner -->
-    <div id="alertBanner" class="alert-banner hidden"></div>
-
     <header class="results-header">
             <div class="header-brand">Cosmic OS<span class="header-descriptor"> · Vedic Intelligence</span><span id="headerName" class="header-name-chip"></span></div>
             <nav class="tab-nav">
@@ -170,9 +167,11 @@
                 </span>
                 <div id="authLinks" class="auth-links">
                     <a href="/auth/google/login" id="headerGoogleLink" class="auth-btn-minimal">Connect Google</a>
-                    <a href="/auth/apple/login" id="headerAppleLink" class="auth-btn-minimal">Connect Apple</a>
+                    <!-- Apple auth placeholder — not production-ready -->
+                    <!-- <a href="/auth/apple/login" id="headerAppleLink" class="auth-btn-minimal">Connect Apple</a> -->
                 </div>
                 <a href="/auth/logout" id="headerLogoutBtn" class="connect-link-sm hidden">Logout</a>
+                <button id="editDetailsBtn" class="auth-btn-minimal" onclick="editDetails()">Edit details</button>
                 <button id="shareReadingBtn" class="share-btn" title="Share my reading">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
@@ -256,6 +255,7 @@
             <div class="tech-left">
                 <div class="card">
                     <div class="card-label">Birth Chart · Kundali</div>
+                    <div class="card-hint">Tap a sign with planets to read it</div>
                     <div id="kundaliChart"></div>
                 </div>
                 <div class="card">
@@ -336,6 +336,9 @@
 
             <!-- Loading state -->
             <div id="jyLoadingState" class="jy-loading hidden">Computing your numerology profile…</div>
+            <div id="jyNameRequired" class="jy-loading hidden" style="color:var(--accent)">
+                Enter your name via <strong>Edit details</strong> to see your numerology profile.
+            </div>
 
             <!-- Profile panel (auto-loads from birth details) -->
             <div id="jyProfilePanel" class="hidden">

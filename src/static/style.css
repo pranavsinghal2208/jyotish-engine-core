@@ -1,6 +1,6 @@
 /* ── Variables ── */
 :root {
-    --bg:       #F5F0E8;
+    --bg:       #DCE6F2;
     --surface:  #fffdf9;
     --hero-bg:  #1E1A38;
     --accent:   #C8A86A;
@@ -33,7 +33,7 @@ body {
     gap: 0;
 }
 
-.landing-left {\n    padding: 80px 72px;\n    letter-spacing: -0.011em;
+.landing-left {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,7 +66,7 @@ body {
     text-transform: none;
 }
 
-.landing-h1 {\n    letter-spacing: -0.045em;\n    margin-bottom: 20px;
+.landing-h1 {
     font-size: 44px;
     font-weight: 800;
     letter-spacing: -0.04em;
@@ -544,7 +544,7 @@ body {
 }
 
 /* ── HERO CARD ── */
-.hero-card {\n    background: linear-gradient(135deg, #1E1A38 0%, #2A244D 100%);\n    border: 1px solid rgba(255,255,255,0.08);\n    box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+.hero-card {
     background: var(--hero-bg);
     border-radius: var(--radius);
     padding: 32px;
@@ -560,7 +560,7 @@ body {
     margin-bottom: 12px;
 }
 
-.hero-card-title {\n    font-size: 40px;\n    font-weight: 800;\n    letter-spacing: -0.04em;
+.hero-card-title {
     font-size: 36px;
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -613,7 +613,10 @@ body {
 }
 
 /* ── BUSINESS PULSE ── */
-.pulse-card {\n    border-left: 4px solid var(--cta);\n    padding-left: 28px;}
+.pulse-card {
+    border-left: 4px solid var(--cta);
+    padding-left: 28px;
+}
 
 .pulse-row {
     display: flex;
@@ -634,7 +637,7 @@ body {
     margin-bottom: 10px;
 }
 
-.pulse-focus {\n    font-size: 26px;\n    letter-spacing: -0.03em;\n    font-weight: 700;\n    color: var(--text);
+.pulse-focus {
     font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -1317,7 +1320,12 @@ body {
 }
 
 /* ─── Morning Brief (#15) ────────────────────────────────── */
-.brief-card {\n    padding: 32px;\n    background: #fbfbfd;\n    border: 1px solid rgba(0,0,0,0.04);\n    box-shadow: 0 4px 20px rgba(0,0,0,0.02);\n}
+.brief-card {
+    padding: 32px;
+    background: #fbfbfd;
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
 .brief-top-row {
     display: flex;
     align-items: center;
@@ -1337,8 +1345,9 @@ body {
     background: rgba(99,91,255,0.12);
     color: var(--accent);
 }
-.brief-desc {\n    font-size: 16px;\n    font-weight: 500;\n    line-height: 1.6;\n    color: #3a3a3c;\n    margin-bottom: 24px;
+.brief-desc {
     font-size: 14px;
+    font-weight: 500;
     color: var(--text);
     line-height: 1.6;
     margin-bottom: 16px;
@@ -1818,4 +1827,51 @@ body {
     border-radius: 12px;
     padding: 16px;
     margin-top: 24px;
+}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+    /* Landing: 2-col → 1-col */
+    .landing-screen {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .landing-left {
+        padding: 48px 28px 32px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .landing-right {
+        padding: 32px 28px 48px;
+    }
+
+    /* Results header: compact + scrollable tabs */
+    .results-header {
+        gap: 12px;
+        padding: 0 16px;
+        height: auto;
+        min-height: 56px;
+        flex-wrap: wrap;
+    }
+    .header-brand {
+        font-size: 12px;
+    }
+    .tab-nav {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex: 1 1 100%;
+        order: 3;
+        padding-bottom: 8px;
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .auth-links, #headerLogoutBtn, #editDetailsBtn, #shareReadingBtn {
+        order: 2;
+    }
+
+    /* Landing trust bar: wrap */
+    .landing-trust {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 }

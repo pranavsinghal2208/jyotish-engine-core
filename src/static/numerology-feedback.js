@@ -1,144 +1,3 @@
-// Numerology and Feedback Functions for Jyotish Engine Core
-
-// Chaldean Numerology Values
-const chaldeanValues = {
-    'A': 1, 'I': 1, 'J': 1, 'Q': 1, 'Y': 1,
-    'B': 2, 'K': 2, 'R': 2,
-    'C': 3, 'G': 3, 'L': 3, 'S': 3,
-    'D': 4, 'M': 4, 'T': 4,
-    'E': 5, 'H': 5, 'N': 5, 'X': 5,
-    'U': 6, 'V': 6, 'W': 6,
-    'O': 7, 'Z': 7,
-    'F': 8, 'P': 8
-};
-
-// Interpretations for numbers 1-9
-const lifePathInterpretations = {
-    1: "You are a natural leader with strong independence and determination. You have the potential to achieve great things through your initiative and pioneering spirit.",
-    2: "You are cooperative and diplomatic, with a talent for bringing people together. You thrive in partnerships and value harmony in relationships.",
-    3: "You are creative and expressive, with a gift for communication and inspiration. Your optimistic nature and artistic abilities make you a joy to be around.",
-    4: "You are practical and reliable, with a strong sense of discipline and organization. You build solid foundations and value hard work and stability.",
-    5: "You are a free spirit with a natural curiosity and desire for adventure. Change and variety are essential to your well-being and personal growth.",
-    6: "You are nurturing and responsible, with a deep concern for others. You excel in roles that involve care, teaching, or service to your community.",
-    7: "You are analytical and introspective, with a thirst for knowledge and understanding. You seek deeper meaning and often prefer solitude for contemplation.",
-    8: "You are ambitious and authoritative, with strong business acumen and leadership abilities. You have the potential for material success and achievement.",
-    9: "You are compassionate and humanitarian, with a desire to help others. Your idealism and generosity make you a force for positive change in the world."
-};
-
-const expressionInterpretations = {
-    1: "Your expression number reveals your potential for leadership and independence. You communicate with confidence and have the ability to inspire others to action.",
-    2: "Your expression number shows your diplomatic nature and ability to mediate. You express yourself through cooperation and creating harmony in relationships.",
-    3: "Your expression number highlights your creative and communicative talents. You have a natural ability to inspire, entertain, and bring joy through your words and ideas.",
-    4: "Your expression number indicates your practical and organized approach. You express yourself through building structures and systems that provide stability.",
-    5: "Your expression number reflects your adventurous and versatile nature. You communicate with freedom and variety, often bringing excitement to conversations.",
-    6: "Your expression number shows your nurturing and responsible character. You express care and concern for others, often taking on supportive roles.",
-    7: "Your expression number reveals your analytical and thoughtful communication. You prefer deep, meaningful discussions and value intellectual stimulation.",
-    8: "Your expression number demonstrates your authoritative and ambitious style. You communicate with confidence and have strong organizational abilities.",
-    9: "Your expression number highlights your compassionate and humanitarian outlook. You express yourself through helping others and promoting positive change."
-};
-
-const soulUrgeInterpretations = {
-    1: "Your soul urges you toward independence and leadership. Deep down, you crave the freedom to pioneer and create your own path in life.",
-    2: "Your soul seeks harmony and partnership. You are driven by a desire for cooperation and meaningful connections with others.",
-    3: "Your soul craves creative expression and joy. You are motivated by the need to communicate, create, and bring happiness to yourself and others.",
-    4: "Your soul desires stability and structure. You are driven by the need for order, security, and tangible results in your life.",
-    5: "Your soul yearns for freedom and adventure. You are motivated by change, variety, and the exploration of new experiences.",
-    6: "Your soul seeks to nurture and care for others. You are driven by love, responsibility, and service to your family and community.",
-    7: "Your soul craves knowledge and understanding. You are motivated by the pursuit of truth, wisdom, and deeper spiritual insights.",
-    8: "Your soul desires material success and authority. You are driven by ambition, achievement, and the ability to manifest abundance.",
-    9: "Your soul urges you toward compassion and service. You are motivated by helping others and contributing to the greater good of humanity."
-};
-
-const personalityInterpretations = {
-    1: "You appear independent and self-reliant to others. People see you as a leader who takes initiative and charts your own course.",
-    2: "You appear diplomatic and cooperative to others. People see you as someone who values harmony and works well in partnerships.",
-    3: "You appear creative and expressive to others. People see you as artistic, communicative, and full of enthusiasm and optimism.",
-    4: "You appear practical and reliable to others. People see you as disciplined, organized, and someone they can depend on.",
-    5: "You appear adventurous and versatile to others. People see you as a free spirit who embraces change and new experiences.",
-    6: "You appear nurturing and responsible to others. People see you as caring, supportive, and someone who puts others' needs first.",
-    7: "You appear analytical and introspective to others. People see you as thoughtful, knowledgeable, and somewhat reserved.",
-    8: "You appear ambitious and authoritative to others. People see you as confident, successful, and someone who gets things done.",
-    9: "You appear compassionate and idealistic to others. People see you as generous, humanitarian, and concerned with social issues."
-};
-
-// Helper function to reduce a number to single digit
-function reduceNumber(num) {
-    while (num > 9) {
-        num = num.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
-    }
-    return num;
-}
-
-// Calculate Life Path Number from birth date
-function calculateLifePath(birthDate) {
-    let sum = 0;
-    for (let char of birthDate.replace(/-/g, '')) {
-        if (char >= '0' && char <= '9') {
-            sum += parseInt(char);
-        }
-    }
-    return reduceNumber(sum);
-}
-
-// Calculate Expression Number from full name
-function calculateExpression(fullName) {
-    const letters = fullName.toUpperCase().replace(/[^A-Z]/g, '');
-    let sum = 0;
-    for (let char of letters) {
-        sum += chaldeanValues[char] || 0;
-    }
-    return reduceNumber(sum);
-}
-
-// Calculate Soul Urge Number from vowels in name
-function calculateSoulUrge(fullName) {
-    const letters = fullName.toUpperCase().replace(/[^A-Z]/g, '');
-    let sum = 0;
-    for (let char of letters) {
-        if (['A', 'E', 'I', 'O', 'U'].includes(char)) {
-            sum += chaldeanValues[char] || 0;
-        }
-    }
-    return reduceNumber(sum);
-}
-
-// Calculate Personality Number from consonants in name
-function calculatePersonality(fullName) {
-    const letters = fullName.toUpperCase().replace(/[^A-Z]/g, '');
-    let sum = 0;
-    for (let char of letters) {
-        if (!['A', 'E', 'I', 'O', 'U'].includes(char)) {
-            sum += chaldeanValues[char] || 0;
-        }
-    }
-    return reduceNumber(sum);
-}
-
-// Calculate compatibility score based on numbers
-function calculateCompatibility(lifePath, expression, soulUrge, personality) {
-    // Calculate harmony score based on differences between numbers
-    const differences = [
-        Math.abs(lifePath - expression),
-        Math.abs(lifePath - soulUrge),
-        Math.abs(lifePath - personality),
-        Math.abs(expression - soulUrge),
-        Math.abs(expression - personality),
-        Math.abs(soulUrge - personality)
-    ];
-    
-    const avgDifference = differences.reduce((sum, diff) => sum + diff, 0) / differences.length;
-    const score = Math.max(0, 100 - avgDifference * 10);
-    
-    let level;
-    if (score >= 90) level = "Excellent";
-    else if (score >= 80) level = "Very Good";
-    else if (score >= 70) level = "Good";
-    else if (score >= 60) level = "Fair";
-    else level = "Challenging";
-    
-    return { score: Math.round(score), level };
-}
-
 // ── Gender toggle ─────────────────────────────────────────────
 
 function setGender(gender) {
@@ -155,10 +14,14 @@ async function loadMyNumerology() {
     const fullName  = document.getElementById('fullName').value.trim();
     const gender    = document.getElementById('gender')?.value || 'Male';
 
-    if (!birthDate || !fullName) return;
-    // Also load personal cycles
+    const nameReqEl = document.getElementById('jyNameRequired');
+    if (!birthDate || !fullName) {
+        if (nameReqEl) nameReqEl.classList.remove('hidden');
+        return;
+    }
+    if (nameReqEl) nameReqEl.classList.add('hidden');
     loadPersonalCycles(birthDate);
-    // Populate compatibility dropdowns
+    loadForecast();
     populateCompatibilityDropdowns();
 
     const loadingEl = document.getElementById('jyLoadingState');
@@ -247,127 +110,6 @@ function renderLoShuGrid(grid) {
     });
 }
 
-async function loadJyotishProfile() {
-    const label = document.getElementById('jyProfileSelect').value;
-    if (!label) { alert('Please select a person first.'); return; }
-
-    try {
-        const res = await fetch(`/api/numerology/profile/${encodeURIComponent(label)}`);
-        if (!res.ok) throw new Error('Profile not found');
-        const d = await res.json();
-
-        document.getElementById('jyName').textContent = d.name;
-        document.getElementById('jyMeta').textContent = `${d.gender} · DOB ${d.dob}`;
-        document.getElementById('jyMulank').textContent = d.mulank;
-        document.getElementById('jyBhagyank').textContent = d.bhagyank;
-        document.getElementById('jyGift').textContent = d.gift_number;
-        document.getElementById('jyKua').textContent = d.kua_number;
-        document.getElementById('jyNamank').textContent = d.namank;
-
-        // Lo Shu Grid
-        renderLoShuGrid(d.lo_shu_grid.grid);
-        document.getElementById('jyMissingNums').textContent =
-            d.lo_shu_grid.missing.length ? d.lo_shu_grid.missing.join(', ') : 'None';
-
-        // DC Profile
-        const dc = d.driver_conductor_profile;
-        document.getElementById('jyDcLabel').textContent = `${d.mulank}~${d.bhagyank}`;
-        document.getElementById('jyCompatBadge').textContent = `${dc.compatibility}% compatible`;
-        document.getElementById('jyDcMode').textContent = dc.mode;
-        document.getElementById('jyDcIndustries').textContent = dc.industries.join(' · ');
-        document.getElementById('jyDcPros').innerHTML = dc.pros.map(p => `<li>${p}</li>`).join('');
-        document.getElementById('jyDcCons').innerHTML = dc.cons.map(c => `<li>${c}</li>`).join('');
-
-        // Missing number remedies
-        const row = document.getElementById('jyRemediesRow');
-        row.innerHTML = '';
-        (d.missing_remedies || []).forEach(r => {
-            const card = document.createElement('div');
-            card.className = 'jy-remedy-card';
-            card.innerHTML = `
-                <div class="remedy-num">#${r.number}</div>
-                <div class="remedy-planet">${r.planet} · ${r.color}</div>
-                <div class="remedy-element">${r.element}</div>
-                <ul class="remedy-list">${r.remedies.map(x => `<li>${x}</li>`).join('')}</ul>
-            `;
-            row.appendChild(card);
-        });
-        document.getElementById('jyRemediesSection').style.display =
-            d.missing_remedies && d.missing_remedies.length ? '' : 'none';
-
-        document.getElementById('jyProfilePanel').classList.remove('hidden');
-    } catch (e) {
-        alert('Could not load profile: ' + e.message);
-    }
-}
-
-// ── Numerology Functions ──────────────────────────────────────
-
-async function calculateNumerology() {
-    const birthDate = document.getElementById('date').value;
-    const fullName = document.getElementById('fullName').value;
-
-    if (!birthDate || !fullName) {
-        alert('Please provide both birth date and full name');
-        return;
-    }
-
-    try {
-        // Calculate Chaldean numerology numbers
-        const lifePathNumber = calculateLifePath(birthDate);
-        const expressionNumber = calculateExpression(fullName);
-        const soulUrgeNumber = calculateSoulUrge(fullName);
-        const personalityNumber = calculatePersonality(fullName);
-        const compatibility = calculateCompatibility(lifePathNumber, expressionNumber, soulUrgeNumber, personalityNumber);
-
-        const data = {
-            life_path: {
-                life_path_number: lifePathNumber,
-                interpretation: lifePathInterpretations[lifePathNumber] || "Your life path reveals unique potential and purpose."
-            },
-            expression: {
-                expression_number: expressionNumber,
-                interpretation: expressionInterpretations[expressionNumber] || "Your expression shows your natural talents and abilities."
-            },
-            soul_urge: {
-                soul_urge_number: soulUrgeNumber,
-                interpretation: soulUrgeInterpretations[soulUrgeNumber] || "Your soul urge reveals your deepest desires and motivations."
-            },
-            personality: {
-                personality_number: personalityNumber,
-                interpretation: personalityInterpretations[personalityNumber] || "Your personality reflects how others perceive you."
-            },
-            compatibility: compatibility,
-            summary: `Your numerology reveals a ${compatibility.level.toLowerCase()} balance of energies. Life Path ${lifePathNumber} guides your journey, Expression ${expressionNumber} shows your talents, Soul Urge ${soulUrgeNumber} reveals your inner desires, and Personality ${personalityNumber} is how you appear to others.`
-        };
-
-        // Display results
-        document.getElementById('lifePathNumber').textContent = data.life_path.life_path_number;
-        document.getElementById('lifePathInterpretation').textContent = data.life_path.interpretation;
-
-        document.getElementById('expressionNumber').textContent = data.expression.expression_number;
-        document.getElementById('expressionInterpretation').textContent = data.expression.interpretation;
-
-        document.getElementById('soulUrgeNumber').textContent = data.soul_urge.soul_urge_number;
-        document.getElementById('soulUrgeInterpretation').textContent = data.soul_urge.interpretation;
-
-        document.getElementById('personalityNumber').textContent = data.personality.personality_number;
-        document.getElementById('personalityInterpretation').textContent = data.personality.interpretation;
-
-        document.getElementById('compatibilityScore').textContent = data.compatibility.score + '/100';
-        document.getElementById('compatibilityLevel').textContent = data.compatibility.level;
-
-        document.getElementById('numerologySummary').textContent = data.summary;
-
-        // Show numerology section
-        document.getElementById('numerologySection').classList.remove('hidden');
-
-    } catch (error) {
-        console.error('Numerology calculation error:', error);
-        alert('Failed to calculate numerology. Please try again.');
-    }
-}
-
 // ── Feedback Functions ───────────────────────────────────────
 
 let currentRating = 0;
@@ -423,31 +165,105 @@ async function submitFeedback() {
     }
 
     try {
-        // Mock success for static demo
-        const result = { success: true };
-
+        const res = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                rating: currentRating,
+                feedback_text: feedbackText,
+                feature_used: featureUsed,
+                session_id: 'web'
+            })
+        });
+        const result = await res.json();
         const statusDiv = document.getElementById('feedbackStatus');
-        if (result.success) {
-            statusDiv.textContent = '✅ Thank you! Your feedback has been submitted and categorized.';
+        if (res.ok) {
+            statusDiv.textContent = '✅ Thank you! Your feedback has been submitted.';
             statusDiv.className = 'feedback-status success';
             statusDiv.classList.remove('hidden');
-
-            // Reset form after successful submission
-            setTimeout(() => {
-                toggleFeedback();
-            }, 2000);
+            setTimeout(() => { toggleFeedback(); }, 2000);
         } else {
-            statusDiv.textContent = '❌ Failed to submit feedback: ' + (result.message || 'Unknown error');
+            statusDiv.textContent = '❌ Failed to submit: ' + (result.message || 'Unknown error');
             statusDiv.className = 'feedback-status error';
             statusDiv.classList.remove('hidden');
         }
-
     } catch (error) {
         console.error('Feedback submission error:', error);
         const statusDiv = document.getElementById('feedbackStatus');
         statusDiv.textContent = '❌ Failed to submit feedback. Please try again.';
         statusDiv.className = 'feedback-status error';
         statusDiv.classList.remove('hidden');
+    }
+}
+
+// ── #11 Yearly Forecast ───────────────────────────────────────────────────────
+
+let currentForecastYear = new Date().getFullYear();
+
+async function loadForecast(yearOffset) {
+    if (yearOffset !== undefined) currentForecastYear += yearOffset;
+    const birthDate = document.getElementById('date')?.value;
+    if (!birthDate) return;
+
+    const section   = document.getElementById('forecastSection');
+    const yearLabel = document.getElementById('forecastYearLabel');
+    const yearCard  = document.getElementById('forecastYearCard');
+    const grid      = document.getElementById('forecastGrid');
+    const highlights = document.getElementById('forecastHighlights');
+    if (!section || !yearCard || !grid) return;
+
+    if (yearLabel) yearLabel.textContent = currentForecastYear;
+
+    try {
+        const res = await fetch(`/api/numerology/forecast?birth_date=${birthDate}&year=${currentForecastYear}`);
+        if (!res.ok) return;
+        const d = await res.json();
+        const py = d.personal_year;
+
+        yearCard.innerHTML = `
+            <div class="card" style="background:linear-gradient(135deg,rgba(99,91,255,0.08),rgba(99,91,255,0.03));border-color:rgba(99,91,255,0.2)">
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+                    <div style="font-size:56px;font-weight:800;color:var(--accent);line-height:1">${py.number}</div>
+                    <div>
+                        <div style="font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em">${py.theme}</div>
+                        <div style="font-size:13px;color:var(--muted);margin-top:2px">${py.energy} · ${py.planet} · ${py.color}</div>
+                    </div>
+                </div>
+                <div style="font-size:14px;color:var(--text);line-height:1.65">${py.focus}</div>
+            </div>`;
+
+        grid.innerHTML = (d.months || []).map(m => {
+            const hl = d.highlights || {};
+            const isAction = (hl.action_months || []).includes(m.month_name);
+            const isRest   = (hl.rest_months   || []).includes(m.month_name);
+            const tag = isAction
+                ? '<span style="font-size:10px;font-weight:700;background:rgba(34,197,94,0.12);color:#16a34a;border-radius:20px;padding:2px 8px">Action</span>'
+                : isRest
+                    ? '<span style="font-size:10px;font-weight:700;background:rgba(245,158,11,0.10);color:#d97706;border-radius:20px;padding:2px 8px">Rest</span>'
+                    : '';
+            const borderHighlight = isAction ? ';border-color:rgba(34,197,94,0.35)' : isRest ? ';border-color:rgba(245,158,11,0.25)' : '';
+            return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 12px;box-shadow:var(--shadow)${borderHighlight}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">${m.month_name}</div>
+                    ${tag}
+                </div>
+                <div style="font-size:32px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:6px">${m.personal_month}</div>
+                <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">${m.theme}</div>
+                <div style="font-size:11px;color:var(--muted)">${m.energy} · ${m.planet}</div>
+            </div>`;
+        }).join('');
+
+        const hl = d.highlights || {};
+        if (hl.action_months?.length || hl.rest_months?.length) {
+            highlights.innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:4px">
+                ${hl.action_months?.length ? `<div style="font-size:13px;color:#16a34a"><strong style="font-weight:700">Action months:</strong> ${hl.action_months.join(', ')}</div>` : ''}
+                ${hl.rest_months?.length   ? `<div style="font-size:13px;color:#d97706"><strong style="font-weight:700">Rest months:</strong>   ${hl.rest_months.join(', ')}</div>`   : ''}
+            </div>`;
+        }
+
+        section.classList.remove('hidden');
+    } catch (e) {
+        console.error('Forecast error:', e);
     }
 }
 

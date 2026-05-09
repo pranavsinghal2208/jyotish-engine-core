@@ -35,7 +35,7 @@ class AppleAuthManager:
                 algorithms=["RS256"],
                 audience=APPLE_CLIENT_ID,
                 issuer="https://appleid.apple.com",
-                options={"verify_signature": False} # Set to True for production
+                options={"verify_signature": True}
             )
             return payload
         except Exception as e:

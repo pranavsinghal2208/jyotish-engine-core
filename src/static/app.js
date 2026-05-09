@@ -119,36 +119,6 @@ async function checkUserProfile() {
     }
 }
 
-async function checkUserProfile() {
-    try {
-        const res = await fetch("/api/user/profile");
-        const d = await res.json();
-        
-        if (d.status === "success") {
-            // Existing user: Pre-fill and load chart
-            document.getElementById("fullName").value = localStorage.getItem("cosmicOsName") || "";
-            document.getElementById("date").value = d.date;
-            document.getElementById("time").value = d.time;
-            document.getElementById("lat").value = d.lat;
-            document.getElementById("lon").value = d.lon;
-            document.getElementById("offset").value = d.offset;
-            document.getElementById("citySearch").value = d.location_name;
-            
-            // Auto-trigger chart for returning user
-            generateChart();
-        } else if (d.new_user) {
-            // New User flow: Show welcome message
-            showWelcomeToast(d.email);
-            // Pre-fill name from email if possible
-            if (d.email && !document.getElementById("fullName").value) {
-                document.getElementById("fullName").value = d.email.split("@")[0].charAt(0).toUpperCase() + d.email.split("@")[0].slice(1);
-            }
-        }
-    } catch (e) {
-        console.log("Profile check failed", e);
-    }
-}
-
 function showWelcomeToast(email) {
     const toast = document.createElement("div");
     toast.className = "welcome-toast";
@@ -289,6 +259,20 @@ async function loadMorningBrief() {
     const briefSection = document.getElementById('morningBriefSection');
     const briefCard    = document.getElementById('morningBriefCard');
     if (!briefSection || !briefCard) return;
+
+    briefCard.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="skeleton" style="height:14px;width:130px"></div>
+            <div class="skeleton" style="height:22px;width:90px;border-radius:20px"></div>
+        </div>
+        <div class="skeleton" style="height:36px;width:100%;margin-bottom:16px"></div>
+        <div style="display:flex;gap:12px">
+            <div class="skeleton" style="height:76px;flex:1;border-radius:8px"></div>
+            <div class="skeleton" style="height:76px;flex:1;border-radius:8px"></div>
+            <div class="skeleton" style="height:76px;flex:1;border-radius:8px"></div>
+        </div>`;
+    briefSection.classList.remove('hidden');
+
     try {
         const res = await fetch('/api/brief/morning');
         if (!res.ok) return;
@@ -332,6 +316,22 @@ async function loadTimingAdvisor() {
     const overview = document.getElementById('timingOverviewCard');
     const grid     = document.getElementById('timingActionsGrid');
     if (!section || !overview || !grid) return;
+
+    overview.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+                <div class="skeleton" style="height:22px;width:110px;border-radius:20px;margin-bottom:8px"></div>
+                <div class="skeleton" style="height:14px;width:220px"></div>
+            </div>
+            <div style="text-align:right">
+                <div class="skeleton" style="height:12px;width:90px;margin-bottom:6px"></div>
+                <div class="skeleton" style="height:20px;width:60px"></div>
+            </div>
+        </div>`;
+    grid.innerHTML = Array(6).fill(`
+        <div class="skeleton" style="height:110px;border-radius:10px"></div>`).join('');
+    section.classList.remove('hidden');
+
     try {
         const res = await fetch('/api/timing/advisor');
         if (!res.ok) return;
@@ -1077,6 +1077,13 @@ function initLandingReveal() {
     });
 }
 
+// ── Edit details ──────────────────────────────────────────
+function editDetails() {
+    document.getElementById('landingScreen').classList.remove('hidden');
+    document.getElementById('resultsScreen').classList.add('hidden');
+    document.getElementById('feedbackWidget').classList.add('hidden');
+}
+
 // ── Share reading ─────────────────────────────────────────
 function buildShareText(data) {
     const name    = data.user_name ? `${data.user_name}'s` : 'My';
@@ -1106,13 +1113,21 @@ function buildShareText(data) {
 }
 
 function initShareBtn() {
-    const btn   = document.getElementById('shareReadingBtn');
+    const btn = document.getElementById('shareReadingBtn');
     if (!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
         if (!currentChartData) return;
         const text = buildShareText(currentChartData);
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(whatsappUrl, '_blank');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const orig = btn.innerHTML;
+                btn.textContent = '✓ Copied';
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+                return;
+            } catch (_) {}
+        }
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     });
 }
 

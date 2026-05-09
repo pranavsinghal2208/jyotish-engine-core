@@ -5,3 +5,6 @@ __pycache__/
 *.png
 videos/
 .DS_Store
+credentials.json
+.env
+ephe/

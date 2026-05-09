@@ -6,7 +6,6 @@ from google.auth.transport.requests import Request
 from fastapi import Request as FastAPIRequest, HTTPException
 from fastapi.responses import RedirectResponse
 
-# Define scopes for Calendar and Gmail
 SCOPES = [
     'openid',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -14,26 +13,32 @@ SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly'
 ]
 
-# Path to client secret JSON (User must provide this)
-CLIENT_SECRETS_FILE = "credentials.json"
+def _build_client_config():
+    """Build OAuth config from env vars, falling back to credentials.json."""
+    client_id     = os.getenv("GOOGLE_CLIENT_ID")
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+    if client_id and client_secret:
+        return {
+            "web": {
+                "client_id":     client_id,
+                "client_secret": client_secret,
+                "auth_uri":      "https://accounts.google.com/o/oauth2/auth",
+                "token_uri":     "https://oauth2.googleapis.com/token",
+            }
+        }
+    if os.path.exists("credentials.json"):
+        with open("credentials.json", "r") as f:
+            return json.load(f)
+    return None
 
 class GoogleAuthManager:
     def __init__(self):
-        self.client_config = None
-        if os.path.exists(CLIENT_SECRETS_FILE):
-            with open(CLIENT_SECRETS_FILE, 'r') as f:
-                self.client_config = json.load(f)
+        self.client_config = _build_client_config()
 
     def get_login_url(self, redirect_uri: str):
         if not self.client_config:
-            raise HTTPException(status_code=500, detail="Google API credentials.json missing.")
-        
-        flow = Flow.from_client_secrets_file(
-            CLIENT_SECRETS_FILE,
-            scopes=SCOPES,
-            redirect_uri=redirect_uri
-        )
-        
+            raise HTTPException(status_code=500, detail="Google OAuth credentials not configured.")
+        flow = Flow.from_client_config(self.client_config, scopes=SCOPES, redirect_uri=redirect_uri)
         authorization_url, state = flow.authorization_url(
             access_type='offline',
             include_granted_scopes='true'
@@ -41,11 +46,7 @@ class GoogleAuthManager:
         return authorization_url, state
 
     def exchange_code(self, code: str, redirect_uri: str):
-        flow = Flow.from_client_secrets_file(
-            CLIENT_SECRETS_FILE,
-            scopes=SCOPES,
-            redirect_uri=redirect_uri
-        )
+        flow = Flow.from_client_config(self.client_config, scopes=SCOPES, redirect_uri=redirect_uri)
         flow.fetch_token(code=code)
         credentials = flow.credentials
         result = credentials_to_dict(credentials)
