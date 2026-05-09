@@ -29,6 +29,9 @@ from .core.registry import registry
 from .services.transits import get_live_transits
 from .services.lucky_windows import get_lucky_windows
 from .services.alerts import get_subscription_status
+from .services.remedies import get_remedies
+from .services.personas import identify_persona
+from .services.analytics import get_ecosystem_metrics, calculate_unit_economics
 
 app = FastAPI(title="Jyotish Engine Core")
 app.include_router(api_v2_router)
@@ -71,6 +74,8 @@ def on_startup():
     registry.register("transits", get_live_transits)
     registry.register("lucky_windows", get_lucky_windows)
     registry.register("subscription", get_subscription_status)
+    registry.register("remedies", get_remedies)
+    registry.register("marketing_persona", identify_persona)
 
 
 # Initialize engine and auth managers
@@ -707,3 +712,10 @@ async def calendar_feed(user: User = Depends(get_current_user)):
         return Response(content="\n".join(cal), media_type="text/calendar")
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/api/v2/admin/ecosystem-pulse")
+async def admin_pulse(db: Session = Depends(get_db)):
+    """The Master Dashboard for the 500-user / 30% goal."""
+    metrics = get_ecosystem_metrics(db)
+    economics = calculate_unit_economics(metrics)
+    return {"metrics": metrics, "economics": economics}

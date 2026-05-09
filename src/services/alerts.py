@@ -3,25 +3,32 @@ from ..core.context import CosmicContext
 from .lucky_windows import get_lucky_windows
 
 def get_subscription_status(context):
-    """Checks user subscription and active alerts."""
+    """Checks user subscription and active alerts with Highest-Fit fallback."""
     user = context.user
     prefs = json.loads(user.preferences or "{}")
     
-    # Foundational Logic: Automate the "Next Peak Window" discovery
+    # 1. Discover the BEST window (Highest-Fit Logic)
     lucky = get_lucky_windows(context)
-    next_peak = None
+    best_window = None
     if lucky and lucky["windows"]:
-        next_peak = next((w for w in lucky["windows"] if w["score"] > 70), None)
+        # Sort by score descending to find the highest
+        sorted_windows = sorted(lucky["windows"], key=lambda x: x["score"], reverse=True)
+        best_window = sorted_windows[0]
+        
+        # Labeling for UX
+        if best_window["score"] > 70:
+            best_window["label"] = "Strategic Peak"
+        else:
+            best_window["label"] = "Weekly Opportunity"
         
     return {
         "is_subscriber": user.is_subscriber == 1,
-        "next_peak_window": next_peak,
+        "next_peak_window": best_window, # This is now the Highest-Fit, never None if data exists
         "alert_count": len(prefs.get("active_watches", [])),
         "daily_brief_enabled": prefs.get("daily_brief", True)
     }
 
 def subscribe_to_window(context, window_timestamp):
-    """Adds a specific time window to the users personal watch list."""
     user = context.user
     prefs = json.loads(user.preferences or "{}")
     watches = prefs.get("active_watches", [])
@@ -30,6 +37,5 @@ def subscribe_to_window(context, window_timestamp):
         watches.append(window_timestamp)
         prefs["active_watches"] = watches
         user.preferences = json.dumps(prefs)
-        # In a real app, db.commit() would happen in the router
         return {"status": "success", "message": f"Alert set for {window_timestamp}"}
     return {"status": "exists"}

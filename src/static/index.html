@@ -71,9 +71,9 @@
 
                     <div class="field-wrap">
                         <label class="field-label">Birth city</label>
-                        <input type="text" id="citySearch" placeholder="e.g. Mumbai, Delhi, Pune" autocomplete="off">
+                        <input type="hidden" id="lat"><input type="hidden" id="lon"><input type="text" id="citySearch" placeholder="e.g. Mumbai, Delhi, Pune" autocomplete="off">
                         <div id="cityResults" class="city-dropdown hidden"></div>
-                        <input type="hidden" id="lat"><input type="hidden" id="lon">
+                        
                     </div>
 
                     <div id="momentStep" class="moment-row">
@@ -110,9 +110,9 @@
 
             <!-- Personal reading sample with fade -->
             <div class="preview-depth-card">
-                <div class="preview-card-tag" id="previewCardTag">Your Nakshatra reading</div>
-                <div class="preview-quote">"You nourish. Your deepest calling is to feed others — with wisdom, care, and a safe harbour they can return to. You are built to protect what matters."</div>
-                <div class="preview-quote-source">Pushya Nakshatra · Lord Saturn · Pada 4</div>
+                <div class="preview-card-tag" id="previewCardTag">Cosmic Intelligence</div>
+                <div class="preview-quote" style="opacity: 0.4;">Analysis pending...</div>
+                <div class="preview-quote-source" style="opacity: 0.4;">Decoded from your birth moment</div>
                 <div class="preview-fade-overlay" id="previewFadeOverlay">
                     <div class="preview-locked-hint" id="previewLockedHint">Enter your details to unlock your reading</div>
                 </div>
@@ -161,8 +161,8 @@
         </div>
 
         <!-- Hidden fields -->
-        <input type="hidden" id="lat">
-        <input type="hidden" id="lon">
+        
+        
         <input type="hidden" id="offset" value="5.5">
     </div>
 
@@ -189,6 +189,7 @@
                     <!-- <a href="/auth/apple/login" id="headerAppleLink" class="auth-btn-minimal">Connect Apple</a> -->
                 </div>
                 <a href="/auth/logout" id="headerLogoutBtn" class="connect-link-sm hidden">Logout</a>
+                  <button id="sessionResetBtn" class="auth-btn-minimal hidden" onclick="resetSession()">Clear Session</button>
                 <button id="editDetailsBtn" class="auth-btn-minimal" onclick="editDetails()">Edit details</button>
                 
                   <a href="/api/v2/share/cosmic-id.svg" download="Cosmic_ID.svg" class="share-btn" style="text-decoration:none; display:inline-flex; background:var(--cta); color:#fff; border-color:var(--cta);" title="Download Cosmic ID">
@@ -236,6 +237,14 @@
                             <span class="leg-item"><span class="dot good"></span> Favorable</span>
                             <span class="leg-item"><span class="dot neut"></span> Neutral</span>
                         </div>
+                    </div>
+                </div>
+\n\n                
+                <!-- REMEDIES & PROGRESS (v2) -->
+                <div id="remediesSection" class="hidden">
+                    <div class="section-label">Strategic Remedies & Progress Signals</div>
+                    <div id="remediesGrid" class="remedies-grid">
+                        <!-- JS Injected Remedies -->
                     </div>
                 </div>
 \n\n                <!-- Morning Brief -->

@@ -2081,3 +2081,44 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     transition: transform 0.2s;
 }
 .sub-btn-sm:hover { transform: scale(1.05); }
+
+/* ── Remedies Grid ── */
+.remedies-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+.remedy-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.rem-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.rem-challenge { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+.rem-tag { font-size: 10px; text-transform: uppercase; font-weight: 700; background: #f0f0f0; padding: 4px 10px; border-radius: 4px; }
+.rem-tag.high { background: rgba(255, 0, 0, 0.05); color: #d00; }
+
+.rem-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.rem-item { display: flex; flex-direction: column; gap: 4px; }
+.rem-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; }
+.rem-value { font-size: 14px; font-weight: 500; color: var(--text); }
+.rem-product-link { margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--cta); cursor: pointer; text-decoration: underline; }
+
+/* ── Persona Badge ── */
+.persona-badge {
+    font-size: 9px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+}

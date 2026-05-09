@@ -18,7 +18,7 @@ async function checkAuthStatus() {
         // Update name chip if authenticated but no name set
         if (authenticated && email && !localStorage.getItem("cosmicOsName")) {
             const nameChip = document.getElementById("headerName");
-            if (nameChip) nameChip.textContent = email.split("@")[0];
+            if (nameChip) nameChip.textContent = (email && email !== "default@psbc.com") ? email.split("@")[0] : "Traveler";
         }
     } catch (e) {
         console.error('Auth check failed', e);
@@ -98,6 +98,7 @@ async function checkUserProfile() {
             // Existing user: Pre-fill and load chart
             document.getElementById("fullName").value = localStorage.getItem("cosmicOsName") || "";
             document.getElementById("date").value = d.date;
+            quickUnlock();
             document.getElementById("time").value = d.time;
             document.getElementById("lat").value = d.lat;
             document.getElementById("lon").value = d.lon;
@@ -123,7 +124,7 @@ function showWelcomeToast(email) {
     const toast = document.createElement("div");
     toast.className = "welcome-toast";
     toast.innerHTML = `
-        <div class="welcome-header">Welcome, ${email.split("@")[0]}</div>
+        <div class="welcome-header">Welcome, ${email === "default@psbc.com" ? "Traveler" : email.split("@")[0]}</div>
         <div class="welcome-body">To calibrate your personal intelligence dashboard, we need your birth coordinates once.</div>
     `;
     document.body.appendChild(toast);
@@ -168,6 +169,13 @@ async function generateChart() {
 
 // ── Strategic view ────────────────────────────────────────
 function populateStrategicView(data) {
+
+    // Clear initial placeholders before populating
+    ["dailyTheme", "energySignature", "activeDasha"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.textContent === "—") el.textContent = "Processing...";
+    });
+
     const { insights, business_pulse, cosmic_schedule, nakshatra } = data;
 
     // Header name chip
@@ -1150,7 +1158,7 @@ async function quickUnlock() {
     const precisionFields = document.getElementById("precisionFields");
     const generateBtn = document.getElementById("generateBtn");
     
-    if (!date) return;
+    if (!date || date === "1990-01-01") return;
 
     // Show the rest of the form
     if (precisionFields) precisionFields.classList.remove("hidden");
@@ -1169,13 +1177,24 @@ async function quickUnlock() {
         const previewOverlay = document.getElementById("previewFadeOverlay");
 
         if (previewTag) previewTag.textContent = `Your ${data.sun_sign} Nature`;
-        if (previewQuote) previewQuote.textContent = `"${data.natal}"`;
-        if (previewSource) previewSource.textContent = `${data.sun_sign} · Mulank ${data.mulank} · Bhagyank ${data.bhagyank}`;
+        if (previewQuote) {
+            previewQuote.textContent = `"${data.natal}"`;
+            previewQuote.style.opacity = "1";
+        }
+        if (previewSource) {
+            previewSource.textContent = `${data.sun_sign} · Mulank ${data.mulank} · Bhagyank ${data.bhagyank}`;
+            previewSource.style.opacity = "1";
+        }
         
         // Remove the locked overlay
         if (previewOverlay) {
             previewOverlay.style.opacity = "0";
-            setTimeout(() => previewOverlay.classList.add("hidden"), 500);
+            setTimeout(() => {
+                previewOverlay.classList.add("hidden");
+                // Ensure form components are definitely visible
+                if (precisionFields) precisionFields.classList.remove("hidden");
+                if (generateBtn) generateBtn.classList.remove("hidden");
+            }, 300);
         }
 
     } catch (e) {
@@ -1256,4 +1275,66 @@ function renderSubscriptionHook(data) {
 function toggleSub() {
     alert("Subscription logic enabled. You will now receive a browser notification when your peak window opens.");
     // In production, this would trigger a POST to /api/v2/preferences
+}
+
+function resetSession() {
+    if (confirm("This will clear your chart and return to the start. Proceed?")) {
+        localStorage.clear();
+        window.location.href = "/auth/logout";
+    }
+}
+
+// ── Remedy & Progress Intelligence (v2) ──────────────────
+function renderRemedies(data) {
+    const grid = document.getElementById("remediesGrid");
+    const section = document.getElementById("remediesSection");
+    if (!grid || !data || data.length === 0) return;
+    
+    section.classList.remove("hidden");
+    grid.innerHTML = "";
+    
+    data.forEach(rem => {
+        const div = document.createElement("div");
+        div.className = "remedy-card";
+        const priorityClass = rem.priority.toLowerCase() === "high" ? "high" : "";
+        
+        div.innerHTML = `
+            <div class="rem-header">
+                <div class="rem-challenge">${rem.challenge}</div>
+                <div class="rem-tag ${priorityClass}">${rem.priority} Priority</div>
+            </div>
+            <div class="rem-body">
+                <div class="rem-item">
+                    <span class="rem-label">Progress Signal</span>
+                    <span class="rem-value">${rem.progress_signal}</span>
+                </div>
+                <div class="rem-item">
+                    <span class="rem-label">Strategic Ritual</span>
+                    <span class="rem-value">${rem.ritual}</span>
+                </div>
+                <div class="rem-item">
+                    <span class="rem-label">Supplements</span>
+                    <span class="rem-value">${rem.supplement}</span>
+                </div>
+                <div class="rem-item">
+                    <span class="rem-label">Natural Stones</span>
+                    <span class="rem-value">${rem.stone}</span>
+                    <span class="rem-product-link" onclick="alert('Product catalog coming soon in Phase 4')">View Collection →</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+// ── Marketing Persona Intelligence (v2) ──────────────────
+function renderPersona(data) {
+    const badge = document.getElementById("personaBadge");
+    if (!badge || !data || !data.name) return;
+    
+    badge.textContent = data.name;
+    badge.classList.remove("hidden");
+    
+    // Log for marketing analysis
+    console.log(`[Marketing] Detected Persona: ${data.name} | Hook: ${data.retention_hook}`);
 }
