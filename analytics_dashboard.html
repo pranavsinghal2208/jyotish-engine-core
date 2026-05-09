@@ -1,0 +1,120 @@
+<!-- ANALYTICS DASHBOARD COMPONENT -->
+<!-- Add this to your admin page or create a separate /analytics route -->
+
+<div id="analyticsDashboard" class="analytics-dashboard">
+    <div class="dashboard-header">
+        <h2>📊 Usage Analytics</h2>
+        <div class="analytics-controls">
+            <select id="analyticsPeriod">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+            </select>
+            <button onclick="refreshAnalytics()">🔄 Refresh</button>
+        </div>
+    </div>
+
+    <div class="analytics-grid">
+        <!-- Key Metrics -->
+        <div class="metric-card">
+            <div class="metric-icon">👥</div>
+            <div class="metric-content">
+                <div class="metric-value" id="totalVisitors">--</div>
+                <div class="metric-label">Total Visitors</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">📄</div>
+            <div class="metric-content">
+                <div class="metric-value" id="pageViews">--</div>
+                <div class="metric-label">Page Views</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">🎯</div>
+            <div class="metric-content">
+                <div class="metric-value" id="uniqueUsers">--</div>
+                <div class="metric-label">Unique Users</div>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">⭐</div>
+            <div class="metric-content">
+                <div class="metric-value" id="avgRating">--</div>
+                <div class="metric-label">Avg Rating</div>
+            </div>
+        </div>
+
+        <!-- Feature Usage -->
+        <div class="chart-card">
+            <h3>🚀 Feature Usage</h3>
+            <div id="featureUsageChart">
+                <div class="feature-item">
+                    <span class="feature-name">Chart Generation</span>
+                    <span class="feature-count" id="chartGenerations">--</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-name">Numerology</span>
+                    <span class="feature-count" id="numerologyCalcs">--</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-name">Feedback</span>
+                    <span class="feature-count" id="feedbackCount">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Pages -->
+        <div class="chart-card">
+            <h3>📈 Popular Pages</h3>
+            <div id="topPagesChart">
+                <div class="page-item">
+                    <span class="page-path">/</span>
+                    <span class="page-views">-- views</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Engagement -->
+        <div class="chart-card">
+            <h3>💡 User Engagement</h3>
+            <div class="engagement-metrics">
+                <div class="engagement-item">
+                    <span>Session Duration</span>
+                    <span id="avgSessionDuration">-- sec</span>
+                </div>
+                <div class="engagement-item">
+                    <span>Bounce Rate</span>
+                    <span id="bounceRate">--%</span>
+                </div>
+                <div class="engagement-item">
+                    <span>Conversion Rate</span>
+                    <span id="conversionRate">--%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Feedback -->
+        <div class="chart-card">
+            <h3>💬 Recent Feedback</h3>
+            <div id="recentFeedback">
+                <p class="no-data">Loading feedback...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Status -->
+    <div class="analytics-status">
+        <div class="status-indicator" id="gaStatus">
+            <span class="status-dot"></span>
+            Google Analytics: <span id="gaStatusText">Not Configured</span>
+        </div>
+        <div class="status-indicator">
+            <span class="status-dot status-active"></span>
+            Local Analytics: Active
+        </div>
+    </div>
+</div>

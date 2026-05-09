@@ -1,0 +1,92 @@
+<!-- NUMEROLOGY SECTION - Add this after the main dashboard content -->
+<div id="numerologySection" class="numerology-section hidden">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>🔮 Numerology Reading</h2>
+            <p>Discover your life's numerical blueprint</p>
+        </div>
+        
+        <div class="numerology-grid">
+            <div class="card">
+                <div class="card-label">Life Path Number</div>
+                <div id="lifePathNumber" class="number-display">--</div>
+                <div id="lifePathInterpretation" class="interpretation-text"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-label">Expression Number</div>
+                <div id="expressionNumber" class="number-display">--</div>
+                <div id="expressionInterpretation" class="interpretation-text"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-label">Soul Urge Number</div>
+                <div id="soulUrgeNumber" class="number-display">--</div>
+                <div id="soulUrgeInterpretation" class="interpretation-text"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-label">Personality Number</div>
+                <div id="personalityNumber" class="number-display">--</div>
+                <div id="personalityInterpretation" class="interpretation-text"></div>
+            </div>
+            
+            <div class="card compatibility-card">
+                <div class="card-label">Compatibility Score</div>
+                <div id="compatibilityScore" class="compatibility-score">--/100</div>
+                <div id="compatibilityLevel" class="compatibility-level"></div>
+            </div>
+        </div>
+        
+        <div class="numerology-summary">
+            <h3>📝 Your Numerology Blueprint</h3>
+            <p id="numerologySummary"></p>
+        </div>
+    </div>
+</div>
+
+<!-- FEEDBACK WIDGET - Add this before the closing body tag -->
+<div id="feedbackWidget" class="feedback-widget">
+    <div class="feedback-toggle" onclick="toggleFeedback()">💬</div>
+    <div class="feedback-panel hidden">
+        <div class="feedback-header">
+            <h3>Share Your Feedback</h3>
+            <p>Help us improve your Vedic experience</p>
+        </div>
+        
+        <div class="rating-stars">
+            <span class="rating-label">How was your experience?</span>
+            <div class="stars">
+                <span class="star" data-rating="1">⭐</span>
+                <span class="star" data-rating="2">⭐</span>
+                <span class="star" data-rating="3">⭐</span>
+                <span class="star" data-rating="4">⭐</span>
+                <span class="star" data-rating="5">⭐</span>
+            </div>
+        </div>
+        
+        <div class="feedback-form">
+            <textarea id="feedbackText" placeholder="Tell us what you think... What worked well? What could be better?" rows="3"></textarea>
+            
+            <div class="feedback-options">
+                <select id="featureUsed">
+                    <option value="">What feature did you use?</option>
+                    <option value="birth_chart">Birth Chart</option>
+                    <option value="dashboard">Dashboard</option>
+                    <option value="business_pulse">Business Pulse</option>
+                    <option value="google_calendar">Calendar Integration</option>
+                    <option value="cosmic_schedule">Cosmic Schedule</option>
+                    <option value="numerology">Numerology</option>
+                    <option value="general">General Experience</option>
+                </select>
+            </div>
+            
+            <div class="feedback-actions">
+                <button class="btn-secondary" onclick="toggleFeedback()">Cancel</button>
+                <button class="btn-primary" onclick="submitFeedback()">Send Feedback</button>
+            </div>
+        </div>
+        
+        <div id="feedbackStatus" class="feedback-status hidden"></div>
+    </div>
+</div>

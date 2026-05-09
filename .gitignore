@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.db
+*.log
+*.png
+videos/
+.DS_Store

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic OS — Vedic Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="numerology-feedback.css">\n    <link rel="stylesheet" href="onboarding_styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ══════════════════════════════
+         LANDING SCREEN
+    ══════════════════════════════ -->
+    <div id="landingScreen" class="landing-screen">
+
+        <!-- Left: input panel -->
+        <div class="landing-left">
+            <div class="brand-mark">Cosmic OS <span class="brand-sub">· Executive Intelligence · Vedic Intelligence</span></div>
+
+            <h1 class="landing-h1">Precision Guidance.<br>Strategic Clarity.</h1>
+            <p class="landing-sub">Your birth chart, decoded into what today actually means for you.</p>
+
+            <!-- What you get -->
+            <div class="feature-pills">
+                <span class="pill">Daily theme &amp; uplift</span>
+                <span class="pill">Planetary positions</span>
+                <span class="pill">Nakshatra reading</span>
+                <span class="pill">Dasha timeline</span>
+                <span class="pill">What this day asks of you</span>
+                <span class="pill">Calendar intelligence</span>
+            </div>
+
+            <!-- Form -->
+            <div class="input-stack">
+                <div class="field-wrap">
+                    <label class="field-label">Your name</label>
+                    <input type="text" id="fullName" placeholder="e.g. Pranav" autocomplete="given-name">
+                </div>
+
+                <div class="field-wrap">
+                    <label class="field-label">Gender</label>
+                    <div class="gender-toggle">
+                        <button type="button" class="gender-btn active" id="genderMale" onclick="setGender('Male')">Male</button>
+                        <button type="button" class="gender-btn" id="genderFemale" onclick="setGender('Female')">Female</button>
+                    </div>
+                    <input type="hidden" id="gender" value="Male">
+                </div>
+
+                <div class="field-wrap">
+                    <label class="field-label">Birth city</label>
+                    <input type="text" id="citySearch" placeholder="e.g. Mumbai, Delhi, Pune" autocomplete="off">
+                    <div id="cityResults" class="city-dropdown hidden"></div>
+                </div>
+
+                <div id="momentStep" class="moment-row hidden">
+                    <div class="field-wrap">
+                        <label class="field-label">Date of birth</label>
+                        <input type="date" id="date" value="1990-01-01">
+                    </div>
+                    <div class="field-wrap">
+                        <label class="field-label">Time of birth</label>
+                        <input type="time" id="time" value="12:00">
+                        <span class="field-hint">Approximate is fine — if unknown, noon is used</span>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="cta-btn hidden">Generate My Chart →</button>
+            </div>
+
+            <div class="landing-trust">
+                <span class="trust-item trust-proof">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    12,847 charts read
+                </span>
+                <span class="trust-item">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Lahiri Ayanamsa precision
+                </span>
+                <span class="trust-item">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Your data stays local
+                </span>
+            </div>
+        </div>
+
+        <!-- Right: depth preview -->
+        <div class="landing-right">
+            <div class="preview-label">What your chart reveals</div>
+
+            <!-- Personal reading sample with fade -->
+            <div class="preview-depth-card">
+                <div class="preview-card-tag" id="previewCardTag">Your Nakshatra reading</div>
+                <div class="preview-quote">"You nourish. Your deepest calling is to feed others — with wisdom, care, and a safe harbour they can return to. You are built to protect what matters."</div>
+                <div class="preview-quote-source">Pushya Nakshatra · Lord Saturn · Pada 4</div>
+                <div class="preview-fade-overlay" id="previewFadeOverlay">
+                    <div class="preview-locked-hint" id="previewLockedHint">Enter your details to unlock your reading</div>
+                </div>
+                <div class="preview-locked-body">
+                    <p class="preview-locked-text">Your Moon lord activates a specific domain of your life this week — the exact area where your attention will be most rewarded right now.</p>
+                    <p class="preview-locked-text short">One transit today opens a 12-day window for a decision you have been holding.</p>
+                    <p class="preview-locked-text">Your current Dasha lord is in direct conversation with three natal planets — this creates the specific pattern your reading is built around.</p>
+                    <p class="preview-locked-text short">The alignment forming in your chart favours one bold move over caution.</p>
+                </div>
+            </div>
+
+            <!-- Sun sign preview (revealed after date entered) -->
+            <div id="sunSignPreview" class="preview-sun-card hidden"></div>
+
+            <!-- Dasha timing urgency -->
+            <div class="preview-dasha-card">
+                <div class="mini-label">Your current life chapter</div>
+                <div id="dashaCardTitle" class="preview-dasha-title">Every person is living inside a named period.</div>
+                <p id="dashaCardBody" class="preview-dasha-body">Vedic timing divides your life into chapters — each with a specific lord, a specific theme, and a specific end date. You are in one right now.</p>
+                <div id="dashaCardExample" class="preview-dasha-example">
+                    <span class="dasha-ex-tag">Example</span>
+                    <span class="dasha-ex-text">Venus MD · Saturn Bhukti · 2026 → 2029 · 3.2 years</span>
+                </div>
+                <div id="dashaCardPersonal" class="preview-dasha-personal hidden"></div>
+            </div>
+
+            <!-- What to do today teaser -->
+            <div class="preview-actions-card">
+                <div class="mini-label">What to do today</div>
+                <ul class="preview-actions-list">
+                    <li class="preview-action-item">Say yes to the thing that feels slightly too large or too far — that is the one worth pursuing</li>
+                    <li class="preview-action-item blurred">Your exact directive based on your natal Moon and today's transit</li>
+                    <li class="preview-action-item blurred">The specific window open for your chart configuration right now</li>
+                </ul>
+                <div class="preview-actions-cta">Generate your chart to unlock your full directive →</div>
+            </div>
+
+            <!-- Credential strip -->
+            <div class="preview-cred-strip">
+                <span class="cred-item">Swiss Ephemeris precision</span>
+                <span class="cred-dot">·</span>
+                <span class="cred-item">Lahiri Ayanamsa</span>
+                <span class="cred-dot">·</span>
+                <span class="cred-item">5000-year Vedic tradition</span>
+            </div>
+        </div>
+
+        <!-- Hidden fields -->
+        <input type="hidden" id="lat">
+        <input type="hidden" id="lon">
+        <input type="hidden" id="offset" value="5.5">
+    </div>
+
+    <!-- ══════════════════════════════
+         RESULTS SCREEN
+    ══════════════════════════════ -->
+    <div id="resultsScreen" class="results-screen hidden">
+
+        
+    <!-- Alert Banner -->
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <header class="results-header">
+            <div class="header-brand">Cosmic OS<span class="header-descriptor"> · Vedic Intelligence</span><span id="headerName" class="header-name-chip"></span></div>
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-view="strategic">Strategic</button>
+                <button class="tab-btn" data-view="technical">Technical</button>
+                <button class="tab-btn" data-view="numerology">Numerology</button>
+            </nav>
+            <div class="header-right">
+                <span id="headerAuthBadge" class="connected-badge hidden">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Calendar
+                </span>
+                <div id="authLinks" class="auth-links">
+                    <a href="/auth/google/login" id="headerGoogleLink" class="auth-btn-minimal">Connect Google</a>
+                    <a href="/auth/apple/login" id="headerAppleLink" class="auth-btn-minimal">Connect Apple</a>
+                </div>
+                <a href="/auth/logout" id="headerLogoutBtn" class="connect-link-sm hidden">Logout</a>
+                <button id="shareReadingBtn" class="share-btn" title="Share my reading">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Share
+                </button>
+            </div>
+        </header>
+
+        <!-- STRATEGIC VIEW -->
+        <div id="strategicView" class="view-panel">
+            <div class="panel-inner">
+
+                <div class="hero-card">
+                    <div class="hero-card-label">Today's theme</div>
+                    <div id="dailyTheme" class="hero-card-title">—</div>
+                    <div id="energySignature" class="hero-card-sign">—</div>
+                    <p id="upliftNarrative" class="hero-card-body"></p>
+                    <div id="nakshatraStrip" class="nakshatra-strip hidden">
+                        <span class="nak-label">Birth Nakshatra</span>
+                        <span id="nakshatraName" class="nak-name"></span>
+                        <span id="nakshatraMeta" class="nak-meta"></span>
+                    </div>
+                    <div id="panchangaStrip" class="panchanga-strip hidden">
+                        <span class="panch-item"><span class="panch-label">Tithi</span><span id="tithiName" class="panch-value"></span></span>
+                        <span class="panch-dot">·</span>
+                        <span class="panch-item"><span class="panch-label">Yoga</span><span id="yogaName" class="panch-value"></span></span>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div id="superpowerList" class="card"></div>
+                    <div class="card">
+                        <div class="card-label">Today's directive</div>
+                        <p id="operationalPointer" class="directive-text"></p>
+                        <div id="dailyActionsWrap" class="daily-actions-wrap hidden">
+                            <div class="actions-label">What to do today</div>
+                            <ul id="dailyActionsList" class="actions-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card pulse-card">
+                    <div class="card-label">Life Cycle · Dasha Intelligence</div>
+                    <div class="pulse-row">
+                        <div>
+                            <div id="activeDasha" class="dasha-pill"></div>
+                            <div id="pulseFocus" class="pulse-focus"></div>
+                        </div>
+                        <div class="pulse-right">
+                            <div class="kpi-label">Current focus</div>
+                            <div id="targetKpi" class="kpi-value"></div>
+                        </div>
+                    </div>
+                    <p id="pulseStrategy" class="pulse-strategy"></p>
+                </div>
+
+                <div id="cosmicScheduleSection" class="hidden">
+                    <div class="section-label">Calendar performance alerts</div>
+                    <div id="alertList"></div>
+                </div>
+
+                <!-- Morning Brief -->
+                <div id="morningBriefSection" class="hidden">
+                    <div class="section-label">Morning Brief</div>
+                    <div class="card brief-card" id="morningBriefCard"></div>
+                </div>
+
+                <!-- Business Timing Advisor -->
+                <div id="timingAdvisorSection" class="hidden">
+                    <div class="section-label">Business Timing Advisor</div>
+                    <div class="card" id="timingOverviewCard"></div>
+                    <div id="timingActionsGrid" class="timing-grid"></div>
+                </div>
+
+            </div>
+        </div>
+
+    <!-- TECHNICAL VIEW -->
+    <div id="technicalView" class="view-panel hidden">
+        <div class="panel-inner tech-layout">
+
+            <div class="tech-left">
+                <div class="card">
+                    <div class="card-label">Birth Chart · Kundali</div>
+                    <div id="kundaliChart"></div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Planetary Positions</div>
+                    <div class="card-hint">Tap any planet for its reading</div>
+                    <div id="planetGrid"></div>
+                </div>
+            </div>
+
+            <div class="tech-right">
+                <div class="card interp-card">
+                    <div class="card-label">Interpretation</div>
+                    <div id="techInterpretation" class="interp-placeholder">
+                        Select a planet to view its personalised reading.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Dasha Timeline</div>
+                    <div class="card-hint">Tap a Maha-Dasha to expand Bhuktis</div>
+                    <div id="dashaTimeline"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ADVANCED ANALYSIS SECTION -->
+        <div class="adv-section">
+
+            <!-- Yogas -->
+            <div class="adv-block">
+                <div class="adv-block-label">Active Yogas</div>
+                <div id="yogaCards" class="yoga-grid"></div>
+            </div>
+
+            <!-- Sade Sati + Mangal Dosha row -->
+            <div class="adv-duo-row">
+                <div class="card adv-condition-card">
+                    <div class="card-label">Sade Sati</div>
+                    <div id="sadeSatiCard"></div>
+                </div>
+                <div class="card adv-condition-card">
+                    <div class="card-label">Mangal Dosha</div>
+                    <div id="mangalDoshaCard"></div>
+                </div>
+            </div>
+
+            <!-- Ashtakavarga -->
+            <div class="adv-block">
+                <div class="adv-block-label">Sarvashtakavarga — House Strength</div>
+                <div id="ashtakavargaGrid" class="ashtak-grid"></div>
+            </div>
+
+            <!-- Divisional Charts row -->
+            <div class="adv-duo-row">
+                <div class="card adv-condition-card">
+                    <div class="card-label">D-9 · Navamsa</div>
+                    <div id="navamsaCard"></div>
+                </div>
+                <div class="card adv-condition-card">
+                    <div class="card-label">D-10 · Dasamsa</div>
+                    <div id="dasamsaCard"></div>
+                </div>
+            </div>
+
+            <!-- Varshaphal -->
+            <div class="adv-block">
+                <div class="adv-block-label">Varshaphal · Solar Return</div>
+                <div class="card" id="varshaphalCard"></div>
+            </div>
+
+        </div><!-- /adv-section -->
+
+    </div>
+
+    <!-- NUMEROLOGY VIEW -->
+    <div id="numerologyView" class="view-panel hidden">
+        <div class="panel-inner">
+
+            <!-- Loading state -->
+            <div id="jyLoadingState" class="jy-loading hidden">Computing your numerology profile…</div>
+
+            <!-- Profile panel (auto-loads from birth details) -->
+            <div id="jyProfilePanel" class="hidden">
+
+                <!-- Name + DOB header -->
+                <div class="jy-profile-header">
+                    <div class="jy-profile-name" id="jyName">—</div>
+                    <div class="jy-profile-meta" id="jyMeta">—</div>
+                </div>
+
+                <!-- Core numbers row -->
+                <div class="jy-numbers-row">
+                    <div class="jy-num-card">
+                        <div class="jy-num-label">Driver (Mulank)</div>
+                        <div class="jy-num-value" id="jyMulank">—</div>
+                    </div>
+                    <div class="jy-num-card">
+                        <div class="jy-num-label">Conductor (Bhagyank)</div>
+                        <div class="jy-num-value" id="jyBhagyank">—</div>
+                    </div>
+                    <div class="jy-num-card">
+                        <div class="jy-num-label">Gift Number</div>
+                        <div class="jy-num-value" id="jyGift">—</div>
+                    </div>
+                    <div class="jy-num-card">
+                        <div class="jy-num-label">KUA Number</div>
+                        <div class="jy-num-value" id="jyKua">—</div>
+                    </div>
+                    <div class="jy-num-card">
+                        <div class="jy-num-label">Name (Namank)</div>
+                        <div class="jy-num-value" id="jyNamank">—</div>
+                    </div>
+                </div>
+
+                <!-- Lo Shu + DC Profile side-by-side -->
+                <div class="jy-mid-row">
+
+                    <!-- Lo Shu Grid -->
+                    <div class="card jy-loshu-card">
+                        <div class="card-label">Lo Shu Grid</div>
+                        <table class="jy-loshu-table" id="jyLoShuTable">
+                            <tbody>
+                                <tr><td></td><td></td><td></td></tr>
+                                <tr><td></td><td></td><td></td></tr>
+                                <tr><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="jy-missing-line">Missing: <span id="jyMissingNums">—</span></div>
+                    </div>
+
+                    <!-- DC Profile -->
+                    <div class="card jy-dc-card">
+                        <div class="card-label">Driver~Conductor Profile</div>
+                        <div class="jy-dc-compat">
+                            <span id="jyDcLabel">—</span>
+                            <span class="jy-compat-badge" id="jyCompatBadge">—%</span>
+                        </div>
+                        <div class="jy-dc-mode" id="jyDcMode">—</div>
+                        <div class="jy-dc-section-title">Industries</div>
+                        <div class="jy-dc-industries" id="jyDcIndustries">—</div>
+                        <div class="jy-dc-cols">
+                            <div>
+                                <div class="jy-dc-section-title pros">Strengths</div>
+                                <ul class="jy-dc-list" id="jyDcPros"></ul>
+                            </div>
+                            <div>
+                                <div class="jy-dc-section-title cons">Challenges</div>
+                                <ul class="jy-dc-list" id="jyDcCons"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missing Number Remedies -->
+                <div id="jyRemediesSection" class="jy-remedies-section">
+                    <div class="jy-section-heading">Missing Number Remedies</div>
+                    <div class="jy-remedies-row" id="jyRemediesRow"></div>
+                </div>
+
+                <!-- Personal Cycles -->
+                <div id="cyclesSection" class="hidden" style="margin-top:28px">
+                    <div class="jy-section-heading">Current Cycles</div>
+                    <div class="cycles-row" id="cyclesRow"></div>
+                </div>
+
+            </div>
+
+            <!-- Yearly Forecast -->
+            <div id="forecastSection" class="hidden" style="margin-top:32px">
+                <div class="jy-section-heading">
+                    Yearly Forecast
+                    <span style="float:right;display:flex;gap:8px;align-items:center">
+                        <button class="jy-load-btn" onclick="loadForecast(-1)" style="padding:4px 12px;font-size:12px">‹ Prev</button>
+                        <span id="forecastYearLabel" style="font-size:14px;font-weight:600;color:#635bff"></span>
+                        <button class="jy-load-btn" onclick="loadForecast(1)" style="padding:4px 12px;font-size:12px">Next ›</button>
+                    </span>
+                </div>
+                <div id="forecastYearCard" style="margin-bottom:16px"></div>
+                <div id="forecastGrid" class="forecast-grid"></div>
+                <div id="forecastHighlights" style="margin-top:12px"></div>
+            </div>
+
+            <!-- Two-Person Compatibility -->
+            <div id="compatSection" style="margin-top:32px">
+                <div class="jy-section-heading">Two-Person Compatibility</div>
+                <div class="compat-selector">
+                    <select id="compatPersonA" class="jy-select"></select>
+                    <select id="compatPersonB" class="jy-select"></select>
+                    <button class="jy-load-btn" onclick="loadCompatibility()">Compare</button>
+                </div>
+                <div id="compatResult" class="hidden"></div>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+    <!-- Share toast -->
+    <div id="shareToast" class="share-toast hidden">Copied to clipboard</div>
+
+    <!-- Feedback Widget -->
+    <div id="feedbackWidget" class="feedback-widget hidden">
+        <div class="feedback-toggle" onclick="toggleFeedback()">💬</div>
+        <div class="feedback-panel hidden">
+            <div class="feedback-header">
+                <h3>Share Your Feedback</h3>
+                <p>Help us improve your experience</p>
+            </div>
+            <div class="rating-stars">
+                <label class="rating-label">How would you rate your experience?</label>
+                <div class="stars">
+                    <span class="star" data-rating="1">⭐</span>
+                    <span class="star" data-rating="2">⭐</span>
+                    <span class="star" data-rating="3">⭐</span>
+                    <span class="star" data-rating="4">⭐</span>
+                    <span class="star" data-rating="5">⭐</span>
+                </div>
+            </div>
+            <form class="feedback-form">
+                <div class="feedback-options">
+                    <select id="featureUsed" required>
+                        <option value="">Which feature did you use?</option>
+                        <option value="strategic">Strategic Reading</option>
+                        <option value="technical">Technical Chart</option>
+                        <option value="numerology">Numerology</option>
+                        <option value="general">General Experience</option>
+                    </select>
+                </div>
+                <textarea id="feedbackText" placeholder="Tell us what you think..." required></textarea>
+                <div class="feedback-actions">
+                    <button type="button" class="btn-secondary" onclick="toggleFeedback()">Cancel</button>
+                    <button type="button" class="btn-primary" onclick="submitFeedback()">Submit</button>
+                </div>
+            </form>
+            <div id="feedbackStatus" class="feedback-status hidden"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="numerology-feedback.js"></script>
+</body>
+</html>

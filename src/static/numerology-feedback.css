@@ -1,0 +1,608 @@
+/* ── Gender toggle ───────────────────────────────────────────── */
+
+.gender-toggle {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.gender-btn {
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.gender-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* ── Numerology loading state ────────────────────────────────── */
+
+.jy-loading {
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* ── Jyotish Profile Directory ─────────────────────────────── */
+
+.jy-selector-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.jy-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.jy-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.jy-load-btn {
+    padding: 12px 24px;
+    background: var(--cta);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.jy-load-btn:hover { opacity: 0.88; }
+
+.jy-profile-header {
+    margin-bottom: 24px;
+}
+
+.jy-profile-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.jy-profile-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Numbers row */
+.jy-numbers-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.jy-num-card {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.jy-num-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.jy-num-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+}
+
+/* Mid row: Lo Shu + DC side-by-side */
+.jy-mid-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+    align-items: start;
+}
+
+@media (max-width: 700px) {
+    .jy-mid-row { grid-template-columns: 1fr; }
+}
+
+/* Lo Shu Grid table */
+.jy-loshu-card {
+    min-width: 220px;
+}
+
+.jy-loshu-table {
+    border-collapse: separate;
+    border-spacing: 6px;
+    margin: 12px auto;
+}
+
+.jy-loshu-table td {
+    width: 56px;
+    height: 56px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 700;
+    vertical-align: middle;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.jy-loshu-table td.present {
+    background: rgba(99, 91, 255, 0.12);
+    color: var(--accent);
+}
+
+.jy-loshu-table td.absent {
+    background: var(--bg);
+    color: var(--muted);
+    opacity: 0.5;
+}
+
+.cell-num {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.cell-count {
+    display: block;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    min-height: 10px;
+}
+
+.jy-missing-line {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+}
+
+/* DC Profile card */
+.jy-dc-card { padding: 24px; }
+
+.jy-dc-compat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.jy-dc-compat span:first-child {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.jy-compat-badge {
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(99, 91, 255, 0.12);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+.jy-dc-mode {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+}
+
+.jy-dc-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.jy-dc-section-title.pros { color: #22c55e; }
+.jy-dc-section-title.cons { color: #f59e0b; }
+
+.jy-dc-industries {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.jy-dc-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.jy-dc-list {
+    margin: 0;
+    padding: 0 0 0 16px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.8;
+}
+
+/* Remedies */
+.jy-remedies-section { margin-top: 8px; }
+
+.jy-section-heading {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 14px;
+}
+
+.jy-remedies-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.jy-remedy-card {
+    flex: 1;
+    min-width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 16px;
+    box-shadow: var(--shadow);
+}
+
+.remedy-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.remedy-planet {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.remedy-element {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.remedy-list {
+    margin: 0;
+    padding: 0 0 0 14px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.8;
+}
+
+/* Numerology Section Styles */
+.numerology-section {
+    padding: 40px 20px;
+    background: var(--bg);
+    min-height: 100vh;
+}
+
+.numerology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.number-display {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--text);
+    text-align: center;
+    margin: 20px 0;
+}
+
+.interpretation-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-top: 10px;
+}
+
+.compatibility-card {
+    background: var(--hero-bg);
+    color: white;
+}
+
+.compatibility-card .number-display,
+.compatibility-card .interpretation-text {
+    color: white;
+}
+
+.compatibility-score {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin: 20px 0;
+    color: #fff;
+}
+
+.compatibility-level {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 10px;
+    color: #fff;
+    opacity: 0.9;
+}
+
+.numerology-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.numerology-summary h3 {
+    color: var(--text);
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.numerology-summary p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+}
+
+/* Feedback Widget Styles */
+.feedback-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.feedback-toggle {
+    width: 60px;
+    height: 60px;
+    background: var(--cta);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.feedback-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+}
+
+.feedback-panel {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 0;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.feedback-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.feedback-header h3 {
+    margin: 0 0 8px 0;
+    color: var(--text);
+    font-size: 18px;
+}
+
+.feedback-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.rating-stars {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.rating-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.star {
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.3;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.star.active {
+    opacity: 1;
+    color: var(--accent);
+}
+
+.feedback-form {
+    padding: 20px;
+}
+
+.feedback-options {
+    margin-bottom: 20px;
+}
+
+.feedback-options select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.feedback-options select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 168, 106, 0.20);
+}
+
+.feedback-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 16px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.feedback-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 168, 106, 0.20);
+}
+
+.feedback-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--cta);
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    opacity: 0.88;
+}
+
+.btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--bg);
+}
+
+.feedback-status {
+    margin: 0 20px 20px 20px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.feedback-status.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.feedback-status.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .feedback-panel {
+        width: calc(100vw - 40px);
+        right: -10px;
+    }
+    
+    .numerology-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Hidden class */
+.hidden {
+    display: none !important;
+}
