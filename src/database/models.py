@@ -16,6 +16,8 @@ class User(Base):
     birth_date = Column(String) # YYYY-MM-DD
     birth_time = Column(String) # HH:MM
     tz_offset = Column(Float, default=5.5)
+    is_subscriber = Column(Integer, default=0) # 0=Free, 1=Premium
+    preferences = Column(String, default="{}") # JSON string of alert settings
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationship to credentials

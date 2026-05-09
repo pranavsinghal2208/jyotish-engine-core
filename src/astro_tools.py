@@ -252,9 +252,9 @@ def check_mangal_dosha(planets: Dict, lagna: Dict) -> Dict:
 def calculate_ashtakavarga(planets: Dict, lagna: Dict) -> Dict:
     """
     Approximate Sarvashtakavarga — relative planetary strength per house.
-    Scores by dignity, house quality, and natural benefic/malefic status.
-    Classical system requires planet-specific contribution tables (40 rules);
-    this implementation gives comparable relative values for UI display.
+    Scores by dignity, house quality, and aspect contributions.
+    Each planet contributes to its own house (full) plus aspected houses (partial):
+    all planets aspect 7th; Mars/Rahu/Ketu add 4th+8th; Jupiter adds 5th+9th; Saturn adds 3rd+10th.
     """
     ls = lagna.get("sign", "")
     BENEFICS = {"Jupiter", "Venus", "Mercury", "Moon"}
@@ -264,6 +264,14 @@ def calculate_ashtakavarga(planets: Dict, lagna: Dict) -> Dict:
         7:"Partnership & Business", 8:"Transformation & Longevity",
         9:"Dharma & Fortune", 10:"Career & Status", 11:"Gains & Network",
         12:"Expenditure & Liberation"
+    }
+    # 0-indexed offsets for special aspects (4th=+3, 5th=+4, 8th=+7, 9th=+8, 3rd=+2, 10th=+9)
+    EXTRA_ASPECT_OFFSETS = {
+        "Mars":    [3, 7],
+        "Jupiter": [4, 8],
+        "Saturn":  [2, 9],
+        "Rahu":    [4, 8],
+        "Ketu":    [4, 8],
     }
 
     raw = {h: 0 for h in range(1, 13)}
@@ -277,7 +285,17 @@ def calculate_ashtakavarga(planets: Dict, lagna: Dict) -> Dict:
                    1  if s in OWN_SIGNS.get(planet, [])    else
                   -1  if s == DEBILITATION.get(planet, "") else 0)
         benef   = 1 if planet in BENEFICS else 0
-        raw[h] += base + dignity + benef
+        score   = base + dignity + benef
+        raw[h] += score
+
+        # Universal 7th aspect
+        h7 = ((h - 1 + 6) % 12) + 1
+        raw[h7] += max(1, score // 2)
+
+        # Special aspects
+        for off in EXTRA_ASPECT_OFFSETS.get(planet, []):
+            ha = ((h - 1 + off) % 12) + 1
+            raw[ha] += max(1, score // 3)
 
     max_r  = max(raw.values()) or 1
     bindus = {h: min(8, max(0, round(v / max_r * 8))) for h, v in raw.items()}
@@ -350,8 +368,8 @@ def calculate_varshaphal(natal_sun_longitude: float, lat: float, lon: float) -> 
     today_jd = swe.julday(t.year, t.month, t.day, t.hour + t.minute / 60.0 + t.second / 3600.0)
     target   = natal_sun_longitude % 360
 
-    # Binary search — Sun returns to natal longitude once per year
-    lo, hi = today_jd - 380, today_jd + 10
+    # Binary search — find the upcoming Solar Return (next occurrence ahead of today)
+    lo, hi = today_jd - 5, today_jd + 380
     for _ in range(60):
         mid    = (lo + hi) / 2
         sun_lo = swe.calc_ut(mid, swe.SUN, flags)[0][0]
@@ -393,8 +411,8 @@ def calculate_varshaphal(natal_sun_longitude: float, lat: float, lon: float) -> 
         "planets": p_ret,
         "year": int(yr),
         "interpretation": (
-            f"Your {int(yr)} Solar Return rises with {ret_lagna['sign']} Lagna — "
-            f"setting the energetic theme for the year beginning {int(dy):02d}-{int(mo):02d}-{int(yr)}."
+            f"Your upcoming {int(yr)} Solar Return rises with {ret_lagna['sign']} Lagna — "
+            f"the energetic theme activates from {int(dy):02d}-{int(mo):02d}-{int(yr)}."
         )
     }
 

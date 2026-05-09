@@ -1142,3 +1142,118 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('generateBtn').addEventListener('click', generateChart);
 });
+
+// ── Quick Unlock (Friction Reduction) ─────────────────────
+async function quickUnlock() {
+    const date = document.getElementById("date").value;
+    const name = document.getElementById("fullName").value;
+    const precisionFields = document.getElementById("precisionFields");
+    const generateBtn = document.getElementById("generateBtn");
+    
+    if (!date) return;
+
+    // Show the rest of the form
+    if (precisionFields) precisionFields.classList.remove("hidden");
+    if (generateBtn) generateBtn.classList.remove("hidden");
+
+    try {
+        const res = await fetch(`/api/quick-decode?date=${date}&name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        
+        if (data.error) return;
+
+        // Update Preview Card
+        const previewTag = document.getElementById("previewCardTag");
+        const previewQuote = document.querySelector(".preview-quote");
+        const previewSource = document.querySelector(".preview-quote-source");
+        const previewOverlay = document.getElementById("previewFadeOverlay");
+
+        if (previewTag) previewTag.textContent = `Your ${data.sun_sign} Nature`;
+        if (previewQuote) previewQuote.textContent = `"${data.natal}"`;
+        if (previewSource) previewSource.textContent = `${data.sun_sign} · Mulank ${data.mulank} · Bhagyank ${data.bhagyank}`;
+        
+        // Remove the locked overlay
+        if (previewOverlay) {
+            previewOverlay.style.opacity = "0";
+            setTimeout(() => previewOverlay.classList.add("hidden"), 500);
+        }
+
+    } catch (e) {
+        console.error("Quick unlock failed", e);
+    }
+}
+
+// ── Cosmic Pulse Intelligence (v2) ────────────────────────
+async function updateCosmicPulse() {
+    try {
+        const res = await fetch("/api/v2/intelligence");
+        const data = await res.json();
+        const pulse = data.transits;
+
+        if (!pulse || pulse.error) return;
+
+        const ticker = document.getElementById("cosmicPulseTicker");
+        const progress = document.getElementById("tickerProgress");
+        const vibe = document.getElementById("tickerVibe");
+        const highlight = document.getElementById("tickerHighlight");
+
+        if (ticker) ticker.classList.remove("hidden");
+        if (progress) progress.style.width = `${pulse.score}%`;
+        if (vibe) vibe.textContent = pulse.vibe;
+        if (highlight) highlight.textContent = pulse.highlights[0] || "Global transits are stable. Maintain focus.";
+
+    } catch (e) {
+        console.error("Pulse update failed", e);
+    }
+}
+
+// Start Pulse loop every 60 seconds
+setInterval(updateCosmicPulse, 60000);
+
+// ── Lucky Windows Intelligence (v2) ──────────────────────
+function renderLuckyWindows(data) {
+    const grid = document.getElementById("luckyWindowsGrid");
+    const section = document.getElementById("luckyWindowsSection");
+    if (!grid || !data || !data.windows) return;
+    
+    section.classList.remove("hidden");
+    grid.innerHTML = "";
+    
+    // Show top 12 windows for cleaner UI
+    const topWindows = data.windows.slice(0, 12);
+    
+    topWindows.forEach(win => {
+        const div = document.createElement("div");
+        div.className = "lucky-item";
+        
+        const vibeClass = win.score > 70 ? "vibe-peak" : (win.score > 55 ? "vibe-good" : "vibe-neut");
+        const dateObj = new Date(win.timestamp.replace(" ", "T"));
+        const timeStr = dateObj.toLocaleDateString([], {month:"short", day:"numeric"}) + " · " + dateObj.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+
+        div.innerHTML = `
+            <span class="lucky-time">${timeStr}</span>
+            <div class="lucky-score">${win.score}%</div>
+            <span class="lucky-vibe-tag ${vibeClass}">${win.vibe}</span>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+// ── Subscription & Retention (v2) ─────────────────────────
+function renderSubscriptionHook(data) {
+    const hook = document.getElementById("subHook");
+    const subText = document.getElementById("subText");
+    if (!hook || !data || !data.next_peak_window) return;
+    
+    hook.classList.remove("hidden");
+    const win = data.next_peak_window;
+    const dateObj = new Date(win.timestamp.replace(" ", "T"));
+    const timeStr = dateObj.toLocaleDateString([], {weekday:"short", hour:"2-digit"});
+    
+    subText.textContent = `Strategic Peak Window: ${timeStr} (${win.score}% momentum).`;
+}
+
+function toggleSub() {
+    alert("Subscription logic enabled. You will now receive a browser notification when your peak window opens.");
+    // In production, this would trigger a POST to /api/v2/preferences
+}

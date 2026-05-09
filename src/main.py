@@ -24,12 +24,19 @@ from .astro_tools import (detect_yogas, check_sade_sati, check_mangal_dosha,
                            calculate_varshaphal, calculate_muhurta)
 from .timing_advisor import get_timing_advice
 
+from .api.router import router as api_v2_router
+from .core.registry import registry
+from .services.transits import get_live_transits
+from .services.lucky_windows import get_lucky_windows
+from .services.alerts import get_subscription_status
+
 app = FastAPI(title="Jyotish Engine Core")
+app.include_router(api_v2_router)
 
 FALLBACK_EMAIL = "default@psbc.com"
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
-    """Fetch user from cookie, falling back to first user or default."""
+    """Fetch user from cookie, falling back to default."""
     email = request.cookies.get("user_email")
     if email:
         user = db.query(User).filter(User.email == email).first()
@@ -44,24 +51,27 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
                 user = db.query(User).filter(User.email == email).first()
         return user
     
-    # Fallback to the first user in DB if no cookie (legacy support)
-    user = db.query(User).order_by(User.id).first()
-    if user:
-        return user
-        
-    # Final fallback: create/return default user
+    # Return/create default fallback user (Guest)
     user = db.query(User).filter(User.email == FALLBACK_EMAIL).first()
     if not user:
-        user = User(email=FALLBACK_EMAIL)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        try:
+            user = User(email=FALLBACK_EMAIL)
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        except Exception:
+            db.rollback()
+            user = db.query(User).filter(User.email == FALLBACK_EMAIL).first()
     return user
 
 # Initialize database on startup
 @app.on_event("startup")
 def on_startup():
     init_db()
+    registry.register("transits", get_live_transits)
+    registry.register("lucky_windows", get_lucky_windows)
+    registry.register("subscription", get_subscription_status)
+
 
 # Initialize engine and auth managers
 engine = JyotishEngine()
@@ -271,10 +281,44 @@ async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+@app.get("/api/quick-decode")
+async def quick_decode(date: str, name: str = ""):
+    """Provides instant value from just DOB + Name for the landing page hook."""
+    try:
+        from datetime import datetime
+        dt = datetime.strptime(date, "%Y-%m-%d")
+        
+        # 1. Numerology
+        mulank = numerology_engine.calculate_mulank(date)
+        bhagyank = numerology_engine.calculate_bhagyank(date)
+        
+        # 2. Sun Sign (Estimate using noon)
+        jd = engine.get_julian_day(dt.replace(hour=12))
+        planets = engine.get_planetary_positions(jd)
+        sun_sign = planets.get("Sun", {}).get("sign", "Aries")
+        
+        # 3. Get Insights
+        from .translator import SIGN_NATAL, SIGN_THEMES
+        theme = SIGN_THEMES.get(sun_sign, {}).get("theme", "Intelligence")
+        natal = SIGN_NATAL.get(sun_sign, "You carry a unique cosmic signature.")
+        
+        return {
+            "mulank": mulank,
+            "bhagyank": bhagyank,
+            "sun_sign": sun_sign,
+            "theme": theme,
+            "natal": natal,
+            "quote": f"You carry the energy of {sun_sign}. {natal}"
+        }
+    except Exception as e:
+        print(f"Quick decode error: {e}")
+        return {"error": str(e)}
+
 @app.get("/api/user/profile")
 async def get_profile(user: User = Depends(get_current_user)):
     """Fetches the persistent user profile."""
-    if not user.birth_date:
+    if user.email == FALLBACK_EMAIL or not user.birth_date:
         return {"status": "empty", "new_user": True, "email": user.email}
     
     return {
@@ -578,7 +622,7 @@ async def morning_brief(user: User = Depends(get_current_user)):
             "overall_description": timing["overall_description"],
             "top_action": top_action,
             "transit_highlights": highlights,
-            "nakshatra": nakshatra.get("nakshatra", ""),
+            "nakshatra": nakshatra.get("name", ""),
             "best_day_this_week": timing["best_day_this_week"],
         }
     except Exception as e:
@@ -618,3 +662,48 @@ app.mount("/", StaticFiles(directory="src/static", html=True), name="static")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=5004)
+
+@app.get("/api/calendar/feed")
+async def calendar_feed(user: User = Depends(get_current_user)):
+    """Generates an ICS calendar feed for the user Daily Brief."""
+    if not user.birth_date:
+        return {"error": "No birth details. Generate chart first."}
+    
+    try:
+        from datetime import datetime, timedelta
+        cal = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//PSBC//Cosmic OS//EN",
+            "X-WR-CALNAME:Cosmic OS Intelligence",
+            "X-WR-TIMEZONE:UTC",
+            "CALSCALE:GREGORIAN",
+            "METHOD:PUBLISH"
+        ]
+        
+        now = datetime.utcnow()
+        for i in range(14):  # 14 days of feed
+            day = now + timedelta(days=i)
+            # Basic event for morning brief
+            uid = f"brief-{user.id}-{day.strftime('%Y%m%d')}@psbc.com"
+            dt_str = day.strftime('%Y%m%d')
+            
+            # Simple placeholder text - in reality we would call the engines here
+            summary = f"✨ Cosmic Brief - Day {i}"
+            desc = "Open Cosmic OS to see your full strategic intelligence for today."
+            
+            cal.extend([
+                "BEGIN:VEVENT",
+                f"UID:{uid}",
+                f"DTSTAMP:{now.strftime('%Y%m%dT%H%M%SZ')}",
+                f"DTSTART;VALUE=DATE:{dt_str}",
+                f"SUMMARY:{summary}",
+                f"DESCRIPTION:{desc}",
+                "END:VEVENT"
+            ])
+            
+        cal.append("END:VCALENDAR")
+        from fastapi.responses import Response
+        return Response(content="\n".join(cal), media_type="text/calendar")
+    except Exception as e:
+        return {"error": str(e)}

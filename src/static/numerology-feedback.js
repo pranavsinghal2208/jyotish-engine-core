@@ -56,11 +56,22 @@ async function loadMyNumerology() {
         const dc = d.driver_conductor_profile;
         if (dc) {
             document.getElementById('jyDcLabel').textContent      = `${d.mulank}~${d.bhagyank}`;
-            document.getElementById('jyCompatBadge').textContent  = `${dc.compatibility}% compatible`;
+            const pct = dc.compatibility;
+            const compatEl = document.getElementById('jyCompatBadge');
+            compatEl.textContent = `${pct}% compatible`;
+            compatEl.className = `jy-compat-badge ${pct >= 75 ? 'compat-high' : (pct >= 50 ? 'compat-mid' : 'compat-low')}`;
             document.getElementById('jyDcMode').textContent       = dc.mode;
             document.getElementById('jyDcIndustries').textContent = dc.industries.join(' · ');
             document.getElementById('jyDcPros').innerHTML = dc.pros.map(p => `<li>${p}</li>`).join('');
             document.getElementById('jyDcCons').innerHTML = dc.cons.map(c => `<li>${c}</li>`).join('');
+            // Add range legend if not already present
+            const dcCard = document.getElementById('jyDcMode').closest('.jy-dc-card') || document.getElementById('jyDcMode').parentElement;
+            if (dcCard && !dcCard.querySelector('.dc-compat-range')) {
+                const range = document.createElement('div');
+                range.className = 'dc-compat-range';
+                range.textContent = 'Below 50 = tension · 50–75 = workable · 75+ = harmonious';
+                compatEl.insertAdjacentElement('afterend', range);
+            }
         }
 
         const row = document.getElementById('jyRemediesRow');

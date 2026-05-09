@@ -1875,3 +1875,209 @@ body {
         gap: 8px;
     }
 }
+
+/* ── Kundali planet legend ───────────────────────────────────── */
+.kundali-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+.kundali-legend span {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--font);
+    white-space: nowrap;
+}
+
+/* ── Ashtakavarga baseline hint ─────────────────────────────── */
+.adv-block-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 4px 0 12px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* ── DC Profile compat range + color states ─────────────────── */
+.dc-compat-range {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+.jy-compat-badge.compat-high { background: #dcfce7; color: #15803d; }
+.jy-compat-badge.compat-mid  { background: #fef9c3; color: #92400e; }
+.jy-compat-badge.compat-low  { background: #fee2e2; color: #b91c1c; }
+
+/* ── Gift number "unreduced" hint chip ──────────────────────── */
+.jy-num-hint {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 1px 5px;
+    vertical-align: middle;
+    margin-left: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ── Typography Polish (PSBC Premium) ── */
+h1, h2, .landing-h1 { letter-spacing: -0.022em; }
+.brand-mark { letter-spacing: 0.05em; text-transform: uppercase; font-weight: 700; }
+.section-label { letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.75rem; font-weight: 700; color: var(--muted); margin-bottom: 12px; }
+.hero-card-title { letter-spacing: -0.011em; }
+
+/* ── Pulse Ticker (v2 Architecture) ── */
+.pulse-ticker {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #1E1A38;
+    color: #fff;
+    padding: 8px 24px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.ticker-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.ticker-label {
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+.ticker-bar-wrap {
+    width: 60px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ticker-progress {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s ease-in-out;
+}
+
+.ticker-vibe {
+    color: #fff;
+    white-space: nowrap;
+}
+
+.ticker-text {
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ticker-dot {
+    color: rgba(255,255,255,0.3);
+}
+
+/* ── Footer Pedigree ── */
+.pedigree-footer {
+    background: #fff;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 80px;
+    color: var(--muted);
+    font-size: 11px;
+}
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pedigree-label {
+    display: block;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+/* ── Lucky Windows Grid ── */
+.lucky-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.lucky-item {
+    padding: 12px;
+    background: #fcfcfc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.lucky-item:hover { transform: translateY(-2px); border-color: var(--accent); }
+
+.lucky-time { font-size: 10px; color: var(--muted); display: block; margin-bottom: 4px; }
+.lucky-score { font-size: 16px; font-weight: 800; color: var(--text); }
+.lucky-vibe-tag { font-size: 9px; text-transform: uppercase; font-weight: 700; margin-top: 4px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+
+.vibe-peak { background: rgba(99, 91, 255, 0.1); color: var(--cta); }
+.vibe-good { background: rgba(200, 168, 106, 0.1); color: var(--accent); }
+.vibe-neut { background: #eee; color: #777; }
+
+.lucky-legend { display: flex; gap: 16px; font-size: 10px; font-weight: 600; color: var(--muted); }
+.leg-item { display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot.peak { background: var(--cta); }
+.dot.good { background: var(--accent); }
+.dot.neut { background: #ccc; }
+
+/* ── Subscription Hook ── */
+.sub-hook-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(99, 91, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 30px;
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cta);
+}
+.sub-btn-sm {
+    background: var(--cta);
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.sub-btn-sm:hover { transform: scale(1.05); }

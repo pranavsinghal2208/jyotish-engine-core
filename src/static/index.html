@@ -9,7 +9,20 @@
     <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body>\n
+    <!-- ── COSMIC PULSE TICKER (v2) ── -->
+    <div id="cosmicPulseTicker" class="pulse-ticker hidden">
+        <div class="ticker-content">
+            <span class="ticker-label">Live Intelligence</span>
+            <div class="ticker-bar-wrap">
+                <div id="tickerProgress" class="ticker-progress" style="width: 0%"></div>
+            </div>
+            <span id="tickerVibe" class="ticker-vibe">Syncing...</span>
+            <span class="ticker-dot">·</span>
+            <span id="tickerHighlight" class="ticker-text">Loading cosmic transits...</span>
+        </div>
+    </div>
+
 
     <!-- ══════════════════════════════
          LANDING SCREEN
@@ -41,29 +54,34 @@
                 </div>
 
                 <div class="field-wrap">
-                    <label class="field-label">Gender</label>
-                    <div class="gender-toggle">
-                        <button type="button" class="gender-btn active" id="genderMale" onclick="setGender('Male')">Male</button>
-                        <button type="button" class="gender-btn" id="genderFemale" onclick="setGender('Female')">Female</button>
-                    </div>
-                    <input type="hidden" id="gender" value="Male">
+                    <label class="field-label">Date of birth</label>
+                    <input type="date" id="date" value="1990-01-01" onchange="quickUnlock()">
                 </div>
 
-                <div class="field-wrap">
-                    <label class="field-label">Birth city</label>
-                    <input type="text" id="citySearch" placeholder="e.g. Mumbai, Delhi, Pune" autocomplete="off">
-                    <div id="cityResults" class="city-dropdown hidden"></div>
-                </div>
-
-                <div id="momentStep" class="moment-row hidden">
+                <!-- Hidden until DOB entered -->
+                <div id="precisionFields" class="hidden">
                     <div class="field-wrap">
-                        <label class="field-label">Date of birth</label>
-                        <input type="date" id="date" value="1990-01-01">
+                        <label class="field-label">Gender</label>
+                        <div class="gender-toggle">
+                            <button type="button" class="gender-btn active" id="genderMale" onclick="setGender("Male")">Male</button>
+                            <button type="button" class="gender-btn" id="genderFemale" onclick="setGender("Female")">Female</button>
+                        </div>
+                        <input type="hidden" id="gender" value="Male">
                     </div>
+
                     <div class="field-wrap">
-                        <label class="field-label">Time of birth</label>
-                        <input type="time" id="time" value="12:00">
-                        <span class="field-hint">Approximate is fine — if unknown, noon is used</span>
+                        <label class="field-label">Birth city</label>
+                        <input type="text" id="citySearch" placeholder="e.g. Mumbai, Delhi, Pune" autocomplete="off">
+                        <div id="cityResults" class="city-dropdown hidden"></div>
+                        <input type="hidden" id="lat"><input type="hidden" id="lon">
+                    </div>
+
+                    <div id="momentStep" class="moment-row">
+                        <div class="field-wrap">
+                            <label class="field-label">Time of birth</label>
+                            <input type="time" id="time" value="12:00">
+                            <span class="field-hint">Approximate is fine</span>
+                        </div>
                     </div>
                 </div>
 
@@ -172,7 +190,12 @@
                 </div>
                 <a href="/auth/logout" id="headerLogoutBtn" class="connect-link-sm hidden">Logout</a>
                 <button id="editDetailsBtn" class="auth-btn-minimal" onclick="editDetails()">Edit details</button>
-                <button id="shareReadingBtn" class="share-btn" title="Share my reading">
+                
+                  <a href="/api/v2/share/cosmic-id.svg" download="Cosmic_ID.svg" class="share-btn" style="text-decoration:none; display:inline-flex; background:var(--cta); color:#fff; border-color:var(--cta);" title="Download Cosmic ID">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Cosmic ID
+                  </a>
+                  <button id="shareReadingBtn" class="share-btn" title="Share my reading">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
                 </button>
@@ -198,6 +221,30 @@
                         <span class="panch-dot">·</span>
                         <span class="panch-item"><span class="panch-label">Yoga</span><span id="yogaName" class="panch-value"></span></span>
                     </div>
+                </div>
+
+                
+                <!-- LUCKY WINDOWS (v2) -->
+                <div id="luckyWindowsSection" class="hidden">
+                    <div class="section-label">Weekly Strategic Map (7-Day Scoped Intelligence)</div>
+                    <div class="card lucky-card">
+                        <div id="luckyWindowsGrid" class="lucky-grid">
+                            <!-- JS injected windows -->
+                        </div>
+                        <div class="lucky-legend">
+                            <span class="leg-item"><span class="dot peak"></span> Peak Momentum</span>
+                            <span class="leg-item"><span class="dot good"></span> Favorable</span>
+                            <span class="leg-item"><span class="dot neut"></span> Neutral</span>
+                        </div>
+                    </div>
+                </div>
+\n\n                <!-- Morning Brief -->
+                <div id="morningBriefSection" class="hidden">
+                    <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
+                        Morning Brief
+                        <span class="cal-link" onclick="window.open("/api/calendar/feed")" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">📅 Sync to Calendar</span>
+                    </div>
+                    <div class="card brief-card" id="morningBriefCard"></div>
                 </div>
 
                 <div class="two-col">
@@ -232,11 +279,7 @@
                     <div id="alertList"></div>
                 </div>
 
-                <!-- Morning Brief -->
-                <div id="morningBriefSection" class="hidden">
-                    <div class="section-label">Morning Brief</div>
-                    <div class="card brief-card" id="morningBriefCard"></div>
-                </div>
+                
 
                 <!-- Business Timing Advisor -->
                 <div id="timingAdvisorSection" class="hidden">
@@ -257,6 +300,12 @@
                     <div class="card-label">Birth Chart · Kundali</div>
                     <div class="card-hint">Tap a sign with planets to read it</div>
                     <div id="kundaliChart"></div>
+                    <div class="kundali-legend">
+                        <span>Su = Sun</span><span>Mo = Moon</span><span>Ma = Mars</span>
+                        <span>Me = Mercury</span><span>Ju = Jupiter</span><span>Ve = Venus</span>
+                        <span>Sa = Saturn</span><span>Ra = Rahu</span><span>Ke = Ketu</span>
+                        <span>Lg = Lagna (Rising sign)</span>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="card-label">Planetary Positions</div>
@@ -274,7 +323,7 @@
                 </div>
                 <div class="card">
                     <div class="card-label">Dasha Timeline</div>
-                    <div class="card-hint">Tap a Maha-Dasha to expand Bhuktis</div>
+                    <div class="card-hint">Your life unfolds in planetary chapters (Maha-Dasha), each with a ruling planet and theme. Tap to reveal sub-periods (Bhuktis) within each chapter.</div>
                     <div id="dashaTimeline"></div>
                 </div>
             </div>
@@ -305,6 +354,7 @@
             <!-- Ashtakavarga -->
             <div class="adv-block">
                 <div class="adv-block-label">Sarvashtakavarga — House Strength</div>
+                <div class="adv-block-hint">Each of the 12 houses is scored 0–8 based on planetary strength flowing through it. 6+ = Strong · 4–5 = Moderate · 0–3 = Weak</div>
                 <div id="ashtakavargaGrid" class="ashtak-grid"></div>
             </div>
 
@@ -360,7 +410,7 @@
                         <div class="jy-num-value" id="jyBhagyank">—</div>
                     </div>
                     <div class="jy-num-card">
-                        <div class="jy-num-label">Gift Number</div>
+                        <div class="jy-num-label">Gift Number <span class="jy-num-hint">unreduced</span></div>
                         <div class="jy-num-value" id="jyGift">—</div>
                     </div>
                     <div class="jy-num-card">
