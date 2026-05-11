@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -36,6 +37,10 @@ from .services.analytics import get_ecosystem_metrics, calculate_unit_economics
 
 app = FastAPI(title="Jyotish Engine Core")
 app.include_router(api_v2_router)
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 FALLBACK_EMAIL = "default@psbc.com"
 
