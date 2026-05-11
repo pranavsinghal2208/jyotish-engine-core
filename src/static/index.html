@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>\n
+<body>
     <!-- ── COSMIC PULSE TICKER (v2) ── -->
     <div id="cosmicPulseTicker" class="pulse-ticker hidden">
         <div class="ticker-content">
@@ -38,12 +38,12 @@
 
             <!-- What you get -->
             <div class="feature-pills">
-                <span class="pill">Daily theme &amp; uplift</span>
-                <span class="pill">Planetary positions</span>
-                <span class="pill">Nakshatra reading</span>
-                <span class="pill">Dasha timeline</span>
-                <span class="pill">What this day asks of you</span>
-                <span class="pill">Calendar intelligence</span>
+                <span class="pill">Daily theme <span class="pill-ex">· Breaking New Ground</span></span>
+                <span class="pill">Dasha <span class="pill-ex">· Venus MD · Saturn Bhukti</span></span>
+                <span class="pill">Nakshatra <span class="pill-ex">· Shravana</span></span>
+                <span class="pill">Today's directive <span class="pill-ex">· 3 actions to take</span></span>
+                <span class="pill">Morning Brief <span class="pill-ex">· Personal Day 9</span></span>
+                <span class="pill">Calendar alerts <span class="pill-ex">· risk-scored</span></span>
             </div>
 
             <!-- Form -->
@@ -55,7 +55,23 @@
 
                 <div class="field-wrap">
                     <label class="field-label">Date of birth</label>
-                    <input type="date" id="date" value="1990-01-01" onchange="quickUnlock()">
+                    <div class="dob-triple">
+                        <div class="dob-part-wrap">
+                            <input type="text" id="dobDD" class="dob-part" placeholder="DD" inputmode="numeric" maxlength="2" autocomplete="off">
+                            <span class="dob-part-label">Day</span>
+                        </div>
+                        <span class="dob-sep">/</span>
+                        <div class="dob-part-wrap">
+                            <input type="text" id="dobMM" class="dob-part" placeholder="MM" inputmode="numeric" maxlength="2" autocomplete="off">
+                            <span class="dob-part-label">Month</span>
+                        </div>
+                        <span class="dob-sep">/</span>
+                        <div class="dob-part-wrap">
+                            <input type="text" id="dobYYYY" class="dob-part dob-year" placeholder="YYYY" inputmode="numeric" maxlength="4" autocomplete="off">
+                            <span class="dob-part-label">Year</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="date">
                 </div>
 
                 <!-- Hidden until DOB entered -->
@@ -63,8 +79,8 @@
                     <div class="field-wrap">
                         <label class="field-label">Gender</label>
                         <div class="gender-toggle">
-                            <button type="button" class="gender-btn active" id="genderMale" onclick="setGender("Male")">Male</button>
-                            <button type="button" class="gender-btn" id="genderFemale" onclick="setGender("Female")">Female</button>
+                            <button type="button" class="gender-btn active" id="genderMale" onclick="setGender('Male')">Male</button>
+                            <button type="button" class="gender-btn" id="genderFemale" onclick="setGender('Female')">Female</button>
                         </div>
                         <input type="hidden" id="gender" value="Male">
                     </div>
@@ -184,11 +200,12 @@
                     Calendar
                 </span>
                 <div id="authLinks" class="auth-links">
-                    <a href="/auth/google/login" id="headerGoogleLink" class="auth-btn-minimal">Connect Google</a>
-                    <!-- Apple auth placeholder — not production-ready -->
-                    <!-- <a href="/auth/apple/login" id="headerAppleLink" class="auth-btn-minimal">Connect Apple</a> -->
+                    <a href="/auth/google/login" id="headerGoogleLink" class="auth-btn-signin">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Sign In
+                    </a>
                 </div>
-                <a href="/auth/logout" id="headerLogoutBtn" class="connect-link-sm hidden">Logout</a>
+                <a href="/auth/logout" id="headerLogoutBtn" class="auth-btn-signin hidden">Sign Out</a>
                   <button id="sessionResetBtn" class="auth-btn-minimal hidden" onclick="resetSession()">Clear Session</button>
                 <button id="editDetailsBtn" class="auth-btn-minimal" onclick="editDetails()">Edit details</button>
                 
@@ -206,9 +223,12 @@
         <!-- STRATEGIC VIEW -->
         <div id="strategicView" class="view-panel">
             <div class="panel-inner">
+            <div style="text-align:right;margin-bottom:8px">
+                <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
+            </div>
 
                 <div class="hero-card">
-                    <div class="hero-card-label">Today's theme</div>
+                    <div class="hero-card-label">Today's theme <span style="font-weight:400;opacity:0.6;text-transform:none;letter-spacing:0;font-size:10px">· current sky, same date for everyone</span></div>
                     <div id="dailyTheme" class="hero-card-title">—</div>
                     <div id="energySignature" class="hero-card-sign">—</div>
                     <p id="upliftNarrative" class="hero-card-body"></p>
@@ -224,7 +244,21 @@
                     </div>
                 </div>
 
-                
+                <!-- High-Stakes Calendar Alert Banner -->
+                <div id="highStakesBanner" class="hidden">
+                    <div class="alert-banner high-risk-bg" style="border-radius:12px; border:1px solid #fecaca; margin-bottom:0">
+                        <span class="banner-icon">⚡</span>
+                        <div class="banner-content">
+                            <div style="font-weight:700; font-size:14px; margin-bottom:4px" id="stakeBannerEvent">—</div>
+                            <div style="font-size:12px; opacity:0.8" id="stakeBannerReason">—</div>
+                        </div>
+                        <div style="text-align:right; min-width:120px">
+                            <div class="banner-action">High-Stakes</div>
+                            <div style="font-size:11px; margin-top:4px" id="stakeBannerAction">—</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- LUCKY WINDOWS (v2) -->
                 <div id="luckyWindowsSection" class="hidden">
                     <div class="section-label">Weekly Strategic Map (7-Day Scoped Intelligence)</div>
@@ -239,21 +273,21 @@
                         </div>
                     </div>
                 </div>
-\n\n                
-                <!-- REMEDIES & PROGRESS (v2) -->
-                <div id="remediesSection" class="hidden">
-                    <div class="section-label">Strategic Remedies & Progress Signals</div>
-                    <div id="remediesGrid" class="remedies-grid">
-                        <!-- JS Injected Remedies -->
-                    </div>
-                </div>
-\n\n                <!-- Morning Brief -->
+
+                <!-- Morning Brief -->
                 <div id="morningBriefSection" class="hidden">
                     <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
                         Morning Brief
-                        <span class="cal-link" onclick="window.open("/api/calendar/feed")" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">📅 Sync to Calendar</span>
+                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">Sync to Calendar</span>
                     </div>
                     <div class="card brief-card" id="morningBriefCard"></div>
+                </div>
+
+                <!-- Business Timing Advisor -->
+                <div id="timingAdvisorSection" class="hidden">
+                    <div class="section-label">Business Timing Advisor</div>
+                    <div class="card" id="timingOverviewCard"></div>
+                    <div id="timingActionsGrid" class="timing-grid"></div>
                 </div>
 
                 <div class="two-col">
@@ -288,13 +322,23 @@
                     <div id="alertList"></div>
                 </div>
 
-                
+                <!-- LUCKY WINDOWS (v2) -->
+                <div id="luckyWindowsSection" class="hidden">
+                    <div class="section-label">Weekly Strategic Map (7-Day Scoped Intelligence)</div>
+                    <div class="card lucky-card">
+                        <div id="luckyWindowsGrid" class="lucky-grid"></div>
+                        <div class="lucky-legend">
+                            <span class="leg-item"><span class="dot peak"></span> Peak Momentum</span>
+                            <span class="leg-item"><span class="dot good"></span> Favorable</span>
+                            <span class="leg-item"><span class="dot neut"></span> Neutral</span>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Business Timing Advisor -->
-                <div id="timingAdvisorSection" class="hidden">
-                    <div class="section-label">Business Timing Advisor</div>
-                    <div class="card" id="timingOverviewCard"></div>
-                    <div id="timingActionsGrid" class="timing-grid"></div>
+                <!-- REMEDIES & PROGRESS (v2) -->
+                <div id="remediesSection" class="hidden">
+                    <div class="section-label">Strategic Remedies & Progress Signals</div>
+                    <div id="remediesGrid" class="remedies-grid"></div>
                 </div>
 
             </div>
@@ -303,11 +347,14 @@
     <!-- TECHNICAL VIEW -->
     <div id="technicalView" class="view-panel hidden">
         <div class="panel-inner tech-layout">
+        <div style="text-align:right;margin-bottom:8px">
+            <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
+        </div>
 
             <div class="tech-left">
                 <div class="card">
                     <div class="card-label">Birth Chart · Kundali</div>
-                    <div class="card-hint">Tap a sign with planets to read it</div>
+                    <div class="card-hint">This is a map of where every planet was in the sky at the exact moment you were born. Each box is a zodiac sign; planets inside it show where their energy was concentrated for you. Tap a sign to read it.</div>
                     <div id="kundaliChart"></div>
                     <div class="kundali-legend">
                         <span>Su = Sun</span><span>Mo = Moon</span><span>Ma = Mars</span>
@@ -331,8 +378,8 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-label">Dasha Timeline</div>
-                    <div class="card-hint">Your life unfolds in planetary chapters (Maha-Dasha), each with a ruling planet and theme. Tap to reveal sub-periods (Bhuktis) within each chapter.</div>
+                    <div class="card-label">Dasha Timeline — Your Life Chapters</div>
+                    <div class="card-hint">Vedic astrology divides your life into planetary chapters called Maha-Dashas (major periods) — each lasting 6–20 years with a specific ruling planet and theme. Inside each chapter are sub-periods (Bhuktis/Antardashas) that tune the energy further. You are always in one chapter and one sub-chapter simultaneously. Tap a chapter to expand it.</div>
                     <div id="dashaTimeline"></div>
                 </div>
             </div>
@@ -345,6 +392,7 @@
             <!-- Yogas -->
             <div class="adv-block">
                 <div class="adv-block-label">Active Yogas</div>
+                <div class="adv-block-hint">A Yoga is a rare planetary combination in your birth chart that gives you a specific edge — like a natural talent, a stroke of luck in a particular area, or a recurring life theme. These are yours for life.</div>
                 <div id="yogaCards" class="yoga-grid"></div>
             </div>
 
@@ -352,10 +400,12 @@
             <div class="adv-duo-row">
                 <div class="card adv-condition-card">
                     <div class="card-label">Sade Sati</div>
+                    <div class="card-hint">A 7.5-year Saturn transit over your Moon sign — a period of pressure, restructuring, and ultimately growth. Not a curse; a crucible.</div>
                     <div id="sadeSatiCard"></div>
                 </div>
                 <div class="card adv-condition-card">
                     <div class="card-label">Mangal Dosha</div>
+                    <div class="card-hint">Mars placed in certain houses creates extra intensity in relationships and drive. When channelled, it's a force multiplier.</div>
                     <div id="mangalDoshaCard"></div>
                 </div>
             </div>
@@ -363,18 +413,20 @@
             <!-- Ashtakavarga -->
             <div class="adv-block">
                 <div class="adv-block-label">Sarvashtakavarga — House Strength</div>
-                <div class="adv-block-hint">Each of the 12 houses is scored 0–8 based on planetary strength flowing through it. 6+ = Strong · 4–5 = Moderate · 0–3 = Weak</div>
+                <div class="adv-block-hint">Your life is divided into 12 houses (career, relationships, health, wealth…). Each house gets a score 0–8 based on how many planets support it. <strong>6+ = Strong</strong> · 4–5 = Moderate · 0–3 = Weak. Low scores are normal — most people have only 2–3 strong houses. Invest your energy in your strong ones.</div>
                 <div id="ashtakavargaGrid" class="ashtak-grid"></div>
             </div>
 
             <!-- Divisional Charts row -->
             <div class="adv-duo-row">
                 <div class="card adv-condition-card">
-                    <div class="card-label">D-9 · Navamsa</div>
+                    <div class="card-label">D-9 · Navamsa <span class="card-tag-hint">Marriage &amp; Dharma</span></div>
+                    <div class="card-hint">A deeper layer of your chart revealing your soul's purpose and how your partnerships will evolve after your 30s.</div>
                     <div id="navamsaCard"></div>
                 </div>
                 <div class="card adv-condition-card">
-                    <div class="card-label">D-10 · Dasamsa</div>
+                    <div class="card-label">D-10 · Dasamsa <span class="card-tag-hint">Career &amp; Public Life</span></div>
+                    <div class="card-hint">Shows the trajectory of your professional life — which fields suit you and how your career is likely to evolve.</div>
                     <div id="dasamsaCard"></div>
                 </div>
             </div>
@@ -382,6 +434,7 @@
             <!-- Varshaphal -->
             <div class="adv-block">
                 <div class="adv-block-label">Varshaphal · Solar Return</div>
+                <div class="adv-block-hint">Every year on your birthday, the Sun returns to its exact birth position — resetting the annual clock. This chart shows the planetary setup for your current year and what theme it carries.</div>
                 <div class="card" id="varshaphalCard"></div>
             </div>
 
@@ -392,6 +445,9 @@
     <!-- NUMEROLOGY VIEW -->
     <div id="numerologyView" class="view-panel hidden">
         <div class="panel-inner">
+            <div style="text-align:right;margin-bottom:8px">
+                <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
+            </div>
 
             <!-- Loading state -->
             <div id="jyLoadingState" class="jy-loading hidden">Computing your numerology profile…</div>
@@ -419,8 +475,9 @@
                         <div class="jy-num-value" id="jyBhagyank">—</div>
                     </div>
                     <div class="jy-num-card">
-                        <div class="jy-num-label">Gift Number <span class="jy-num-hint">unreduced</span></div>
+                        <div class="jy-num-label">Gift Number</div>
                         <div class="jy-num-value" id="jyGift">—</div>
+                        <div class="jy-num-sub">Sum of all name letters before reduction. Master numbers (11, 22, 33) kept as-is.</div>
                     </div>
                     <div class="jy-num-card">
                         <div class="jy-num-label">KUA Number</div>
@@ -446,6 +503,7 @@
                             </tbody>
                         </table>
                         <div class="jy-missing-line">Missing: <span id="jyMissingNums">—</span></div>
+                        <div class="jy-loshu-legend">× = times digit appears in date of birth · shaded = absent</div>
                     </div>
 
                     <!-- DC Profile -->
@@ -493,6 +551,7 @@
                         <button class="jy-load-btn" onclick="loadForecast(-1)" style="padding:4px 12px;font-size:12px">‹ Prev</button>
                         <span id="forecastYearLabel" style="font-size:14px;font-weight:600;color:#635bff"></span>
                         <button class="jy-load-btn" onclick="loadForecast(1)" style="padding:4px 12px;font-size:12px">Next ›</button>
+                        <button class="jy-load-btn" onclick="window.print()" style="padding:4px 12px;font-size:12px" title="Print / Save as PDF">⬇ PDF</button>
                     </span>
                 </div>
                 <div id="forecastYearCard" style="margin-bottom:16px"></div>
@@ -502,10 +561,17 @@
 
             <!-- Two-Person Compatibility -->
             <div id="compatSection" style="margin-top:32px">
-                <div class="jy-section-heading">Two-Person Compatibility</div>
+                <div class="jy-section-heading">People Intelligence</div>
                 <div class="compat-selector">
-                    <select id="compatPersonA" class="jy-select"></select>
-                    <select id="compatPersonB" class="jy-select"></select>
+                    <div class="compat-search-wrap">
+                        <input type="search" placeholder="Filter person A…" oninput="filterCompat('A', this.value)" class="compat-search-input">
+                        <select id="compatPersonA" class="jy-select"></select>
+                    </div>
+                    <div class="compat-vs-label">×</div>
+                    <div class="compat-search-wrap">
+                        <input type="search" placeholder="Filter person B…" oninput="filterCompat('B', this.value)" class="compat-search-input">
+                        <select id="compatPersonB" class="jy-select"></select>
+                    </div>
                     <button class="jy-load-btn" onclick="loadCompatibility()">Compare</button>
                 </div>
                 <div id="compatResult" class="hidden"></div>

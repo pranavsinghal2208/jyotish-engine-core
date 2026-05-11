@@ -77,6 +77,25 @@ WEEKDAY_Q = {0: 4, 1: 2, 2: 5, 3: 5, 4: 4, 5: 2, 6: 3}
 WEEKDAY_NAME = {0: "Monday", 1: "Tuesday", 2: "Wednesday",
                 3: "Thursday", 4: "Friday", 5: "Saturday", 6: "Sunday"}
 
+# Each planet rules a weekday; dasha lord's + nakshatra lord's day each get +2 bonus
+PLANET_DAY = {
+    "Sun": 6, "Moon": 0, "Mars": 1, "Mercury": 2,
+    "Jupiter": 3, "Venus": 4, "Saturn": 5, "Rahu": 5, "Ketu": 1,
+}
+
+# Nakshatra → ruling planet (Vimshottari lords)
+NAK_LORD = {
+    "Ashwini": "Ketu", "Bharani": "Venus", "Krittika": "Sun",
+    "Rohini": "Moon", "Mrigashira": "Mars", "Ardra": "Rahu",
+    "Punarvasu": "Jupiter", "Pushya": "Saturn", "Ashlesha": "Mercury",
+    "Magha": "Ketu", "Purva Phalguni": "Venus", "Uttara Phalguni": "Sun",
+    "Hasta": "Moon", "Chitra": "Mars", "Swati": "Rahu",
+    "Vishakha": "Jupiter", "Anuradha": "Saturn", "Jyeshtha": "Mercury",
+    "Mula": "Ketu", "Purva Ashadha": "Venus", "Uttara Ashadha": "Sun",
+    "Shravana": "Moon", "Dhanishtha": "Mars", "Shatabhisha": "Rahu",
+    "Purva Bhadrapada": "Jupiter", "Uttara Bhadrapada": "Saturn", "Revati": "Mercury",
+}
+
 
 def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
                   nakshatra: str) -> Dict[str, Any]:
@@ -154,13 +173,19 @@ def get_timing_advice(
     ]
     actions.sort(key=lambda x: x["score"], reverse=True)
 
-    # Best day this week per weekday quality
+    # Best day this week: base quality + dasha lord day bonus + nakshatra lord day bonus
     today = datetime.utcnow()
+    lord_day = PLANET_DAY.get(md_lord, -1)
+    nak_lord = NAK_LORD.get(nakshatra, "")
+    nak_day  = PLANET_DAY.get(nak_lord, -1)
     week_days = []
     for i in range(7):
         d = today + timedelta(days=i)
-        q = WEEKDAY_Q[d.weekday()]
-        week_days.append({"date": d.strftime("%Y-%m-%d"), "day": WEEKDAY_NAME[d.weekday()], "quality": q})
+        wd = d.weekday()
+        q = WEEKDAY_Q[wd]
+        if wd == lord_day: q += 2
+        if wd == nak_day:  q += 2
+        week_days.append({"date": d.strftime("%Y-%m-%d"), "day": WEEKDAY_NAME[wd], "quality": q})
     best_day = max(week_days, key=lambda x: x["quality"])
 
     # Overall window

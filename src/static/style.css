@@ -100,6 +100,10 @@ body {
     border-radius: 20px;
     padding: 5px 12px;
 }
+.pill-ex {
+    color: var(--muted);
+    font-weight: 400;
+}
 
 /* Input stack */
 .input-stack {
@@ -155,6 +159,56 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+}
+
+/* ── DOB triple input ── */
+.dob-triple {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+.dob-sep {
+    font-size: 22px;
+    color: var(--muted);
+    line-height: 48px;
+    user-select: none;
+}
+.dob-part-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.dob-part {
+    width: 64px;
+    padding: 12px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    -moz-appearance: textfield;
+}
+.dob-part::-webkit-inner-spin-button,
+.dob-part::-webkit-outer-spin-button { -webkit-appearance: none; }
+.dob-part:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200, 168, 106, 0.20);
+}
+.dob-year {
+    width: 90px;
+}
+.dob-part-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .card-hint {
@@ -511,8 +565,52 @@ body {
     text-decoration: none;
     transition: color 0.2s;
 }
-
 .connect-link-sm:hover { color: var(--text); }
+
+.auth-btn-signin {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.auth-btn-signin:hover { opacity: 0.85; }
+
+.pdf-btn-inline {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+.pdf-btn-inline:hover { color: var(--text); border-color: var(--text); }
+
+.jy-num-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+}
+.jy-num-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
 
 /* ── VIEW PANELS ── */
 .view-panel { flex: 1; }
@@ -541,6 +639,18 @@ body {
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 16px;
+}
+.card-tag-hint {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--accent);
+    background: rgba(99, 91, 255, 0.08);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
 /* ── HERO CARD ── */
@@ -1230,7 +1340,42 @@ body {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    align-items: flex-end;
     margin-bottom: 20px;
+}
+.compat-search-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 160px;
+}
+.compat-search-input {
+    font-family: var(--font);
+    font-size: 12px;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+}
+.compat-search-input:focus { border-color: var(--accent); }
+.compat-vs-label {
+    font-size: 18px;
+    color: var(--muted);
+    padding-bottom: 4px;
+    align-self: flex-end;
+}
+.resonance-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(99,91,255,0.10);
+    color: var(--accent);
+    letter-spacing: 0.02em;
 }
 .compat-result-card {
     background: var(--surface);
@@ -1404,6 +1549,15 @@ body {
     border-top: 1px solid var(--border);
 }
 .brief-action strong { color: var(--text); }
+.brief-reconcile {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(99, 91, 255, 0.06);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+}
 
 /* ─── Business Timing Advisor (#13) ──────────────────────── */
 .timing-overview-row {
@@ -1912,6 +2066,12 @@ body {
 .jy-compat-badge.compat-high { background: #dcfce7; color: #15803d; }
 .jy-compat-badge.compat-mid  { background: #fef9c3; color: #92400e; }
 .jy-compat-badge.compat-low  { background: #fee2e2; color: #b91c1c; }
+.jy-loshu-legend {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-style: italic;
+}
 
 /* ── Gift number "unreduced" hint chip ──────────────────────── */
 .jy-num-hint {
@@ -2121,4 +2281,17 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     border-radius: 4px;
     margin-left: 8px;
     vertical-align: middle;
+}
+
+/* ── PRINT / PDF EXPORT ── */
+@media print {
+    body { background: #fff; }
+    .pulse-ticker, .landing-screen, .results-header,
+    #strategicView, #technicalView,
+    .feedback-widget, #shareToast, .welcome-toast,
+    .jy-section-heading button, .jy-section-heading .jy-load-btn { display: none !important; }
+    #numerologyView { display: block !important; }
+    #forecastSection { display: block !important; }
+    .view-panel { display: block !important; }
+    .panel-inner { padding: 0; }
 }

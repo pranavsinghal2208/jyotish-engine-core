@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -103,13 +104,22 @@ async def logout():
 
 # ── Google Auth ──
 
+def _get_redirect_uri(request: Request) -> str:
+    """Return redirect URI, preferring env override to avoid 127.0.0.1 vs localhost mismatch."""
+    override = os.getenv("REDIRECT_URI")
+    if override:
+        return override
+    uri = str(request.url_for("google_callback"))
+    # Normalise to localhost so it matches what is registered in Google Cloud Console
+    uri = uri.replace("127.0.0.1", "localhost")
+    if not uri.startswith("https") and "localhost" not in uri:
+        uri = uri.replace("http", "https")
+    return uri
+
 @app.get("/auth/google/login")
 async def google_login(request: Request):
     """Initiates Google OAuth Flow."""
-    redirect_uri = str(request.url_for("google_callback"))
-    if not redirect_uri.startswith("https") and "localhost" not in redirect_uri and "127.0.0.1" not in redirect_uri:
-        redirect_uri = redirect_uri.replace("http", "https")
-        
+    redirect_uri = _get_redirect_uri(request)
     try:
         auth_url, state = google_auth.get_login_url(redirect_uri)
         return RedirectResponse(auth_url)
@@ -123,10 +133,8 @@ async def google_callback(request: Request, code: str = None, error: str = None,
         raise HTTPException(status_code=400, detail=f"Google Auth Error: {error}")
     if not code:
         raise HTTPException(status_code=400, detail="No code provided by Google.")
-    
-    redirect_uri = str(request.url_for("google_callback"))
-    if not redirect_uri.startswith("https") and "localhost" not in redirect_uri and "127.0.0.1" not in redirect_uri:
-        redirect_uri = redirect_uri.replace("http", "https")
+
+    redirect_uri = _get_redirect_uri(request)
 
     try:
         creds_dict = google_auth.exchange_code(code, redirect_uri)
@@ -221,14 +229,20 @@ async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: 
         now_jd = engine.get_julian_day(now_utc)
         current_planets = engine.get_planetary_positions(now_jd)
         
-        # 4. Standard Insights (natal chart + today's transit layer)
-        insights = generate_coach_insights(planets, houses["Lagna"], current_planets)
-        
-        # 5. Nakshatra (birth Moon nakshatra)
+        # 4. Dasha calculation (needed for personalized directive)
+        dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
+        date_now = now_utc.strftime("%Y-%m-%d")
+        active_md = next((d for d in dashas if d["start"] <= date_now <= d["end"]), dashas[0])
+        active_ad = next((b for b in active_md["bhuktis"] if b["start"] <= date_now <= b["end"]), active_md["bhuktis"][0])
+
+        # 5. Standard Insights (natal chart + today's transit layer + dasha context)
+        insights = generate_coach_insights(planets, houses["Lagna"], current_planets,
+                                           md_lord=active_md["lord"], ad_lord=active_ad["lord"])
+
+        # 6. Nakshatra (birth Moon nakshatra)
         nakshatra = engine.get_nakshatra(planets["Moon"]["longitude"])
 
-        # 6. Business ROI Pulse
-        dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
+        # 7. Business ROI Pulse
         business_pulse = generate_business_pulse(dashas, now_utc)
         
         # 6. Cosmic OS Intelligence (Persistent Calendar Integration)
@@ -248,13 +262,13 @@ async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: 
                     gcal = GoogleCalendarManager(creds_dict)
                     raw_events = gcal.get_upcoming_events(max_results=5)
                     analyzed_events = [gcal.analyze_event_priority(e) for e in raw_events]
-                    
-                    active_md_lord = dashas[0]["lord"] # Simplistic: first dasha in list is active
-                    # Better: find the active one
-                    date_now = now_utc.strftime("%Y-%m-%d")
-                    active_md = next((d for d in dashas if d["start"] <= date_now <= d["end"]), dashas[0])
-                    
                     cosmic_schedule = get_cosmic_schedule_advice(analyzed_events, current_planets, active_md["lord"])
+
+                    # Persist refreshed token if auto-refresh happened
+                    new_token = gcal.get_refreshed_token()
+                    if new_token:
+                        db_creds.access_token = new_token
+                        db.commit()
                 except Exception as e:
                     print(f"Calendar Integration Error: {e}")
         
@@ -571,7 +585,7 @@ async def timing_advisor(user: User = Depends(get_current_user)):
         pulse = generate_business_pulse(dashas, datetime.utcnow())
         active_dasha = pulse.get("active_dasha", "Sun-Sun")
 
-        advice = get_timing_advice(active_dasha, current_planets, nakshatra.get("nakshatra", ""))
+        advice = get_timing_advice(active_dasha, current_planets, nakshatra.get("name", ""))
         return advice
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -651,6 +665,46 @@ async def get_yearly_forecast(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.get("/api/forecast/yearly")
+async def get_yearly_forecast_full(
+    year: int = Query(None, description="Forecast year (defaults to current IST year)"),
+    user: User = Depends(get_current_user),
+):
+    """Yearly forecast combining numerology Personal Year with month-by-month Dasha overlay."""
+    if not user.birth_date:
+        raise HTTPException(status_code=400, detail="No saved chart. Generate your chart first.")
+    try:
+        if year is None:
+            year = (datetime.utcnow() + timedelta(hours=5, minutes=30)).year
+
+        dob_formatted = datetime.strptime(user.birth_date, "%Y-%m-%d").strftime("%d-%m-%Y")
+        forecast = numerology_engine.get_yearly_forecast(dob_formatted, year)
+
+        # Dasha overlay — compute active MD/AD lord for the 15th of each month
+        local_dt = datetime.strptime(f"{user.birth_date} {user.birth_time}", "%Y-%m-%d %H:%M")
+        utc_dt = local_dt - timedelta(hours=user.tz_offset or 5.5)
+        jd = engine.get_julian_day(utc_dt)
+        planets = engine.get_planetary_positions(jd)
+        dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
+
+        dasha_overlay = []
+        for m in forecast["months"]:
+            probe = datetime(year, m["month"], 15).strftime("%Y-%m-%d")
+            active_md = next((d for d in dashas if d["start"] <= probe <= d["end"]), dashas[0])
+            active_ad = next((b for b in active_md["bhuktis"] if b["start"] <= probe <= b["end"]), active_md["bhuktis"][0])
+            dasha_overlay.append({
+                "month": m["month"],
+                "md_lord": active_md["lord"],
+                "ad_lord": active_ad["lord"],
+                "ad_end": active_ad["end"],
+            })
+
+        forecast["dasha_overlay"] = dasha_overlay
+        return forecast
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.get("/api/chart/muhurta")
 async def get_muhurta(days: int = Query(7, ge=1, le=30)):
     """Return auspicious windows for the next N days (IST)."""
@@ -659,6 +713,15 @@ async def get_muhurta(days: int = Query(7, ge=1, le=30)):
         return {"muhurta_windows": windows, "days_ahead": days}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+from fastapi.responses import FileResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_404_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404 and "text/html" in request.headers.get("accept", ""):
+        return FileResponse("src/static/index.html")
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 # Mount static files last — must come after all API route definitions
 # because app.mount("/") is a catch-all that intercepts anything not yet matched.

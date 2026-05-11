@@ -97,7 +97,7 @@ async function checkUserProfile() {
         if (d.status === "success") {
             // Existing user: Pre-fill and load chart
             document.getElementById("fullName").value = localStorage.getItem("cosmicOsName") || "";
-            document.getElementById("date").value = d.date;
+            setDobFromValue(d.date);
             quickUnlock();
             document.getElementById("time").value = d.time;
             document.getElementById("lat").value = d.lat;
@@ -106,12 +106,13 @@ async function checkUserProfile() {
             document.getElementById("citySearch").value = d.location_name;
             
             // Auto-trigger chart for returning user
+            window._isReturnUser = true;
             generateChart();
         } else if (d.new_user) {
             // New User flow: Show welcome message
             showWelcomeToast(d.email);
-            // Pre-fill name from email if possible
-            if (d.email && !document.getElementById("fullName").value) {
+            // Pre-fill name from email only for real authenticated users
+            if (d.email && d.email !== "default@psbc.com" && !document.getElementById("fullName").value) {
                 document.getElementById("fullName").value = d.email.split("@")[0].charAt(0).toUpperCase() + d.email.split("@")[0].slice(1);
             }
         }
@@ -121,14 +122,16 @@ async function checkUserProfile() {
 }
 
 function showWelcomeToast(email) {
+    if (email === "default@psbc.com") return;
     const toast = document.createElement("div");
     toast.className = "welcome-toast";
     toast.innerHTML = `
-        <div class="welcome-header">Welcome, ${email === "default@psbc.com" ? "Traveler" : email.split("@")[0]}</div>
+        <div class="welcome-header">Welcome, ${email.split("@")[0]}</div>
         <div class="welcome-body">To calibrate your personal intelligence dashboard, we need your birth coordinates once.</div>
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.classList.add("reveal"), 500);
+    setTimeout(() => { toast.classList.remove("reveal"); setTimeout(() => toast.remove(), 400); }, 4000);
 }
 
 // ── Generate chart ────────────────────────────────────────
@@ -192,6 +195,18 @@ function populateStrategicView(data) {
         document.getElementById('nakshatraName').textContent = nakshatra.name;
         document.getElementById('nakshatraMeta').textContent = `Lord: ${nakshatra.lord} · Pada ${nakshatra.pada}`;
         document.getElementById('nakshatraStrip').classList.remove('hidden');
+        // Inline description
+        const _nakInfo = window.NAK_DESC ? window.NAK_DESC[nakshatra.name] : null;
+        let nakDescEl = document.getElementById('nakshatraDesc');
+        if (_nakInfo) {
+            if (!nakDescEl) {
+                nakDescEl = document.createElement('p');
+                nakDescEl.id = 'nakshatraDesc';
+                nakDescEl.style.cssText = 'margin:8px 0 0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5';
+                document.getElementById('nakshatraStrip').insertAdjacentElement('afterend', nakDescEl);
+            }
+            nakDescEl.textContent = _nakInfo.desc;
+        }
     }
 
     // Panchanga (birth Tithi + Yoga from natal Sun/Moon)
@@ -240,7 +255,9 @@ function populateStrategicView(data) {
     // Calendar alerts
     const section  = document.getElementById('cosmicScheduleSection');
     const alertList = document.getElementById('alertList');
+    const banner = document.getElementById('highStakesBanner');
     alertList.innerHTML = '';
+
     if (cosmic_schedule && cosmic_schedule.length > 0) {
         section.classList.remove('hidden');
         cosmic_schedule.forEach(a => {
@@ -254,8 +271,20 @@ function populateStrategicView(data) {
             `;
             alertList.appendChild(div);
         });
+
+        // High-stakes banner at top of strategic view
+        const highAlert = cosmic_schedule.find(a => a.risk === 'High');
+        if (highAlert) {
+            document.getElementById('stakeBannerEvent').textContent = highAlert.event;
+            document.getElementById('stakeBannerReason').textContent = highAlert.reason;
+            document.getElementById('stakeBannerAction').textContent = '→ ' + highAlert.action;
+            banner.classList.remove('hidden');
+        } else {
+            banner.classList.add('hidden');
+        }
     } else {
         section.classList.add('hidden');
+        banner.classList.add('hidden');
     }
 
     // Morning Brief + Timing Advisor (fetched async after chart load)
@@ -288,12 +317,21 @@ async function loadMorningBrief() {
         const pd = d.personal_day;
         const highlightHtml = (d.transit_highlights || [])
             .map(h => `<div class="brief-highlight">${h}</div>`).join('');
+        const windowPositive = ['Optimal', 'Good', 'Strong'].some(w => d.overall_window?.includes(w));
+        const pdPositive = [1, 3, 5, 8].includes(pd.number);
+        const reconcileNote = (windowPositive !== pdPositive)
+            ? `<div class="brief-reconcile">Numerology (Personal Day ${pd.number}: ${pd.theme}) and Astrology (${d.overall_window}) point in different directions — lean into whichever resonates more today.</div>`
+            : '';
+        const pdIntrospective = [7, 9].includes(pd.number);
+        const actionCaveat = d.top_action?.label && pdIntrospective
+            ? ` <span style="color:var(--muted);font-size:12px">(Personal Day ${pd.number}: ${pd.theme} — favour reflection over new moves)</span>`
+            : '';
         briefCard.innerHTML = `
             <div class="brief-top-row">
                 <div class="brief-date">${d.day_name}, ${d.date}</div>
                 <div class="brief-window-badge">${d.overall_window}</div>
             </div>
-            <div class="brief-desc">${d.overall_description}</div>
+            <div class="brief-desc">${pd.focus || d.overall_description}</div>
             <div class="brief-cycles-row">
                 <div class="brief-cycle">
                     <div class="brief-cycle-label">Personal Day</div>
@@ -312,8 +350,13 @@ async function loadMorningBrief() {
                 </div>
             </div>
             ${highlightHtml ? `<div class="brief-highlights">${highlightHtml}</div>` : ''}
-            ${d.top_action?.label ? `<div class="brief-action">Top action today: <strong>${d.top_action.label}</strong> — ${d.top_action.window}</div>` : ''}`;
+            ${reconcileNote}
+            ${d.top_action?.label ? `<div class="brief-action">Top action today: <strong>${d.top_action.label}</strong> — ${d.top_action.window}${actionCaveat}</div>` : ''}`;
         briefSection.classList.remove('hidden');
+        if (window._isReturnUser) {
+            setTimeout(() => briefSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            window._isReturnUser = false;
+        }
     } catch (e) {
         console.error('Morning brief error:', e);
     }
@@ -823,7 +866,8 @@ function populateTechnicalView() {
 
         const bhuktiHtml = md.bhuktis.map(ad => {
             const isActiveAD = isActiveMD && ad.lord === activeAD;
-            const shortDate  = ad.start.slice(2, 7).replace('-', '/');
+            const _adDate    = new Date(ad.start + 'T00:00:00');
+            const shortDate  = _adDate.toLocaleString('en', {month: 'short'}) + " '" + ad.start.slice(2, 4);
             return `
                 <div class="bhukti-cell ${isActiveAD ? 'active-ad' : ''}"
                      onclick="event.stopPropagation(); interpretDasha('${md.lord}','${ad.lord}','${ad.start}','${ad.end}',${ad.duration})">
@@ -878,6 +922,10 @@ function populateTechnicalView() {
     });
 
     populateAdvancedAnalysis(currentChartData);
+
+    // Auto-select Sun so interpretation panel is never blank
+    const sunInfo = planets['Sun'];
+    if (sunInfo) interpretPlanet('Sun', sunInfo);
 }
 
 // ─── Advanced Analysis Population ────────────────────────────────────────────
@@ -970,11 +1018,26 @@ function populateAdvancedAnalysis(data) {
     // Varshaphal
     const vpEl = document.getElementById('varshaphalCard');
     if (vpEl && varshaphal) {
+        const _VARSHA_THEMES = {
+            'Aries':       'Bold initiative and physical vitality define the year — act first, reflect later.',
+            'Taurus':      'Material consolidation and steady progress — wealth-building and patience are rewarded.',
+            'Gemini':      'A communicative, multi-directional year — networking and adaptability open the most doors.',
+            'Cancer':      'Home, family, and emotional foundations take centre stage — nurture before expanding.',
+            'Leo':         'Visibility and leadership — this is a year to be seen, to own your authority.',
+            'Virgo':       'Precision and service — improvements to systems, health, and craft yield the highest return.',
+            'Libra':       'Partnerships and balance — joint ventures and negotiations define the year\'s shape.',
+            'Scorpio':     'Depth and transformation — hidden assets surface; what is released makes room for power.',
+            'Sagittarius': 'Expansion and long-range vision — travel, learning, and ambitious bets pay off.',
+            'Capricorn':   'Discipline and ambition — structural achievements are possible but require sustained effort.',
+            'Aquarius':    'Innovation and community — unconventional moves and collective goals advance fastest.',
+            'Pisces':      'Intuition and spiritual deepening — trust inner signals over external noise this year.'
+        };
         const vpPlanets = varshaphal.planets || {};
         const planetRows = Object.entries(vpPlanets).map(([p, pd]) =>
             `<div class="varsha-planet-row"><span>${p}</span><span class="varsha-planet-sign">${pd.sign}</span></div>`
         ).join('');
         const lagnaSign = varshaphal.lagna?.sign || varshaphal.lagna || '—';
+        const vpTheme = _VARSHA_THEMES[lagnaSign] || varshaphal.interpretation || 'Solar Return Chart';
         vpEl.innerHTML = `
             <div class="varsha-grid">
                 <div class="varsha-cell"><div class="varsha-cell-label">Return Date</div><div class="varsha-cell-value" style="font-size:14px">${varshaphal.return_date || '—'}</div></div>
@@ -983,7 +1046,7 @@ function populateAdvancedAnalysis(data) {
                 <div class="varsha-cell"><div class="varsha-cell-label">Year</div><div class="varsha-cell-value">${varshaphal.year || '—'}</div></div>
             </div>
             <div class="varsha-planets">
-                <div class="varsha-section-title">${varshaphal.interpretation || 'Solar Return Chart'}</div>
+                <div class="varsha-section-title">${vpTheme}</div>
                 ${planetRows}
             </div>`;
     }
@@ -1146,12 +1209,86 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     initHeroSearch();
     initLandingReveal();
+    initDobInputs();
     initShareBtn();
 
     document.getElementById('generateBtn').addEventListener('click', generateChart);
 });
 
 // ── Quick Unlock (Friction Reduction) ─────────────────────
+function setGender(val) {
+    document.getElementById('gender').value = val;
+    document.getElementById('genderMale').classList.toggle('active', val === 'Male');
+    document.getElementById('genderFemale').classList.toggle('active', val === 'Female');
+}
+
+// ── DOB triple-input ──────────────────────────────────────
+function setDobFromValue(isoDate) {
+    // isoDate: "YYYY-MM-DD"
+    if (!isoDate || isoDate.length < 10) return;
+    const [y, m, d] = isoDate.split('-');
+    const ddEl   = document.getElementById('dobDD');
+    const mmEl   = document.getElementById('dobMM');
+    const yyyyEl = document.getElementById('dobYYYY');
+    if (ddEl)   ddEl.value   = d;
+    if (mmEl)   mmEl.value   = m;
+    if (yyyyEl) yyyyEl.value = y;
+    document.getElementById('date').value = isoDate;
+}
+
+function initDobInputs() {
+    const ddEl   = document.getElementById('dobDD');
+    const mmEl   = document.getElementById('dobMM');
+    const yyyyEl = document.getElementById('dobYYYY');
+    const hidden = document.getElementById('date');
+    if (!ddEl || !mmEl || !yyyyEl) return;
+
+    function tryCommit() {
+        const dd   = ddEl.value.padStart(2, '0');
+        const mm   = mmEl.value.padStart(2, '0');
+        const yyyy = yyyyEl.value;
+        const d = +ddEl.value, m = +mmEl.value, y = +yyyyEl.value;
+        if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2025) {
+            const iso = `${yyyy}-${mm}-${dd}`;
+            hidden.value = iso;
+            // Fire the landing reveal listener
+            hidden.dispatchEvent(new Event('change'));
+            quickUnlock();
+        }
+    }
+
+    function handleInput(el, nextEl, maxLen) {
+        return function(e) {
+            // Only allow digits
+            el.value = el.value.replace(/\D/g, '');
+            if (el.value.length >= maxLen) {
+                if (nextEl) nextEl.focus();
+                tryCommit();
+            }
+        };
+    }
+
+    function handleKeydown(el, prevEl) {
+        return function(e) {
+            if (e.key === 'Backspace' && el.value === '' && prevEl) {
+                e.preventDefault();
+                prevEl.focus();
+            }
+        };
+    }
+
+    ddEl.addEventListener('input',   handleInput(ddEl,   mmEl,   2));
+    mmEl.addEventListener('input',   handleInput(mmEl,   yyyyEl, 2));
+    yyyyEl.addEventListener('input', handleInput(yyyyEl, null,   4));
+
+    ddEl.addEventListener('keydown',   handleKeydown(ddEl,   null));
+    mmEl.addEventListener('keydown',   handleKeydown(mmEl,   ddEl));
+    yyyyEl.addEventListener('keydown', handleKeydown(yyyyEl, mmEl));
+
+    // Validate on blur too
+    yyyyEl.addEventListener('blur', tryCommit);
+}
+
 async function quickUnlock() {
     const date = document.getElementById("date").value;
     const name = document.getElementById("fullName").value;
@@ -1163,6 +1300,12 @@ async function quickUnlock() {
     // Show the rest of the form
     if (precisionFields) precisionFields.classList.remove("hidden");
     if (generateBtn) generateBtn.classList.remove("hidden");
+
+    // Auto-advance focus to city search
+    setTimeout(() => {
+        const citySearch = document.getElementById('citySearch');
+        if (citySearch && !citySearch.value) citySearch.focus();
+    }, 100);
 
     try {
         const res = await fetch(`/api/quick-decode?date=${date}&name=${encodeURIComponent(name)}`);

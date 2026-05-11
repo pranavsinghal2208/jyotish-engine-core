@@ -163,11 +163,9 @@ class JyotishEngine:
                 ad_lord = lords[ad_lord_idx]
                 
                 # Formula: (MD_years * AD_years) / 120
-                ad_duration_years = (durations[md_lord_idx] * durations[ad_lord_idx]) / 120
-                
-                # Adjust first AD of the first MD based on remaining balance
-                if i == 0 and j == 0:
-                    ad_duration_years = ad_duration_years * remaining_ratio
+                # For first MD, use the remaining (partial) duration so all bhuktis scale proportionally
+                effective_md_years = md_duration_years if i == 0 else durations[md_lord_idx]
+                ad_duration_years = (effective_md_years * durations[ad_lord_idx]) / 120
                 
                 ad_duration_jd = ad_duration_years * 365.25
                 ad_start = swe.revjul(current_ad_jd)

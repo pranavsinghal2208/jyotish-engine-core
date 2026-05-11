@@ -113,8 +113,30 @@ def get_retrograde_note(transit_planets: Dict[str, Any]) -> str:
     return f"{names} {verb} retrograde now — internalised energy. Use this period for reflection and refinement rather than aggressive expansion. The ground is being prepared."
 
 
+def generate_directive(md_lord: str, ad_lord: str, transit_planets: Dict[str, Any]) -> str:
+    ad_strategy = AD_STRATEGIES.get(ad_lord, "")
+    retro_note  = get_retrograde_note(transit_planets)
+    all_direct  = "All major planets are direct" in retro_note
+
+    parts = []
+    if md_lord and ad_lord and ad_strategy:
+        # Lead with the specific dasha instruction
+        parts.append(
+            f"{md_lord} Maha-Dasha · {ad_lord} Bhukti opens a specific lane: "
+            f"{ad_strategy[0].lower() + ad_strategy[1:]}"
+        )
+    # Add transit colour — only the retrograde warning if relevant, skip the generic direct note
+    if not all_direct:
+        parts.append(retro_note)
+    elif parts:
+        parts.append("All major planets are direct today — clean forward momentum.")
+
+    return " ".join(parts) if parts else retro_note
+
+
 def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any],
-                             transit_planets: Dict[str, Any] = None) -> Dict[str, Any]:
+                             transit_planets: Dict[str, Any] = None,
+                             md_lord: str = None, ad_lord: str = None) -> Dict[str, Any]:
     if transit_planets is None:
         transit_planets = natal_planets
 
@@ -144,14 +166,14 @@ def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any]
             "description": stellium_note
         })
 
-    retro_note = get_retrograde_note(transit_planets)
+    directive = generate_directive(md_lord, ad_lord, transit_planets)
 
     return {
         "daily_theme": moon_theme["theme"],
         "energy_signature": f"Moon in {transit_moon_sign} today · {moon_theme['energy']}",
         "uplift_narrative": moon_theme["daily"],
         "superpowers": superpowers,
-        "operational_pointer": retro_note,
+        "operational_pointer": directive,
         "daily_actions": DAILY_ACTIONS.get(transit_moon_sign, []),
         "natal_moon_sign": natal_moon_sign
     }

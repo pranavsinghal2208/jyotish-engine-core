@@ -1,11 +1,20 @@
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from datetime import datetime, timezone
 
 class GoogleCalendarManager:
     def __init__(self, credentials_dict):
         self.creds = Credentials.from_authorized_user_info(credentials_dict)
+        self._refreshed = False
+        if self.creds.expired and self.creds.refresh_token:
+            self.creds.refresh(Request())
+            self._refreshed = True
         self.service = build('calendar', 'v3', credentials=self.creds)
+
+    def get_refreshed_token(self):
+        """Returns the new access token if a refresh occurred, else None."""
+        return self.creds.token if self._refreshed else None
 
     def get_upcoming_events(self, max_results=10):
         """Fetches the next N events from the user's primary calendar."""

@@ -57,7 +57,7 @@ async def check_visible(page, selector):
 # ─────────────────────────────────────────────────────────────
 async def audit():
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, slow_mo=400)
+        browser = await p.chromium.launch(headless=False, slow_mo=1500)
         context = await browser.new_context(viewport={"width": 1280, "height": 800}, record_video_dir="/Users/pranavsinghal/Dev/professional/Estaa/videos/")
         await context.grant_permissions(["clipboard-read", "clipboard-write"])
         page = await context.new_page()
@@ -266,7 +266,7 @@ async def audit():
         # Dasha timeline orientation
         await scroll_to(page, "#dashaTimeline")
         await asyncio.sleep(0.8)
-        dasha_hint = await safe_text(page, "#technicalView .card-hint")
+        dasha_hint = await safe_text(page, "#technicalView .tech-right .card-hint")
         observe("ACT 5", "ok" if "chapter" in dasha_hint.lower() or "period" in dasha_hint.lower() else "warn",
                 f"Dasha orientation text: '{dasha_hint[:100]}'")
         await shot(page, "13_dasha_timeline", "Dasha Timeline — does the hint explain what this IS?")
