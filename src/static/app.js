@@ -66,14 +66,15 @@ function initHeroSearch() {
                     const div   = document.createElement('div');
                     div.className = 'city-item';
                     div.textContent = label;
-                    div.onclick = () => {
+                    div.addEventListener('mousedown', (e) => {
+                        e.preventDefault(); // prevent input blur before selection registers
                         document.getElementById('lat').value    = city.lat;
                         document.getElementById('lon').value    = city.lon;
                         citySearch.value = label;
                         cityResults.classList.add('hidden');
                         momentRow.classList.remove('hidden');
                         ctaBtn.classList.remove('hidden');
-                    };
+                    });
                     cityResults.appendChild(div);
                 });
                 cityResults.classList.remove('hidden');
@@ -143,17 +144,32 @@ async function generateChart() {
     btn.textContent = 'Computing…';
     btn.disabled    = true;
 
+    const lat = parseFloat(document.getElementById('lat').value);
+    const lon = parseFloat(document.getElementById('lon').value);
+    if (!document.getElementById('date').value || !document.getElementById('time').value) {
+        alert('Please enter your date and time of birth.');
+        btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+    }
+    if (isNaN(lat) || isNaN(lon)) {
+        alert('Please select your birth city from the dropdown list.');
+        btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+    }
+
     const payload = {
         date:             document.getElementById('date').value,
         time:             document.getElementById('time').value,
-        lat:              parseFloat(document.getElementById('lat').value),
-        lon:              parseFloat(document.getElementById('lon').value),
-        timezone_offset:  parseFloat(document.getElementById('offset').value)
+        lat,
+        lon,
+        timezone_offset:  parseFloat(document.getElementById('offset').value) || 5.5
     };
 
     try {
         const res  = await fetch('/api/chart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (!res.ok) throw new Error('Analysis failed.');
+        if (!res.ok) {
+            let errMsg = `Analysis failed (${res.status}).`;
+            try { const errBody = await res.json(); errMsg = errBody.detail || errMsg; } catch (_) {}
+            throw new Error(errMsg);
+        }
         const data = await res.json();
         currentChartData = data;
 

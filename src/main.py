@@ -16,8 +16,9 @@ from .translator import generate_coach_insights, get_cosmic_schedule_advice, gen
 from .auth.google_auth import GoogleAuthManager
 from .auth.apple_auth import AppleAuthManager
 from .integrations.gcal import GoogleCalendarManager
-from .database.session import init_db, get_db
+from .database.session import init_db, get_db, SessionLocal
 from .database.models import User, OAuthCredential, NumerologyProfile
+from .database.seed import seed_numerology_profiles_if_empty
 from .numerology import NumerologyEngine
 from .feedback import FeedbackManager
 from .analytics import AnalyticsTracker, AnalyticsDashboard
@@ -77,6 +78,13 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
 @app.on_event("startup")
 def on_startup():
     init_db()
+    db = SessionLocal()
+    try:
+        seed_numerology_profiles_if_empty(db)
+    except Exception as e:
+        print(f"[seed] Error during profile seeding: {e}")
+    finally:
+        db.close()
     registry.register("transits", get_live_transits)
     registry.register("lucky_windows", get_lucky_windows)
     registry.register("subscription", get_subscription_status)
