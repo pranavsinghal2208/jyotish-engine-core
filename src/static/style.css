@@ -2588,6 +2588,159 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .adv-block-label { border-left: 2px solid var(--gold); padding-left: 10px; }
 .card-label      { border-left: 2px solid var(--gold); padding-left: 8px; }
 
+/* ════════════════════════════════════════════════════
+   RESULTS SCREEN — DARK COSMIC THEME (v3)
+   Mirrors landing page palette throughout inner pages
+   ════════════════════════════════════════════════════ */
+
+.results-screen {
+    background: var(--cosmic-dark, #0C0A1E);
+}
+
+/* Nav bar — dark glass */
+.results-screen .results-header {
+    background: rgba(12, 10, 30, 0.90);
+    border-bottom: 1px solid rgba(200, 168, 106, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.results-screen .header-brand      { color: rgba(255,255,255,0.92); }
+.results-screen .header-descriptor { color: rgba(255,255,255,0.32); }
+.results-screen .header-name-chip  { color: rgba(200,168,106,0.80); }
+.results-screen .tab-btn           { color: rgba(255,255,255,0.42); }
+.results-screen .tab-btn:hover     { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.80); }
+.results-screen .tab-btn.active    { background: rgba(255,255,255,0.10); color: #fff; box-shadow: none; }
+.results-screen .connect-link-sm   { color: rgba(255,255,255,0.38); }
+.results-screen .connect-link-sm:hover { color: rgba(255,255,255,0.75); }
+.results-screen .pdf-btn-inline    { color: rgba(255,255,255,0.40); border-color: rgba(200,168,106,0.18); }
+.results-screen .pdf-btn-inline:hover { color: var(--gold,#C8A86A); border-color: var(--gold,#C8A86A); }
+
+/* Pulse ticker — already dark, just tweak border */
+.results-screen .pulse-ticker { border-bottom-color: rgba(200,168,106,0.12); }
+
+/* Cards */
+.results-screen .card {
+    background: rgba(21, 17, 43, 0.82);
+    border-color: rgba(200, 168, 106, 0.10);
+}
+.results-screen .hero-card {
+    background: linear-gradient(135deg, #1E1A38 0%, #15112B 100%);
+    border: 1px solid rgba(200,168,106,0.15);
+}
+.results-screen .alert-card {
+    background: rgba(21,17,43,0.80);
+    border-color: rgba(200,168,106,0.10);
+}
+.results-screen .adv-block {
+    background: rgba(21,17,43,0.80);
+    border-color: rgba(200,168,106,0.10);
+}
+.results-screen .dasha-md-item   { border-color: rgba(200,168,106,0.10); }
+.results-screen .dasha-md-header { background: rgba(21,17,43,0.65); color: rgba(255,255,255,0.85); }
+.results-screen .dasha-md-header:hover { background: rgba(200,168,106,0.06); }
+.results-screen .nak-mini-card   { background: rgba(200,168,106,0.07); border-color: rgba(200,168,106,0.20); }
+
+/* Section / card labels → gold */
+.results-screen .card-label      { color: rgba(200,168,106,0.80); }
+.results-screen .section-label   { color: rgba(200,168,106,0.80); }
+.results-screen .adv-block-label { color: rgba(200,168,106,0.80); }
+.results-screen .mini-label      { color: var(--gold,#C8A86A); }
+.results-screen .kpi-label       { color: rgba(255,255,255,0.42); }
+.results-screen .actions-label   { color: rgba(200,168,106,0.65); }
+.results-screen .adv-block-hint  { color: rgba(255,255,255,0.45); }
+.results-screen .nak-mini-name   { color: var(--gold,#C8A86A); }
+.results-screen .nak-mini-meta   { color: rgba(255,255,255,0.40); }
+
+/* Body text */
+.results-screen .power-title        { color: rgba(255,255,255,0.92); }
+.results-screen .power-desc         { color: rgba(255,255,255,0.58); }
+.results-screen .directive-text     { color: rgba(255,255,255,0.85); }
+.results-screen .pulse-focus        { color: rgba(255,255,255,0.92); }
+.results-screen .pulse-strategy     { color: rgba(255,255,255,0.58); }
+.results-screen .planet-name        { color: rgba(255,255,255,0.90); }
+.results-screen .planet-pos         { color: rgba(255,255,255,0.48); }
+.results-screen .interp-body        { color: rgba(255,255,255,0.80); }
+.results-screen .interp-placeholder { color: rgba(255,255,255,0.35); }
+.results-screen .interp-section-label { color: rgba(200,168,106,0.65); }
+.results-screen .alert-event        { color: rgba(255,255,255,0.90); }
+.results-screen .alert-reason       { color: rgba(255,255,255,0.58); }
+.results-screen .alert-action       { color: var(--gold,#C8A86A); }
+.results-screen .nak-mini-body      { color: rgba(255,255,255,0.75); }
+.results-screen .jy-num-desc        { color: rgba(255,255,255,0.58); border-top-color: rgba(200,168,106,0.10); }
+.results-screen .dc-compat-range    { color: rgba(255,255,255,0.40); }
+.results-screen .jy-loshu-legend    { color: rgba(255,255,255,0.35); }
+.results-screen .hero-card-body     { color: rgba(255,255,255,0.65); }
+
+/* List items */
+.results-screen .actions-list li,
+.results-screen .interp-bullet-list li,
+.results-screen .preview-action-item { color: rgba(255,255,255,0.80); }
+
+/* Borders & dividers */
+.results-screen .planet-row          { border-bottom-color: rgba(200,168,106,0.08); }
+.results-screen .planet-row:hover    { background: rgba(255,255,255,0.04); }
+.results-screen .planet-row.selected { background: rgba(200,168,106,0.08); }
+.results-screen .daily-actions-wrap  { border-top-color: rgba(200,168,106,0.10); }
+.results-screen .kundali-legend      { border-top-color: rgba(200,168,106,0.10); }
+.results-screen .kundali-legend span { color: rgba(255,255,255,0.40); }
+
+/* Interp tags */
+.results-screen .interp-tag          { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.48); }
+.results-screen .interp-tag.direct   { background: rgba(34,197,94,0.12); color: #4ade80; }
+.results-screen .interp-tag.retro    { background: rgba(245,158,11,0.12); color: #fbbf24; }
+
+/* Pulse / timing */
+.results-screen .pulse-card          { border-left-color: var(--gold,#C8A86A); }
+.results-screen .dasha-pill          { color: var(--gold,#C8A86A); background: rgba(200,168,106,0.12); }
+.results-screen .kpi-value           { color: var(--gold,#C8A86A); }
+
+/* Varshaphal impact block */
+.results-screen .varsha-impact       { background: rgba(200,168,106,0.05); border-color: rgba(200,168,106,0.12); }
+.results-screen .varsha-impact-theme { color: var(--gold,#C8A86A); }
+.results-screen .varsha-impact-body  { color: rgba(255,255,255,0.65); }
+
+/* Compat badges on dark bg */
+.results-screen .jy-compat-badge.compat-high { background: rgba(34,197,94,0.15); color: #4ade80; }
+.results-screen .jy-compat-badge.compat-mid  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.results-screen .jy-compat-badge.compat-low  { background: rgba(239,68,68,0.15);  color: #f87171; }
+
+/* ════════════════════════════════════════════════════
+   TYPOGRAPHY SCALE — Consistent font sizes throughout
+   ════════════════════════════════════════════════════ */
+
+/* Section / card labels */
+.card-label, .adv-block-label              { font-size: 12px; }
+.section-label                             { font-size: 12px; }
+.mini-label, .kpi-label                    { font-size: 12px; }
+.actions-label, .interp-section-label      { font-size: 12px; }
+.card-tag-hint                             { font-size: 12px; }
+.retro-badge                               { font-size: 11px; }
+.header-name-chip                          { font-size: 13px; }
+.adv-block-hint                            { font-size: 13px; }
+
+/* Body text — minimum 14px */
+.power-title                               { font-size: 15px; }
+.power-desc                                { font-size: 14px; }
+.directive-text                            { font-size: 14px; }
+.pulse-focus                               { font-size: 24px; }
+.pulse-strategy                            { font-size: 14px; }
+.alert-event                               { font-size: 15px; }
+.alert-reason, .alert-action               { font-size: 14px; }
+.interp-body                               { font-size: 15px; }
+.interp-tag                                { font-size: 12px; }
+.nak-mini-name                             { font-size: 12px; }
+.nak-mini-meta                             { font-size: 12px; }
+.nak-mini-body                             { font-size: 14px; }
+.planet-name                               { font-size: 15px; }
+.planet-pos                                { font-size: 14px; }
+.jy-num-desc                               { font-size: 14px; }
+.jy-num-hint                               { font-size: 12px; }
+.dasha-ex-tag                              { font-size: 11px; }
+.actions-list li, .interp-bullet-list li   { font-size: 14px; }
+.preview-action-item                       { font-size: 14px; }
+.dc-compat-range, .jy-loshu-legend         { font-size: 12px; }
+.kundali-legend span                       { font-size: 12px; }
+
 /* ── Mobile: dark border on stacked layout ── */
 @media (max-width: 768px) {
     .landing-left  { border-bottom: 1px solid rgba(200,168,106,0.12); }
