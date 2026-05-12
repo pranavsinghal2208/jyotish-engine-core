@@ -116,11 +116,36 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
             if pair in seen_raj: continue
             if ps(kl) == ps(tl):
                 seen_raj.add(pair)
+                pair_key = tuple(sorted([kl, tl]))
+                _RAJ_IMPACTS = {
+                    ("Mars", "Sun"):     "Frontline authority — courage and executive drive in the same house. Built for leadership under pressure.",
+                    ("Mars", "Venus"):   "Creative force meets ambition — excellence in design, brand, and performance roles.",
+                    ("Mars", "Jupiter"): "Ethical warrior — strategic expansion backed by the discipline to execute without compromise.",
+                    ("Mars", "Mercury"): "Sharp tactical mind — wins through precision analysis and rapid decisive action.",
+                    ("Mars", "Moon"):    "Instinctive leader — reads the room faster than anyone and acts before others have decided.",
+                    ("Mars", "Saturn"):  "Iron will — slow to rise but near-impossible to displace once in position.",
+                    ("Sun", "Venus"):    "Charisma and authority — public-facing leadership that also builds loyalty and aesthetic trust.",
+                    ("Sun", "Jupiter"):  "The king's advisor — natural statesperson combining vision with legitimacy.",
+                    ("Sun", "Mercury"):  "Intellectual authority — commands through clarity of thought and persuasive communication.",
+                    ("Sun", "Moon"):     "Public presence with emotional intelligence — people trust both your competence and your character.",
+                    ("Sun", "Saturn"):   "Earned authority — recognised as the person who does the hard thing correctly.",
+                    ("Venus", "Jupiter"): "Wealth and wisdom — attracts resources through culture, creativity, and ethical positioning.",
+                    ("Venus", "Mercury"): "Commercial creativity — monetises ideas, networks, and aesthetic intelligence.",
+                    ("Venus", "Moon"):   "Magnetic empathy — success through relationships, trust, and genuine care for people.",
+                    ("Venus", "Saturn"): "Disciplined beauty — long-term brand and reputation builder who outlasts trendier competitors.",
+                    ("Jupiter", "Mercury"): "Strategic teacher — turns complex knowledge into accessible, scalable impact.",
+                    ("Jupiter", "Moon"): "Generous intuition — wisdom amplified by emotional depth; trusted advisor archetype.",
+                    ("Jupiter", "Saturn"): "The long-game master — combines vision with the patience to build institutions that last.",
+                    ("Mercury", "Moon"): "Fast, empathetic communicator — reads people and responds with exactly what is needed.",
+                    ("Mercury", "Saturn"): "Precision under pressure — methodical thinker who delivers in high-stakes environments.",
+                    ("Moon", "Saturn"):  "Resilient authority — tested by difficulty and trusted because of it.",
+                }
+                impact = _RAJ_IMPACTS.get(pair_key, "Authority and rise to leadership through the combined force of these two planetary lords.")
                 yogas.append({
                     "name": "Raj Yoga", "type": "Royal Yoga", "strength": "Strong",
                     "planets": [kl, tl],
                     "description": f"{kl} (kendra lord) and {tl} (trikona lord) conjunct in {ps(kl)}.",
-                    "business_impact": "Authority and rise to leadership — structural power meeting dharmic purpose."
+                    "business_impact": impact
                 })
 
     # Adhi Yoga — Jupiter, Mercury, Venus in 6/7/8 from Moon

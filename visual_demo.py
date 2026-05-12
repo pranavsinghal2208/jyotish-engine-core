@@ -117,12 +117,18 @@ async def audit():
         observe("ACT 2", "ok"  if locked_hint else "warn", f"Right panel locked-state hint: '{locked_hint}'")
 
         await page.fill("#fullName", NAME)
-        # 1. Fill DOB first to trigger Quick Unlock
-        await page.fill("#date", DOB)
-        await page.dispatch_event("#date", "change") # Trigger the onchange listener
-        await asyncio.sleep(1.0)
-        
-        observe("ACT 2", "ok", "DOB entered — checking for Quick Unlock")
+        # Fill DOB via the three visible part-inputs, then trigger quickUnlock via JS
+        day, month, year = DOB.split("-")[2], DOB.split("-")[1], DOB.split("-")[0]
+        await page.evaluate(f"""
+            document.getElementById('dobDD').value   = '{day}';
+            document.getElementById('dobMM').value   = '{month}';
+            document.getElementById('dobYYYY').value = '{year}';
+            document.getElementById('date').value    = '{DOB}';
+        """)
+        await page.evaluate("quickUnlock()")
+        await asyncio.sleep(2.0)
+
+        observe("ACT 2", "ok", "DOB entered via DD/MM/YYYY fields — Quick Unlock triggered")
         await shot(page, "02_quick_unlock", "preview card updated after DOB")
 
         # Now precision fields should be visible
@@ -297,9 +303,10 @@ async def audit():
         await asyncio.sleep(0.8)
         await shot(page, "16_yogas", "Active Yogas — are these self-explanatory?")
 
-        await scroll_to(page, ".adv-block-hint")
+        await scroll_to(page, "#ashtakavargaGrid")
         await asyncio.sleep(0.8)
-        ashtak_hint = await safe_text(page, ".adv-block-hint")
+        # Target the ashtakavarga block specifically — not the first .adv-block-hint (Yogas)
+        ashtak_hint = await page.locator("#ashtakavargaGrid").locator("xpath=ancestor::div[contains(@class,'adv-block')]//div[contains(@class,'adv-block-hint')]").text_content() or ""
         observe("ACT 5", "ok" if "0" in ashtak_hint and "8" in ashtak_hint else "warn",
                 f"Ashtakavarga baseline hint: '{ashtak_hint[:80]}'")
         await shot(page, "17_ashtakavarga", "Ashtakavarga — baseline hint visible?")
@@ -381,8 +388,13 @@ async def audit():
             await asyncio.sleep(0.5)
             await shot(page, "24_compatibility_select", "Compatibility: 2-person comparison")
             try:
-                await page.select_option("#compatPersonA", index=1)
-                await page.select_option("#compatPersonB", index=5)
+                # Person A is always the current user (static chip, not a select)
+                # Wait for profiles to load into Person B dropdown (index 3 = first atlas profile)
+                await page.wait_for_function(
+                    "document.querySelectorAll('#compatPersonB option').length > 3",
+                    timeout=8000
+                )
+                await page.select_option("#compatPersonB", index=3)
                 await page.click("#compatSection button")
                 await asyncio.sleep(2.5)
                 await wait_visible(page, "#compatResult", timeout=8000)

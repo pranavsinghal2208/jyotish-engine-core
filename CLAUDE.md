@@ -23,6 +23,9 @@
 - **Dashboard:** `http://127.0.0.1:8000`
 - **Audit:** `python3 final_institutional_audit.py`
 
+## Decision Log
+See `DECISIONS.md` — all confirmed design, architecture, and UX decisions with their rationale. **Read before making any change that touches UI, color, auth, or product copy.** If a decision seems wrong, check here before overriding it.
+
 ## Global Skills
 See `~/Dev/GLOBAL_SKILLS.md` for cross-project practices (visual demo protocol, privacy routing, UI standards, etc.)
 

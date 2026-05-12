@@ -285,6 +285,12 @@ async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: 
         divisional_charts = calculate_divisional_charts(planets, houses["Lagna"])
         varshaphal        = calculate_varshaphal(planets["Sun"]["longitude"], details.lat, details.lon)
 
+        from .translator import HOUSE_MEANINGS, get_varshaphal_impact, get_divisional_impact
+        varshaphal["impact"] = get_varshaphal_impact(varshaphal)
+        divisional_charts["impact"] = get_divisional_impact(
+            divisional_charts.get("d9", {}), divisional_charts.get("d10", {})
+        )
+
         return {
             "jd": jd,
             "ayanamsa": houses["ayanamsa"],
@@ -301,6 +307,7 @@ async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: 
             "ashtakavarga": ashtakavarga,
             "divisional_charts": divisional_charts,
             "varshaphal": varshaphal,
+            "house_meanings": HOUSE_MEANINGS
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -569,6 +576,77 @@ async def get_compatibility(label_a: str, label_b: str, db: Session = Depends(ge
         "person_b": {"label": label_b, "name": " ".join(filter(None, [pb.first_name, pb.middle_name, pb.last_name])), **profile_b},
         "compatibility": compat,
     }
+
+
+class CompatibilityV2Request(BaseModel):
+    name_a: str
+    dob_a: str
+    gender_a: str
+    name_b: str = None
+    dob_b: str = None
+    gender_b: str = "Male"
+    label_b: str = None
+
+
+@app.post("/api/numerology/compatibility/v2")
+async def get_compatibility_v2(req: CompatibilityV2Request, db: Session = Depends(get_db)):
+    """Modern compatibility endpoint supporting custom input and atlas profiles."""
+    try:
+        # Person A (Always custom/user)
+        # Engines expect DD-MM-YYYY
+        dob_a_fmt = datetime.strptime(req.dob_a, "%Y-%m-%d").strftime("%d-%m-%Y")
+        profile_a = numerology_engine.get_jyotish_profile(
+            dob=dob_a_fmt, first_name=req.name_a, middle_name="", last_name="", gender=req.gender_a
+        )
+
+        # Person B (Custom or Atlas)
+        if req.label_b:
+            pb = db.query(NumerologyProfile).filter(NumerologyProfile.label == req.label_b).first()
+            if not pb:
+                raise HTTPException(status_code=404, detail="Atlas profile not found")
+            profile_b = numerology_engine.get_jyotish_profile(
+                dob=pb.dob, first_name=pb.first_name, middle_name=pb.middle_name or "",
+                last_name=pb.last_name or "", gender=pb.gender or "Male"
+            )
+            name_b = f"{pb.first_name} {pb.last_name or ''}".strip()
+        else:
+            if not req.dob_b:
+                raise HTTPException(status_code=400, detail="Missing birth details for Person 2")
+            dob_b_fmt = datetime.strptime(req.dob_b, "%Y-%m-%d").strftime("%d-%m-%Y")
+            profile_b = numerology_engine.get_jyotish_profile(
+                dob=dob_b_fmt, first_name=req.name_b, middle_name="", last_name="", gender=req.gender_b
+            )
+            name_b = req.name_b
+
+        comp = numerology_engine.get_two_person_compatibility(profile_a, profile_b)
+        
+        # Add a friendly interpretation
+        interpretation = f"You both share a unique energetic bond. {comp['verdict']} suggests that when you work together, your combined strength is amplified."
+        if comp['score'] >= 75:
+            interpretation = "This is a Power Match. Your energies are naturally in sync, making this combination excellent for both business and personal growth."
+        elif comp['score'] < 50:
+            interpretation = "This combination carries some dynamic tension. While it might feel challenging, it often leads to the most growth if you communicate clearly."
+
+        return {
+            "person_a": {
+                "name": req.name_a, 
+                "mulank": profile_a["mulank"], 
+                "bhagyank": profile_a["bhagyank"],
+                "driver_planet": profile_a["number_meanings"][profile_a["mulank"]]["planet"],
+                "conductor_planet": profile_a["number_meanings"][profile_a["bhagyank"]]["planet"]
+            },
+            "person_b": {
+                "name": name_b, 
+                "mulank": profile_b["mulank"], 
+                "bhagyank": profile_b["bhagyank"],
+                "driver_planet": profile_b["number_meanings"][profile_b["mulank"]]["planet"],
+                "conductor_planet": profile_b["number_meanings"][profile_b["bhagyank"]]["planet"]
+            },
+            "compatibility": comp,
+            "interpretation": interpretation
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/api/timing/advisor")

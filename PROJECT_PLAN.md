@@ -2,6 +2,7 @@
 ## Single Source of Truth for All AI Agents (Claude, Gemini, Kilo, etc.)
 
 > **Rule:** Every AI working on this project MUST read this file first. When new features ship or goals change, update this file.
+> **Also read:** `DECISIONS.md` — confirmed decisions with rationale. Check it before changing anything in UI, color, auth, or product copy.
 
 ---
 

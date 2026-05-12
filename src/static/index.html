@@ -31,19 +31,18 @@
 
         <!-- Left: input panel -->
         <div class="landing-left">
-            <div class="brand-mark">Cosmic OS <span class="brand-sub">· Executive Intelligence · Vedic Intelligence</span></div>
+            <div class="brand-mark">Cosmic OS <span class="brand-sub">· Daily Astrology & Numerology Intelligence</span></div>
 
-            <h1 class="landing-h1">Precision Guidance.<br>Strategic Clarity.</h1>
-            <p class="landing-sub">Your birth chart, decoded into what today actually means for you.</p>
+            <h1 class="landing-h1">Know your day.<br>Own your path.</h1>
+            <p class="landing-sub">Vedic astrology and numerology made simple. Get clear, doable advice based on your birth moment.</p>
 
             <!-- What you get -->
             <div class="feature-pills">
-                <span class="pill">Daily theme <span class="pill-ex">· Breaking New Ground</span></span>
-                <span class="pill">Dasha <span class="pill-ex">· Venus MD · Saturn Bhukti</span></span>
-                <span class="pill">Nakshatra <span class="pill-ex">· Shravana</span></span>
-                <span class="pill">Today's directive <span class="pill-ex">· 3 actions to take</span></span>
-                <span class="pill">Morning Brief <span class="pill-ex">· Personal Day 9</span></span>
-                <span class="pill">Calendar alerts <span class="pill-ex">· risk-scored</span></span>
+                <span class="pill">Today's Vibe <span class="pill-ex">· New Starts</span></span>
+                <span class="pill">Your Chapter <span class="pill-ex">· Venus MD</span></span>
+                <span class="pill">Lucky Number <span class="pill-ex">· 5</span></span>
+                <span class="pill">Daily To-Do <span class="pill-ex">· 3 simple actions</span></span>
+                <span class="pill">Morning Brief <span class="pill-ex">· Daily Guide</span></span>
             </div>
 
             <!-- Form -->
@@ -122,6 +121,24 @@
 
         <!-- Right: depth preview -->
         <div class="landing-right">
+            <div class="preview-label">Your Cosmic Blueprint</div>
+            
+            <!-- Instant Recognition: Chart Motif -->
+            <div class="chart-motif-wrap">
+                <div class="chart-motif">
+                    <div class="motif-circle outer"></div>
+                    <div class="motif-circle inner"></div>
+                    <div class="motif-line vertical"></div>
+                    <div class="motif-line horizontal"></div>
+                    <div class="motif-line diag1"></div>
+                    <div class="motif-line diag2"></div>
+                    <div class="motif-planet p1">Su</div>
+                    <div class="motif-planet p2">Mo</div>
+                    <div class="motif-planet p3">Ma</div>
+                    <div class="motif-planet p4">Ju</div>
+                </div>
+            </div>
+
             <div class="preview-label">What your chart reveals</div>
 
             <!-- Personal reading sample with fade -->
@@ -477,6 +494,7 @@
                     <div class="jy-num-card">
                         <div class="jy-num-label">Gift Number</div>
                         <div class="jy-num-value" id="jyGift">—</div>
+                        <div id="jyGiftHint"></div>
                         <div class="jy-num-sub">Sum of all name letters before reduction. Master numbers (11, 22, 33) kept as-is.</div>
                     </div>
                     <div class="jy-num-card">
@@ -486,6 +504,15 @@
                     <div class="jy-num-card">
                         <div class="jy-num-label">Name (Namank)</div>
                         <div class="jy-num-value" id="jyNamank">—</div>
+                    </div>
+                </div>
+
+                <!-- Lottery Numbers (New) -->
+                <div id="lotterySection" class="card lottery-card-new" style="margin-bottom:28px">
+                    <div class="card-label">Your Lottery & Luck Numbers</div>
+                    <div class="card-hint">These are your cosmic 'shortcuts' — numbers that carry the least resistance for you in the material world.</div>
+                    <div class="lottery-grid-new" id="lotteryGrid">
+                        <!-- JS Injected -->
                     </div>
                 </div>
 
@@ -561,19 +588,43 @@
 
             <!-- Two-Person Compatibility -->
             <div id="compatSection" style="margin-top:32px">
-                <div class="jy-section-heading">People Intelligence</div>
-                <div class="compat-selector">
-                    <div class="compat-search-wrap">
-                        <input type="search" placeholder="Filter person A…" oninput="filterCompat('A', this.value)" class="compat-search-input">
-                        <select id="compatPersonA" class="jy-select"></select>
+                <div class="jy-section-heading">People Intelligence (Me vs. Anyone)</div>
+                <div class="card-hint" style="margin-bottom:16px">Compare your energy with anyone — partners, business colleagues, or celebrities. Enter their details or pick from the atlas.</div>
+                
+                <div class="compat-selector-v2">
+                    <div class="compat-box">
+                        <div class="mini-label">Person 1 (Me)</div>
+                        <div id="compatPersonAContainer">
+                            <span id="compatMeLabel" class="compat-me-chip">Me (Current Chart)</span>
+                        </div>
                     </div>
+                    
                     <div class="compat-vs-label">×</div>
-                    <div class="compat-search-wrap">
-                        <input type="search" placeholder="Filter person B…" oninput="filterCompat('B', this.value)" class="compat-search-input">
-                        <select id="compatPersonB" class="jy-select"></select>
+                    
+                    <div class="compat-box">
+                        <div class="mini-label">Person 2</div>
+                        <div class="compat-input-group">
+                            <select id="compatPersonB" class="jy-select" onchange="toggleCustomInput(this.value)">
+                                <option value="ME">Me</option>
+                                <option value="CUSTOM">+ Add Someone New</option>
+                                <option value="" disabled>── From Atlas ──</option>
+                            </select>
+                            <div id="customPersonInput" class="hidden" style="margin-top:10px">
+                                <input type="text" id="customName" placeholder="Name" class="compat-field">
+                                <input type="date" id="customDob" class="compat-field">
+                                <select id="customGender" class="compat-field">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <button class="jy-load-btn" onclick="loadCompatibility()">Compare</button>
                 </div>
+                
+                <div style="text-align:center; margin-top:20px">
+                    <button class="cta-btn" style="width:auto; padding:12px 32px" onclick="loadCompatibilityV2()">Compare Energy →</button>
+                </div>
+                
                 <div id="compatResult" class="hidden"></div>
             </div>
 

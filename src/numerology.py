@@ -8,7 +8,8 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 from .numerology_data import (
     DRIVER_CONDUCTOR_PROFILES, MISSING_NUMBER_REMEDIES,
-    NUMBER_MEANINGS, LO_SHU_POSITIONS, KARMIC_NUMBERS
+    NUMBER_MEANINGS, LO_SHU_POSITIONS, KARMIC_NUMBERS,
+    NAMANK_INTERPRETATIONS, LOTTERY_NUMBER_MEANINGS
 )
 
 
@@ -339,10 +340,10 @@ class NumerologyEngine:
         total = sum(self.chaldean_map.get(c, 0) for c in full if c.isalpha())
         return self._jyotish_reduce(total) if total else 0
 
-    def calculate_lo_shu_grid(self, dob: str) -> Dict[str, Any]:
+    def calculate_lo_shu_grid(self, dob: str, mulank: int = None, bhagyank: int = None) -> Dict[str, Any]:
         """
         Returns which digits (1–9) are present / missing in the DOB,
-        their frequencies, and a 3×3 grid representation.
+        plus Mulank and Bhagyank for the complete 'Osho' style grid.
         """
         dt = self._parse_dob(dob)
         raw = f"{dt.day:02d}{dt.month:02d}{dt.year:04d}"
@@ -350,6 +351,10 @@ class NumerologyEngine:
         for c in raw:
             if c != "0":
                 freq[int(c)] = freq.get(int(c), 0) + 1
+        
+        # In Jyotish/Osho style, Driver and Conductor also populate the grid
+        if mulank: freq[mulank] = freq.get(mulank, 0) + 1
+        if bhagyank: freq[bhagyank] = freq.get(bhagyank, 0) + 1
 
         present = {n: cnt for n, cnt in freq.items() if cnt > 0}
         missing = [n for n, cnt in freq.items() if cnt == 0]
@@ -515,6 +520,26 @@ class NumerologyEngine:
             },
         }
 
+    def calculate_lottery_numbers(self, mulank: int, bhagyank: int, kua: int) -> Dict[str, Any]:
+        """Logic for identifying 'Lottery' or 'Universal Luck' numbers."""
+        # Primary luck is usually Mulank + KUA interaction
+        primary = self._jyotish_reduce(mulank + kua)
+        # Secondary is often Bhagyank (destiny)
+        secondary = bhagyank
+        
+        return {
+            "primary": {
+                "number": primary,
+                "label": "Universal Luck",
+                "meaning": LOTTERY_NUMBER_MEANINGS["primary"]
+            },
+            "secondary": {
+                "number": secondary,
+                "label": "Financial Flow",
+                "meaning": LOTTERY_NUMBER_MEANINGS["secondary"]
+            }
+        }
+
     def get_jyotish_profile(
         self, dob: str, first_name: str, middle_name: str, last_name: str, gender: str
     ) -> Dict[str, Any]:
@@ -526,17 +551,27 @@ class NumerologyEngine:
             namank = self.calculate_namank(first_name, middle_name, last_name)
             birth_year_num = self.calculate_birth_year_number(dob)
             kua = self.calculate_kua_number(dob, gender)
-            lo_shu = self.calculate_lo_shu_grid(dob)
+            
+            # Audit: Pass Mulank and Bhagyank into Lo Shu calculation
+            lo_shu = self.calculate_lo_shu_grid(dob, mulank, bhagyank)
+            
             dc_profile = self.get_driver_conductor_profile(mulank, bhagyank)
             missing_remedies = self.get_missing_remedies(lo_shu["missing"])
+            
+            # New: Lottery Numbers
+            lottery = self.calculate_lottery_numbers(mulank, bhagyank, kua)
 
             return {
                 "mulank": mulank,
                 "gift_number": gift,
                 "bhagyank": bhagyank,
-                "namank": namank,
+                "namank": {
+                    "number": namank,
+                    "meaning": NAMANK_INTERPRETATIONS.get(namank, "Unique name vibration.")
+                },
                 "birth_year_number": birth_year_num,
                 "kua_number": kua,
+                "lottery_numbers": lottery,
                 "lo_shu_grid": lo_shu,
                 "driver_conductor_profile": dc_profile,
                 "missing_remedies": missing_remedies,

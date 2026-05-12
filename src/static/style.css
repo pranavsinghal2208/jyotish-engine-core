@@ -1,26 +1,28 @@
 /* ── Variables ── */
 :root {
-    --bg:       #DCE6F2;
-    --surface:  #fffdf9;
-    --hero-bg:  #1E1A38;
-    --accent:   #C8A86A;
-    --cta:      #635bff;
-    --text:     #1a1208;
-    --muted:    #8a7e68;
-    --border:   rgba(200, 168, 106, 0.18);
-    --shadow: 0 2px 12px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --shadow-md: 0 20px 40px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.02);
-    --radius:   16px;
-    --radius-sm: 10px;
+    --bg:       #fbfbfd; /* Apple-inspired off-white */
+    --surface:  #ffffff;
+    --hero-bg:  #1d1d1f; /* Apple-inspired dark grey/black */
+    --accent:   #0066cc; /* Sophisticated blue accent */
+    --cta:      #635bff; /* PSBC accent */
+    --text:     #1d1d1f; /* Deep charcoal */
+    --muted:    #86868b; /* Apple-style muted grey */
+    --border:   rgba(0, 0, 0, 0.08);
+    --shadow:   0 4px 24px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.08);
+    --radius:   20px;
+    --radius-sm: 12px;
 }
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.5;
+    line-height: 1.47059;
+    font-weight: 400;
+    letter-spacing: -0.022em; /* Apple-style tracking */
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
 }
@@ -211,8 +213,72 @@ body {
     text-transform: uppercase;
 }
 
+/* ── Chart Motif (Instant Recognition) ── */
+.chart-motif-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    perspective: 1000px;
+}
+
+.chart-motif {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rotateSlow 60s linear infinite;
+}
+
+@keyframes rotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.motif-circle {
+    position: absolute;
+    border: 1px solid rgba(0, 102, 204, 0.1);
+    border-radius: 50%;
+}
+.motif-circle.outer { width: 85%; height: 85%; }
+.motif-circle.inner { width: 50%; height: 50%; }
+
+.motif-line {
+    position: absolute;
+    background: rgba(0, 102, 204, 0.05);
+}
+.motif-line.vertical { width: 1px; height: 100%; left: 50%; }
+.motif-line.horizontal { width: 100%; height: 1px; top: 50%; }
+.motif-line.diag1 { width: 1px; height: 100%; left: 50%; transform: rotate(45deg); }
+.motif-line.diag2 { width: 1px; height: 100%; left: 50%; transform: rotate(-45deg); }
+
+.motif-planet {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--cta);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(99, 91, 255, 0.3);
+}
+
+.motif-planet.p1 { top: 15%; left: 20%; }
+.motif-planet.p2 { top: 70%; left: 15%; }
+.motif-planet.p3 { top: 40%; right: 10%; }
+.motif-planet.p4 { bottom: 15%; right: 25%; }
+
 .card-hint {
-    font-size: 12px;
+...    font-size: 12px;
     color: var(--muted);
     margin-bottom: 12px;
     margin-top: -8px;
@@ -597,6 +663,14 @@ body {
 }
 .pdf-btn-inline:hover { color: var(--text); border-color: var(--text); }
 
+.jy-num-hint {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold, #C8A86A);
+    letter-spacing: .04em;
+    margin-top: 2px;
+}
 .jy-num-sub {
     font-size: 10px;
     color: var(--muted);
@@ -1782,47 +1856,57 @@ body {
 /* Ashtakavarga grid */
 .ashtak-grid {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
 }
 
 @media (max-width: 900px) {
-    .ashtak-grid { grid-template-columns: repeat(6, 1fr); }
+    .ashtak-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 .ashtak-cell {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 6px;
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
     text-align: center;
-    box-shadow: var(--shadow);
+    transition: transform 0.2s ease;
 }
 
-.ashtak-cell.strong  { border-color: #22c55e; background: rgba(34,197,94,0.06); }
-.ashtak-cell.weak    { border-color: #f59e0b; background: rgba(245,158,11,0.06); }
+.ashtak-cell:hover { transform: translateY(-2px); border-color: var(--cta); }
 
 .ashtak-house {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     color: var(--muted);
-    margin-bottom: 4px;
+}
+
+.ashtak-domain {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2px 0 6px;
 }
 
 .ashtak-score {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: var(--text);
     line-height: 1;
 }
 
 .ashtak-label {
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 4px;
 }
+
+.ashtak-cell.strong { border-color: #22c55e; background: rgba(34,197,94,0.03); }
+.ashtak-cell.strong .ashtak-score { color: #16a34a; }
+.ashtak-cell.weak { border-color: #f59e0b; background: rgba(245,158,11,0.03); }
 
 /* Divisional charts */
 .div-chart-planet {
@@ -1894,6 +1978,17 @@ body {
 }
 .varsha-planet-row:last-child { border-bottom: none; }
 .varsha-planet-sign { color: var(--muted); }
+
+/* ── VARSHAPHAL IMPACT ── */
+.varsha-impact { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.varsha-impact-theme { font-size: 15px; font-weight: 700; color: var(--gold, #C8A86A); margin-bottom: 8px; }
+.varsha-impact-body { font-size: 13px; color: var(--text); line-height: 1.6; margin: 0 0 14px; }
+.varsha-impact-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.varsha-impact-col { font-size: 13px; color: var(--text); line-height: 1.5; }
+.varsha-impact-col p { margin: 4px 0 0; }
+.varsha-impact-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.varsha-impact-list { margin: 4px 0 14px 16px; padding: 0; font-size: 13px; color: var(--text); line-height: 1.6; }
+.varsha-impact-list li { margin-bottom: 4px; }
 
 /* ── ALERT BANNER ── */
 .alert-banner {

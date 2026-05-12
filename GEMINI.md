@@ -1,6 +1,7 @@
-# Cosmic OS: Project Instructions (GEMINI.md)
+# Astro: Project Instructions (GEMINI.md)
 
 ## Core Mandates
+- **Brand Identity:** Astro (formerly Cosmic OS). 
 - **Design Standard:** PSBC Premium Minimalism. Inter font, -0.022em tracking, massive whitespace, monochromatic base (#ffffff/#fbfbfd), PSBC accent (#635bff).
 - **Tone:** "Operational Sanctuary" for the Overwhelmed Achiever. Use "Strategy Consultant" terminology (e.g., Information Arbitrage, System Precision).
 - **Logic:** Swiss Ephemeris (Lahiri Ayanamsa) calculating Dasha-Bhukti and real-time transits.
@@ -17,6 +18,7 @@
 - **Frontend:** Pure Canvas (Zero-UI) landing. Transitions must feel like "Morphs," not page loads.
 
 ## Reference Documents
+- **Decision Log:** `DECISIONS.md` — confirmed design, architecture, and UX decisions with rationale. **Read before touching UI, color, auth, or product copy.** If something seems wrong, check here before overriding it.
 - **Global Skills:** `~/Dev/GLOBAL_SKILLS.md` — cross-project learnings, proven practices, context-sensitive rules (read this too!)
 - **Unified Project Plan:** `PROJECT_PLAN.md` — feature status, wishlist, file map (read this first!)
 - **Customer Profile:** `.gemini/tmp/pranavsinghal/memory/customer_profile.md`

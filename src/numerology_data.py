@@ -106,58 +106,81 @@ DRIVER_CONDUCTOR_PROFILES = {
 MISSING_NUMBER_REMEDIES = {
     1: {
         "planet": "Sun", "color": "Black", "element": "Water",
-        "characteristics": "Independence, leadership, innovation, and self-confidence.",
-        "lacks": "Low willpower, directionless mindset, weak communication",
+        "name": "Independence & Direction",
+        "impact": "You might feel directionless or find it hard to express your true self. Decisions might feel heavy.",
         "remedies": ["Offer water to Sun daily", "Place a small water fountain at home", "Morganite + Yellow Opal bracelet", "Red tika / red dhaga"],
     },
     2: {
         "planet": "Moon", "color": "Pink", "element": "Earth",
-        "characteristics": "Harmony, balance, cooperation, strong intuition, and diplomacy.",
-        "lacks": "Relationship issues, emotional challenges, indecisive",
+        "name": "Balance & Connection",
+        "impact": "Relationships might feel like a roller-coaster. You might struggle to trust your gut feeling.",
         "remedies": ["Picture of a mountain in the house", "Flower Agate + Red Jasper bracelet", "Drink water stored in matka", "Shiv aradhana", "Drink water from a silver glass"],
     },
     3: {
         "planet": "Jupiter", "color": "Green", "element": "Wood",
-        "characteristics": "Creativity, self-expression, optimism, imagination, and sociability.",
-        "lacks": "Low creativity, poor education mindset, scarcity mentality",
+        "name": "Growth & Knowledge",
+        "impact": "Opportunities might seem to slip away. You might feel a 'scarcity' mindset even when you have enough.",
         "remedies": ["Peridot + Chrysoprase bracelet", "Use wooden furniture", "Apply tilak tika daily"],
     },
     4: {
         "planet": "Rahu", "color": "Purple / Gold", "element": "Wood",
-        "characteristics": "Stability, practicality, hard work, rebellious streak, organized and disciplined.",
-        "lacks": "Luck, fortune, finance-related issues",
+        "name": "Wealth & Discipline",
+        "impact": "Financial stability might feel elusive. Plans often get delayed or face unexpected hurdles.",
         "remedies": ["Water plants daily / stay connected with nature", "Wear Rudraksh mala", "Green Aventurine bracelet", "Feed stray dogs"],
     },
     5: {
         "planet": "Mercury", "color": "Yellow", "element": "Earth",
-        "characteristics": "Freedom, adventure, adaptability, and curiosity.",
-        "lacks": "Weak memory, fear of change, irritability",
+        "name": "Communication & Stability",
+        "impact": "You might feel restless or struggle to stay grounded. Communication gaps could lead to misunderstandings.",
         "remedies": ["Wear more green (clothes, food, accessories)", "Carry a crystal", "Walk in nature barefoot", "Green smoothie on Wednesdays", "Kiwi Jasper + Smoky Quartz bracelet"],
     },
     6: {
         "planet": "Venus", "color": "White", "element": "Hard Metal",
-        "characteristics": "Responsibility, nurturing, compassion, and love.",
-        "lacks": "Marital issues, wealth-related problems",
+        "name": "Luxury & Support",
+        "impact": "You might lack support from family or struggle to enjoy the luxuries you work so hard for.",
         "remedies": ["Missing #6 Lo Shu bracelet", "Place golden metal wind chimes (11') in Northwest", "Wear a golden wrist watch", "Donate white items to those in need"],
     },
     7: {
         "planet": "Ketu", "color": "Grey", "element": "Soft Metal",
-        "characteristics": "Analysis, introspection, spirituality, occult, and intuition.",
-        "lacks": "Issues with children, spirituality, finances; confused mindset",
+        "name": "Children & Spirituality",
+        "impact": "You might feel disconnected from your family or struggle to find peace in your spiritual journey.",
         "remedies": ["Stray dog seva", "Wear 7 Mukhi Rudraksh"],
     },
     8: {
         "planet": "Saturn", "color": "Blue", "element": "Earth",
-        "characteristics": "Ambition, material success, authority, and power.",
-        "lacks": "Ancestral property issues, overspending, self-doubt",
+        "name": "Discipline & Property",
+        "impact": "Success might come with a lot of delays. You might doubt your own abilities more than you should.",
         "remedies": ["Smoky Quartz crystal", "Place a water pot in the Northeast corner", "Avoid non-vegetarian food", "Fast on Saturdays", "Donate a coin + note to the less fortunate"],
     },
     9: {
         "planet": "Mars", "color": "Red", "element": "Fire",
-        "characteristics": "Humanitarianism, compassion, generosity, and idealism.",
-        "lacks": "Ignorance, restlessness, unawareness",
+        "name": "Energy & Recognition",
+        "impact": "Your hard work might go unnoticed. You might feel a lack of fire or passion in your daily life.",
         "remedies": ["Red bulb in South direction", "Rhodonite / Fire Agate bracelet", "Wear 9 Mukhi Rudraksh", "Hanuman puja"],
     },
+}
+
+# ---------------------------------------------------------------------------
+# Namank (Name Number) Definitions
+# ---------------------------------------------------------------------------
+NAMANK_INTERPRETATIONS = {
+    1: "The Leader — Your name carries the vibration of authority and new beginnings. You are seen as someone who can take charge and innovate.",
+    2: "The Diplomat — Your name vibrates with harmony and cooperation. You excel in partnerships and bringing people together.",
+    3: "The Creator — Your name carries the energy of expression and optimism. You are seen as a natural communicator and creative spirit.",
+    4: "The Builder — Your name vibrates with stability and hard work. You are seen as practical, reliable, and the foundation of any project.",
+    5: "The Catalyst — Your name carries the energy of change and freedom. You are seen as adaptable, adventurous, and quick-witted.",
+    6: "The Guardian — Your name vibrates with nurturing and responsibility. You are seen as caring, compassionate, and family-oriented.",
+    7: "The Seeker — Your name carries the energy of analysis and spirituality. You are seen as introspective, wise, and deeply intuitive.",
+    8: "The Executive — Your name vibrates with power and material success. You are seen as ambitious, authoritative, and capable of big results.",
+    9: "The Humanitarian — Your name carries the energy of compassion and completion. You are seen as generous, idealistic, and worldly.",
+}
+
+# ---------------------------------------------------------------------------
+# Lottery / Lucky Number Logic (Based on KUA & Mulank)
+# ---------------------------------------------------------------------------
+LOTTERY_NUMBER_MEANINGS = {
+    "primary": "This is your 'Universal Luck' digit. When this number appears in your life (dates, addresses, tokens), the cosmic resistance is at its lowest.",
+    "secondary": "This is your 'Financial Flow' digit. It helps in removing blocks specifically related to money and material growth.",
 }
 
 # ---------------------------------------------------------------------------

@@ -130,7 +130,10 @@ async function loadMyNumerology() {
         document.getElementById('jyBhagyank').textContent = d.bhagyank;
         document.getElementById('jyGift').textContent     = d.gift_number;
         document.getElementById('jyKua').textContent      = d.kua_number;
-        document.getElementById('jyNamank').textContent   = d.namank;
+        const namankVal = typeof d.namank === 'object' ? d.namank.number : d.namank;
+        document.getElementById('jyNamank').textContent = namankVal;
+        const namankMeaning = typeof d.namank === 'object' ? d.namank.meaning : null;
+        if (namankMeaning) _setOrCreate('jyNamankDesc', namankMeaning);
 
         // Inject descriptions
         const mulankInfo = NUM_DESC.mulank[d.mulank];
@@ -145,7 +148,42 @@ async function loadMyNumerology() {
         if (kuaInfo) {
             _setOrCreate('jyKuaDesc', `<strong>${kuaInfo.group}</strong> · Best directions: ${kuaInfo.directions} · ${kuaInfo.desc}`);
         }
-        _setOrCreate('jyGiftDesc', NUM_DESC.gift);
+        // Gift Number: full reduction chain + personal meaning
+        const giftRaw = d.gift_number;
+        const masterNums = [11, 22, 33];
+        // Fully reduce to single digit (or master number), building the chain as we go
+        const _giftChain = [giftRaw];
+        let _n = giftRaw;
+        while (_n > 9 && !masterNums.includes(_n)) {
+            _n = String(_n).split('').reduce((s, c) => s + +c, 0);
+            _giftChain.push(_n);
+        }
+        const giftReduced = _n;
+        const chainText = _giftChain.length > 1 ? _giftChain.join(' → ') : String(giftRaw);
+        _setOrCreate('jyGiftHint', `<span class="jy-num-hint">${chainText}</span>`);
+        const giftInfo = NUM_DESC.mulank[giftReduced] || {};
+        const giftPersonal = giftInfo.desc
+            ? `<strong>${giftRaw} → ${giftReduced} · ${giftInfo.keyword || ''}</strong> · ${giftInfo.planet || ''} · ${giftInfo.desc}`
+            : NUM_DESC.gift;
+        _setOrCreate('jyGiftDesc', giftPersonal);
+
+        // Render Lottery Numbers
+        const lotteryGrid = document.getElementById('lotteryGrid');
+        if (lotteryGrid && d.lottery_numbers) {
+            const ln = d.lottery_numbers;
+            lotteryGrid.innerHTML = `
+                <div class="lottery-item-new">
+                    <div class="lottery-label-new">${ln.primary.label}</div>
+                    <div class="lottery-val-new">${ln.primary.number}</div>
+                    <div class="lottery-impact-new">${ln.primary.meaning}</div>
+                </div>
+                <div class="lottery-item-new">
+                    <div class="lottery-label-new">${ln.secondary.label}</div>
+                    <div class="lottery-val-new">${ln.secondary.number}</div>
+                    <div class="lottery-impact-new">${ln.secondary.meaning}</div>
+                </div>
+            `;
+        }
 
         renderLoShuGrid(d.lo_shu_grid.grid);
         document.getElementById('jyMissingNums').textContent =
@@ -445,113 +483,113 @@ async function populateCompatibilityDropdowns() {
         const res = await fetch('/api/numerology/profiles');
         if (!res.ok) return;
         _compatProfiles = await res.json();
-        const selA = document.getElementById('compatPersonA');
         const selB = document.getElementById('compatPersonB');
-        if (!selA || !selB) return;
-        const placeholder = '<option value="" disabled selected>— Select person —</option>';
-        const opts = _compatProfiles.map(p =>
+        if (!selB) return;
+        
+        // Keep the top options
+        const topOpts = `
+            <option value="ME">Me</option>
+            <option value="CUSTOM">+ Add Someone New</option>
+            <option value="" disabled>── From Atlas ──</option>
+        `;
+        const atlasOpts = _compatProfiles.map(p =>
             `<option value="${p.label}">${p.name}</option>`).join('');
-        selA.innerHTML = placeholder + opts;
-        selB.innerHTML = placeholder + opts;
-        if (_compatProfiles.length > 0) selA.selectedIndex = 1;
-        if (_compatProfiles.length > 1) selB.selectedIndex = 2;
+        selB.innerHTML = topOpts + atlasOpts;
+        if (_compatProfiles.length > 0) selB.selectedIndex = 3; // First atlas person
     } catch (e) { console.error('Compat dropdown error:', e); }
 }
 
-function filterCompat(side, query) {
-    const sel = document.getElementById(`compatPerson${side}`);
-    if (!sel) return;
-    const q = query.toLowerCase();
-    Array.from(sel.options).forEach(opt => {
-        opt.hidden = q ? !opt.text.toLowerCase().includes(q) : false;
-    });
-    if (!sel.options[sel.selectedIndex] || sel.options[sel.selectedIndex].hidden) {
-        const first = Array.from(sel.options).find(o => !o.hidden);
-        if (first) sel.value = first.value;
-    }
+function toggleCustomInput(val) {
+    const customDiv = document.getElementById('customPersonInput');
+    if (customDiv) customDiv.classList.toggle('hidden', val !== 'CUSTOM');
 }
 
-async function loadCompatibility() {
-    const labelA = document.getElementById('compatPersonA')?.value;
-    const labelB = document.getElementById('compatPersonB')?.value;
+async function loadCompatibilityV2() {
+    const valB = document.getElementById('compatPersonB')?.value;
     const resultEl = document.getElementById('compatResult');
-    if (!labelA || !labelB || !resultEl) return;
-    if (labelA === labelB) {
-        resultEl.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px">Select two different people.</div>';
-        resultEl.classList.remove('hidden');
+    if (!valB || !resultEl) return;
+
+    const birthDateA = document.getElementById('date')?.value;
+    const nameA = document.getElementById('fullName')?.value.trim();
+    const genderA = document.getElementById('gender')?.value || 'Male';
+
+    if (!birthDateA || !nameA) {
+        alert("Please enter your details in 'Strategic' view first.");
         return;
     }
 
-    resultEl.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px">Comparing…</div>';
+    resultEl.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px">Calculating energy resonance…</div>';
     resultEl.classList.remove('hidden');
 
     try {
-        const res = await fetch(`/api/numerology/compatibility?label_a=${labelA}&label_b=${labelB}`);
+        let payload = {
+            name_a: nameA, dob_a: birthDateA, gender_a: genderA
+        };
+
+        if (valB === 'ME') {
+            payload.name_b = nameA; payload.dob_b = birthDateA; payload.gender_b = genderA;
+        } else if (valB === 'CUSTOM') {
+            const nameB = document.getElementById('customName').value.trim();
+            const dobB = document.getElementById('customDob').value;
+            const genB = document.getElementById('customGender').value;
+            if (!nameB || !dobB) { alert("Please enter Name and DOB for Person 2"); return; }
+            payload.name_b = nameB; payload.dob_b = dobB; payload.gender_b = genB;
+        } else {
+            // Label from atlas
+            payload.label_b = valB;
+        }
+
+        const res = await fetch('/api/numerology/compatibility/v2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
         if (!res.ok) throw new Error('Failed');
         const d = await res.json();
         const c = d.compatibility;
 
         const scoreColor = c.score >= 80 ? '#22c55e' : c.score >= 65 ? '#635bff' : c.score >= 50 ? '#f59e0b' : '#ef4444';
-        const aName = d.person_a.name || labelA;
-        const bName = d.person_b.name || labelB;
+        const aName = d.person_a.name;
+        const bName = d.person_b.name;
 
         // Shared resonance pills
         const pills = [];
         if (c.shared?.same_driver)    pills.push(`<span class="resonance-pill">Same Driver · ${c.person_a.driver_planet}</span>`);
-        if (c.shared?.same_conductor) pills.push(`<span class="resonance-pill">Same Conductor</span>`);
-        if (c.shared?.same_planet && !c.shared?.same_driver && !c.shared?.same_conductor)
-            pills.push(`<span class="resonance-pill">Same ruling planet</span>`);
-        const resonanceBlock = pills.length
-            ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">${pills.join('')}</div>`
-            : '';
-
-        // Lead recommendation
-        const aScore = c.dynamics.a_leads_b.score;
-        const bScore = c.dynamics.b_leads_a.score;
-        const leadRec = aScore > bScore
-            ? `Best when ${aName} leads — ${aScore}% vs ${bScore}%`
-            : bScore > aScore
-                ? `Best when ${bName} leads — ${bScore}% vs ${aScore}%`
-                : `Balanced — both lead equally well (${aScore}%)`;
-
-        const dynBlock = (label, score, pros, cons) => `
-            <div class="compat-dyn-block">
-                <div class="compat-dyn-label">${label} leads</div>
-                <div class="compat-dyn-score">${score}%</div>
-                <ul class="compat-dyn-list">
-                    ${(pros || []).map(p => `<li>✓ ${p}</li>`).join('')}
-                    ${(cons || []).slice(0, 2).map(p => `<li style="color:var(--muted)">✗ ${p}</li>`).join('')}
-                </ul>
-            </div>`;
+        if (c.shared?.same_conductor)  pills.push(`<span class="resonance-pill">Same Conductor · ${c.person_a.conductor_planet}</span>`);
+        if (c.shared?.planet_match)   pills.push(`<span class="resonance-pill">Planet Match · ${c.person_a.driver_planet}</span>`);
 
         resultEl.innerHTML = `
-            <div class="compat-result-card">
-                <div class="compat-score-row">
-                    <div class="compat-score-num" style="color:${scoreColor}">${c.score}</div>
+            <div class="card" style="margin-top:16px; border-color:${scoreColor}44">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px">
                     <div>
-                        <div class="compat-verdict">${c.verdict}</div>
-                        <div class="compat-names">${aName} × ${bName}</div>
+                        <div style="font-size:18px; font-weight:700; color:var(--text)">${aName} × ${bName}</div>
+                        <div style="font-size:13px; color:var(--muted); margin-top:2px">${c.verdict}</div>
+                    </div>
+                    <div style="font-size:32px; font-weight:800; color:${scoreColor}">${c.score}%</div>
+                </div>
+                
+                <div class="resonance-pills" style="margin-bottom:16px">${pills.join('')}</div>
+                
+                <div class="compat-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+                    <div class="compat-mini-card">
+                        <div class="mini-label">${aName}</div>
+                        <div style="font-size:14px; font-weight:700">Driver ${d.person_a.mulank} · Conductor ${d.person_a.bhagyank}</div>
+                        <div style="font-size:11px; color:var(--muted)">${d.person_a.driver_planet} energy</div>
+                    </div>
+                    <div class="compat-mini-card">
+                        <div class="mini-label">${bName}</div>
+                        <div style="font-size:14px; font-weight:700">Driver ${d.person_b.mulank} · Conductor ${d.person_b.bhagyank}</div>
+                        <div style="font-size:11px; color:var(--muted)">${d.person_b.driver_planet} energy</div>
                     </div>
                 </div>
-                ${resonanceBlock}
-                <div class="compat-summary">${c.summary}</div>
-                <div class="compat-duo-row">
-                    <div class="compat-person-block">
-                        <div class="compat-person-name">${aName}</div>
-                        <div class="compat-person-nums">Driver ${c.person_a.mulank} (${c.person_a.driver_planet}) · Conductor ${c.person_a.bhagyank} (${c.person_a.conductor_planet})</div>
-                    </div>
-                    <div class="compat-person-block">
-                        <div class="compat-person-name">${bName}</div>
-                        <div class="compat-person-nums">Driver ${c.person_b.mulank} (${c.person_b.driver_planet}) · Conductor ${c.person_b.bhagyank} (${c.person_b.conductor_planet})</div>
-                    </div>
+
+                <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border); font-size:13px; line-height:1.6; color:var(--text)">
+                    ${d.interpretation || 'This combination suggests a unique energetic resonance. Focus on shared goals and clear communication.'}
                 </div>
-                <div class="compat-dynamics">
-                    ${dynBlock(aName, aScore, c.dynamics.a_leads_b.pros, c.dynamics.a_leads_b.cons)}
-                    ${dynBlock(bName, bScore, c.dynamics.b_leads_a.pros, c.dynamics.b_leads_a.cons)}
-                </div>
-                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;font-weight:600;color:var(--accent)">→ ${leadRec}</div>
             </div>`;
     } catch (e) {
-        resultEl.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:12px">Failed to load compatibility.</div>';
+        console.error('Compat error:', e);
+        resultEl.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px">Failed to calculate compatibility.</div>';
     }
 }

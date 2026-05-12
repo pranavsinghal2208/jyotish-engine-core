@@ -339,14 +339,14 @@ async function loadMorningBrief() {
                     <div class="brief-cycle-theme">${pd.theme}</div>
                 </div>
                 <div class="brief-cycle">
-                    <div class="brief-cycle-label">Nakshatra</div>
-                    <div class="brief-cycle-num" style="font-size:18px">${d.nakshatra}</div>
+                    <div class="brief-cycle-label">Moon Today</div>
+                    <div class="brief-cycle-num" style="font-size:18px">${(d.transit_highlights?.[0] || '').replace('Moon transiting ', '').replace(' today.', '') || '—'}</div>
                     <div class="brief-cycle-theme">${d.active_dasha}</div>
                 </div>
                 <div class="brief-cycle">
-                    <div class="brief-cycle-label">Best Day This Week</div>
-                    <div class="brief-cycle-num" style="font-size:18px">${d.best_day_this_week?.day || '—'}</div>
-                    <div class="brief-cycle-theme">${d.best_day_this_week?.date || ''}</div>
+                    <div class="brief-cycle-label">Lucky Color</div>
+                    <div class="brief-cycle-num" style="font-size:18px">${pd.color || '—'}</div>
+                    <div class="brief-cycle-theme">Personal Day ${pd.number}</div>
                 </div>
             </div>
             ${highlightHtml ? `<div class="brief-highlights">${highlightHtml}</div>` : ''}
@@ -411,7 +411,6 @@ async function loadTimingAdvisor() {
                 </div>
                 <div class="timing-action-window">${a.window}</div>
                 <div class="timing-action-advice">${a.advice}</div>
-                <div class="timing-dasha-note" style="margin-top:6px">${a.dasha_note}</div>
             </div>`;
         }).join('');
         section.classList.remove('hidden');
@@ -642,20 +641,26 @@ function interpretPlanet(name, info) {
     const container  = document.getElementById('techInterpretation');
     const role       = PLANET_ROLES[name] || { role: '', biz: '' };
     const specificText = (PLANET_IN_SIGN[name] || {})[info.sign] || SIGN_INTERPRETATIONS[info.sign] || '';
-    const retroNote  = info.is_retrograde
-        ? 'Retrograde — this planet\'s energy turns inward. Its lessons are being processed deeply before they can fully express.'
-        : 'Direct — energy flows outward and expresses freely in the world.';
     const statusTag  = info.is_retrograde
         ? '<span class="interp-tag retro">Retrograde</span>'
         : '<span class="interp-tag direct">Direct</span>';
+    
+    // Motion explanation
+    const motionTitle = info.is_retrograde ? "Retrograde — Inward Energy" : "Direct — Outward Energy";
+    const motionDesc = info.is_retrograde 
+        ? "This planet's energy is turned inward. Its lessons are being processed deeply before they can be fully expressed in the world. Patience is key."
+        : "Energy flows outward and expresses freely in the world. You can act on this planet's themes with more directness and speed.";
 
     container.innerHTML = `
         <div class="interp-planet-name">${name}</div>
         <div class="interp-placement">${info.sign} · ${info.degree_in_sign.toFixed(1)}°</div>
         <div class="interp-section-label">${role.role}</div>
         <p class="interp-body">${specificText}</p>
-        <div class="interp-section-label">Motion</div>
-        <p class="interp-body" style="color:var(--muted);font-size:0.85rem">${retroNote}</p>
+        
+        <div class="interp-section-label">Energy Motion</div>
+        <div style="font-weight:700; font-size:13px; color:var(--cta); margin-bottom:4px">${motionTitle}</div>
+        <p class="interp-body" style="font-size:12.5px; line-height:1.5">${motionDesc}</p>
+        
         <div class="interp-meta">
             ${statusTag}
             <span class="interp-tag">${info.sign}</span>
@@ -993,10 +998,16 @@ function populateAdvancedAnalysis(data) {
     const ashEl = document.getElementById('ashtakavargaGrid');
     if (ashEl && ashtakavarga?.houses) {
         const houses = ashtakavarga.houses;
+        const HOUSE_DOMAINS = {
+            1: "Self", 2: "Wealth", 3: "Effort", 4: "Home", 5: "Intellect",
+            6: "Daily Work", 7: "Partners", 8: "Change", 9: "Wisdom", 10: "Career",
+            11: "Gains", 12: "Solitude"
+        };
         ashEl.innerHTML = Object.keys(houses).sort((a, b) => +a - +b).map(k => {
             const h = houses[k];
-            return `<div class="ashtak-cell ${(h.strength || '').toLowerCase()}">
-                <div class="ashtak-house">H${k}</div>
+            return `<div class="ashtak-cell ${(h.strength || '').toLowerCase()}" onclick="interpretHouse(${k}, ${h.bindus ?? h.score ?? 0}, '${h.strength}')">
+                <div class="ashtak-house">House ${k}</div>
+                <div class="ashtak-domain">${HOUSE_DOMAINS[k] || ""}</div>
                 <div class="ashtak-score">${h.bindus ?? h.score ?? 0}</div>
                 <div class="ashtak-label">${h.strength}</div>
             </div>`;
@@ -1008,36 +1019,37 @@ function populateAdvancedAnalysis(data) {
     const dasEl  = document.getElementById('dasamsaCard');
     const d9 = divisional_charts?.d9;
     const d10 = divisional_charts?.d10;
+    const divImpact = divisional_charts?.impact || {};
     if (navEl && d9) {
-        navEl.innerHTML = _renderDivChart(d9.planets, 'D-9 Lagna: ' + (d9.lagna || '—') + ' · ' + (d9.purpose || ''));
+        navEl.innerHTML = _renderDivChart(d9.planets, 'Your Soul & Relationships (D-9)', divImpact.d9_impact);
     }
     if (dasEl && d10) {
-        dasEl.innerHTML = _renderDivChart(d10.planets, 'D-10 Lagna: ' + (d10.lagna || '—') + ' · ' + (d10.purpose || ''));
+        dasEl.innerHTML = _renderDivChart(d10.planets, 'Your Career Trajectory (D-10)', divImpact.d10_impact);
     }
 
     // Varshaphal
     const vpEl = document.getElementById('varshaphalCard');
     if (vpEl && varshaphal) {
-        const _VARSHA_THEMES = {
-            'Aries':       'Bold initiative and physical vitality define the year — act first, reflect later.',
-            'Taurus':      'Material consolidation and steady progress — wealth-building and patience are rewarded.',
-            'Gemini':      'A communicative, multi-directional year — networking and adaptability open the most doors.',
-            'Cancer':      'Home, family, and emotional foundations take centre stage — nurture before expanding.',
-            'Leo':         'Visibility and leadership — this is a year to be seen, to own your authority.',
-            'Virgo':       'Precision and service — improvements to systems, health, and craft yield the highest return.',
-            'Libra':       'Partnerships and balance — joint ventures and negotiations define the year\'s shape.',
-            'Scorpio':     'Depth and transformation — hidden assets surface; what is released makes room for power.',
-            'Sagittarius': 'Expansion and long-range vision — travel, learning, and ambitious bets pay off.',
-            'Capricorn':   'Discipline and ambition — structural achievements are possible but require sustained effort.',
-            'Aquarius':    'Innovation and community — unconventional moves and collective goals advance fastest.',
-            'Pisces':      'Intuition and spiritual deepening — trust inner signals over external noise this year.'
-        };
         const vpPlanets = varshaphal.planets || {};
         const planetRows = Object.entries(vpPlanets).map(([p, pd]) =>
             `<div class="varsha-planet-row"><span>${p}</span><span class="varsha-planet-sign">${pd.sign}</span></div>`
         ).join('');
         const lagnaSign = varshaphal.lagna?.sign || varshaphal.lagna || '—';
-        const vpTheme = _VARSHA_THEMES[lagnaSign] || varshaphal.interpretation || 'Solar Return Chart';
+        const vpTheme = varshaphal.interpretation || 'Solar Return Chart';
+        const imp = varshaphal.impact || {};
+        const focusList = Array.isArray(imp.focus_areas) ? imp.focus_areas.map(f => `<li>${f}</li>`).join('') : '';
+        const remedyList = Array.isArray(imp.remedies) ? imp.remedies.map(r => `<li>${r}</li>`).join('') : '';
+        const impactBlock = imp.theme ? `
+            <div class="varsha-impact">
+                <div class="varsha-impact-theme">${imp.theme}</div>
+                ${imp.what_it_means ? `<p class="varsha-impact-body">${imp.what_it_means}</p>` : ''}
+                <div class="varsha-impact-cols">
+                    ${imp.opportunity ? `<div class="varsha-impact-col"><div class="varsha-impact-label" style="color:#22c55e">Opportunity</div><p>${imp.opportunity}</p></div>` : ''}
+                    ${imp.risk ? `<div class="varsha-impact-col"><div class="varsha-impact-label" style="color:#ef4444">Watch Out</div><p>${imp.risk}</p></div>` : ''}
+                </div>
+                ${focusList ? `<div class="varsha-impact-label">Focus This Year</div><ul class="varsha-impact-list">${focusList}</ul>` : ''}
+                ${remedyList ? `<div class="varsha-impact-label">Remedies</div><ul class="varsha-impact-list">${remedyList}</ul>` : ''}
+            </div>` : '';
         vpEl.innerHTML = `
             <div class="varsha-grid">
                 <div class="varsha-cell"><div class="varsha-cell-label">Return Date</div><div class="varsha-cell-value" style="font-size:14px">${varshaphal.return_date || '—'}</div></div>
@@ -1048,11 +1060,43 @@ function populateAdvancedAnalysis(data) {
             <div class="varsha-planets">
                 <div class="varsha-section-title">${vpTheme}</div>
                 ${planetRows}
-            </div>`;
+            </div>
+            ${impactBlock}`;
     }
-}
+    }
 
-function _renderDivChart(chartData, title) {
+    function interpretHouse(num, score, strength) {
+    const container = document.getElementById('techInterpretation');
+    const houseData = (currentChartData.house_meanings || {})[num];
+
+    if (!houseData) {
+        container.innerHTML = `<div class="interp-placeholder">Select a house to see its strategic playbook.</div>`;
+        return;
+    }
+
+    const isStrong = strength.toLowerCase() === 'strong';
+    const strategy = isStrong ? houseData.if_strong : houseData.if_weak;
+    const statusColor = isStrong ? '#22c55e' : '#ef4444';
+
+    container.innerHTML = `
+        <div class="interp-planet-name">House ${num}: ${houseData.name}</div>
+        <div class="interp-placement">Score: ${score} · ${strength}</div>
+
+        <div class="interp-section-label">What this means for you</div>
+        <p class="interp-body">${houseData.impact}</p>
+
+        <div class="interp-section-label" style="color:${statusColor}">Your Strategic Playbook</div>
+        <p class="interp-body" style="font-weight:600; color:var(--text)">${strategy}</p>
+
+        <div class="interp-section-label">Cosmic Remedy</div>
+        <p class="interp-body"><em>${houseData.remedy}</em></p>
+    `;
+
+    document.querySelectorAll('.ashtak-cell').forEach(c => c.style.borderColor = 'var(--border)');
+    const activeCell = Array.from(document.querySelectorAll('.ashtak-cell')).find(c => c.innerText.includes(`House ${num}`));
+    if (activeCell) activeCell.style.borderColor = 'var(--cta)';
+    }
+function _renderDivChart(chartData, title, impactText) {
     if (!chartData) return '<div style="color:var(--muted);font-size:13px;padding:12px">Data unavailable</div>';
     const rows = Object.entries(chartData).map(([p, d]) =>
         `<div class="div-chart-planet">
@@ -1060,7 +1104,10 @@ function _renderDivChart(chartData, title) {
             <span class="div-planet-sign">${d.sign || '—'}</span>
             <span class="div-planet-deg" style="font-size:11px;color:var(--muted)">${d.natal_sign ? '← ' + d.natal_sign : ''}</span>
         </div>`).join('');
-    return `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;padding:12px 0 0">${title}</div>${rows}`;
+    const impactBlock = impactText
+        ? `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--text);line-height:1.6">${impactText}</div>`
+        : '';
+    return `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;padding:12px 0 0">${title}</div>${rows}${impactBlock}`;
 }
 
 // ── Progressive landing reveal ────────────────────────────
