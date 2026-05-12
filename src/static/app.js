@@ -283,8 +283,14 @@ function populateStrategicView(data) {
             banner.classList.add('hidden');
         }
     } else {
-        section.classList.add('hidden');
         banner.classList.add('hidden');
+        // Show connect nudge in the section
+        section.classList.remove('hidden');
+        alertList.innerHTML = `<div class="cal-connect-nudge">
+            <span>📅</span>
+            <span>Connect Google Calendar to get cosmic alerts for your upcoming high-stakes meetings, negotiations, and deadlines.</span>
+            <a href="/auth/google/login">Connect →</a>
+        </div>`;
     }
 
     // Morning Brief + Timing Advisor (fetched async after chart load)

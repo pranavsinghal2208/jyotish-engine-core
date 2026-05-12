@@ -2009,9 +2009,44 @@ body {
 .high-risk-bg { background: #fef2f2; color: #991b1b; }
 .low-risk-bg  { background: #f0fdf4; color: #166534; }
 
-.banner-icon { font-size: 20px; }
+/* Dark-theme overrides for alert banner */
+.results-screen .high-risk-bg {
+    background: rgba(239, 68, 68, 0.10);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.25) !important;
+}
+.results-screen .low-risk-bg {
+    background: rgba(34, 197, 94, 0.10);
+    color: #86efac;
+    border-color: rgba(34, 197, 94, 0.25) !important;
+}
+
+.banner-icon { font-size: 22px; }
 .banner-content { flex: 1; }
-.banner-action { font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+.banner-content #stakeBannerEvent { font-size: 15px; }
+.banner-content #stakeBannerReason { font-size: 13px; }
+.banner-action { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; }
+#stakeBannerAction { font-size: 13px !important; margin-top: 6px !important; }
+
+/* Calendar connect nudge */
+.cal-connect-nudge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: rgba(200,168,106,0.06);
+    border: 1px solid rgba(200,168,106,0.15);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+}
+.cal-connect-nudge a {
+    color: var(--gold, #C8A86A);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.cal-connect-nudge a:hover { opacity: 0.8; }
 
 
 /* ── WELCOME TOAST ── */
