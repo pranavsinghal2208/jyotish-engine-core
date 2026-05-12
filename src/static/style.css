@@ -2390,3 +2390,218 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     .view-panel { display: block !important; }
     .panel-inner { padding: 0; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   VISUAL IDENTITY v2 — Cosmic Warm Palette & Astrology Motifs
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Gold token ── */
+:root {
+    --gold:        #C8A86A;
+    --gold-dim:    rgba(200, 168, 106, 0.12);
+    --gold-border: rgba(200, 168, 106, 0.28);
+    --cosmic-dark: #0C0A1E;
+    --cosmic-mid:  #15112B;
+}
+
+/* ── Landing left: deep cosmic atmosphere ── */
+.landing-left {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle, rgba(255,255,255,0.60) 1px, transparent 1px) 28px 40px / 320px 320px,
+        radial-gradient(circle, rgba(255,255,255,0.40) 1px, transparent 1px) 170px 90px / 480px 480px,
+        radial-gradient(circle, rgba(255,255,255,0.30) 1px, transparent 1px) 75px 210px / 210px 210px,
+        radial-gradient(circle, rgba(200,168,106,0.40) 1px, transparent 1px) 250px 35px / 370px 370px,
+        radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px) 420px 160px / 190px 190px,
+        linear-gradient(155deg, #0C0A1E 0%, #15112B 55%, #0B1020 100%);
+    border-right: 1px solid rgba(200, 168, 106, 0.12);
+}
+
+/* Text on dark left */
+.landing-left .brand-mark     { color: var(--gold); }
+.landing-left .landing-h1     { color: #ffffff; }
+.landing-left .landing-sub    { color: rgba(255,255,255,0.58); }
+.landing-left .field-label    { color: rgba(255,255,255,0.50); }
+.landing-left .field-hint     { color: rgba(255,255,255,0.35); }
+.landing-left .dob-sep        { color: rgba(255,255,255,0.28); }
+.landing-left .dob-part-label { color: rgba(255,255,255,0.38); }
+
+/* Form inputs on dark */
+.landing-left .field-wrap input[type="text"],
+.landing-left .field-wrap input[type="time"],
+.landing-left .dob-part {
+    background:   rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.14);
+    color:        #ffffff;
+}
+.landing-left .field-wrap input::placeholder,
+.landing-left .dob-part::placeholder { color: rgba(255,255,255,0.28); }
+.landing-left .field-wrap input:focus,
+.landing-left .dob-part:focus {
+    border-color: var(--gold);
+    box-shadow:   0 0 0 3px rgba(200,168,106,0.15);
+    background:   rgba(255,255,255,0.10);
+}
+
+/* Gender toggle on dark */
+.landing-left .gender-btn {
+    background:   rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+    color:        rgba(255,255,255,0.58);
+}
+.landing-left .gender-btn.active {
+    background:   rgba(200,168,106,0.18);
+    border-color: var(--gold);
+    color:        var(--gold);
+}
+
+/* Feature pills on dark */
+.landing-left .pill {
+    background:   rgba(200,168,106,0.08);
+    border-color: rgba(200,168,106,0.22);
+    color:        rgba(255,255,255,0.80);
+}
+.landing-left .pill-ex { color: var(--gold); }
+
+/* Trust strip on dark */
+.landing-left .landing-trust  { border-top-color: rgba(255,255,255,0.08); }
+.landing-left .trust-item     { color: rgba(255,255,255,0.38); }
+.landing-left .trust-item svg { stroke: rgba(200,168,106,0.55); }
+
+/* City autocomplete on dark */
+.landing-left .city-dropdown {
+    background:   #1A1632;
+    border-color: rgba(200,168,106,0.20);
+    box-shadow:   0 8px 24px rgba(0,0,0,0.50);
+}
+.landing-left .city-item       { color: rgba(255,255,255,0.80); }
+.landing-left .city-item:hover { background: rgba(200,168,106,0.10); color: #fff; }
+
+/* ── Landing right: matching dark ── */
+.landing-right {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle, rgba(255,255,255,0.45) 1px, transparent 1px) 85px 65px / 290px 290px,
+        radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px) 210px 170px / 430px 430px,
+        radial-gradient(circle, rgba(200,168,106,0.28) 1px, transparent 1px) 330px 45px / 370px 370px,
+        linear-gradient(155deg, #100E24 0%, #1A162E 100%);
+}
+
+/* Preview labels gold */
+.preview-label {
+    color:          var(--gold);
+    letter-spacing: 0.10em;
+    font-size:      11px;
+    font-weight:    700;
+}
+
+/* ── Chart motif: cosmic gold treatment ── */
+.chart-motif-wrap {
+    position:   relative;
+    min-height: 280px;
+    display:    flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-motif {
+    background:   rgba(12,10,30,0.92);
+    border-color: rgba(200,168,106,0.30);
+    box-shadow:   0 0 50px rgba(200,168,106,0.12), 0 8px 32px rgba(0,0,0,0.50);
+}
+.motif-circle { border-color: rgba(200,168,106,0.20); }
+.motif-line   { background:   rgba(200,168,106,0.12); }
+.motif-planet {
+    background:  linear-gradient(135deg, #C8A86A 0%, #E8963C 100%);
+    color:       #0C0A1E;
+    font-weight: 800;
+    box-shadow:  0 0 16px rgba(200,168,106,0.60);
+}
+
+/* ── Zodiac ring around chart motif ── */
+.zodiac-ring {
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    width:         262px;
+    height:        262px;
+    transform:     translate(-50%, -50%);
+    border-radius: 50%;
+    border:        1px solid rgba(200,168,106,0.12);
+    pointer-events: none;
+}
+.zodiac-sign {
+    position:        absolute;
+    top:             50%;
+    left:            50%;
+    width:           18px;
+    height:          12px;
+    margin:          -9px -6px;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    font-size:       9px;
+    font-weight:     600;
+    letter-spacing:  0.02em;
+    line-height:     1;
+    color:           rgba(200,168,106,0.55);
+    font-family:     'Inter', sans-serif;
+}
+.zodiac-sign:nth-child(1)  { transform: rotate(  0deg) translateY(-130px) rotate(  0deg); }
+.zodiac-sign:nth-child(2)  { transform: rotate( 30deg) translateY(-130px) rotate(-30deg); }
+.zodiac-sign:nth-child(3)  { transform: rotate( 60deg) translateY(-130px) rotate(-60deg); }
+.zodiac-sign:nth-child(4)  { transform: rotate( 90deg) translateY(-130px) rotate(-90deg); }
+.zodiac-sign:nth-child(5)  { transform: rotate(120deg) translateY(-130px) rotate(-120deg); }
+.zodiac-sign:nth-child(6)  { transform: rotate(150deg) translateY(-130px) rotate(-150deg); }
+.zodiac-sign:nth-child(7)  { transform: rotate(180deg) translateY(-130px) rotate(-180deg); }
+.zodiac-sign:nth-child(8)  { transform: rotate(210deg) translateY(-130px) rotate(-210deg); }
+.zodiac-sign:nth-child(9)  { transform: rotate(240deg) translateY(-130px) rotate(-240deg); }
+.zodiac-sign:nth-child(10) { transform: rotate(270deg) translateY(-130px) rotate(-270deg); }
+.zodiac-sign:nth-child(11) { transform: rotate(300deg) translateY(-130px) rotate(-300deg); }
+.zodiac-sign:nth-child(12) { transform: rotate(330deg) translateY(-130px) rotate(-330deg); }
+
+/* ── Preview cards on dark right ── */
+.preview-depth-card {
+    background:   rgba(18,14,38,0.92);
+    border-color: rgba(200,168,106,0.12);
+}
+.preview-card-tag {
+    color:      var(--gold);
+    background: rgba(200,168,106,0.10);
+    border:     none;
+}
+.preview-dasha-card,
+.preview-actions-card {
+    background:   rgba(18,14,38,0.72);
+    border-color: rgba(200,168,106,0.10);
+}
+.mini-label         { color: var(--gold); }
+.cred-item          { color: rgba(255,255,255,0.35); }
+.cred-dot           { color: rgba(200,168,106,0.35); }
+.preview-cred-strip { border-top-color: rgba(200,168,106,0.10); }
+.preview-actions-cta { color: var(--gold); opacity: 0.8; }
+
+/* ── Results: gold section accent bars ── */
+.section-label   { border-left: 2px solid var(--gold); padding-left: 10px; }
+.adv-block-label { border-left: 2px solid var(--gold); padding-left: 10px; }
+.card-label      { border-left: 2px solid var(--gold); padding-left: 8px; }
+
+/* ── Mobile: dark border on stacked layout ── */
+@media (max-width: 768px) {
+    .landing-left  { border-bottom: 1px solid rgba(200,168,106,0.12); }
+    .zodiac-ring   { width: 220px; height: 220px; }
+    .zodiac-sign:nth-child(1)  { transform: rotate(  0deg) translateY(-109px) rotate(  0deg); }
+    .zodiac-sign:nth-child(2)  { transform: rotate( 30deg) translateY(-109px) rotate(-30deg); }
+    .zodiac-sign:nth-child(3)  { transform: rotate( 60deg) translateY(-109px) rotate(-60deg); }
+    .zodiac-sign:nth-child(4)  { transform: rotate( 90deg) translateY(-109px) rotate(-90deg); }
+    .zodiac-sign:nth-child(5)  { transform: rotate(120deg) translateY(-109px) rotate(-120deg); }
+    .zodiac-sign:nth-child(6)  { transform: rotate(150deg) translateY(-109px) rotate(-150deg); }
+    .zodiac-sign:nth-child(7)  { transform: rotate(180deg) translateY(-109px) rotate(-180deg); }
+    .zodiac-sign:nth-child(8)  { transform: rotate(210deg) translateY(-109px) rotate(-210deg); }
+    .zodiac-sign:nth-child(9)  { transform: rotate(240deg) translateY(-109px) rotate(-240deg); }
+    .zodiac-sign:nth-child(10) { transform: rotate(270deg) translateY(-109px) rotate(-270deg); }
+    .zodiac-sign:nth-child(11) { transform: rotate(300deg) translateY(-109px) rotate(-300deg); }
+    .zodiac-sign:nth-child(12) { transform: rotate(330deg) translateY(-109px) rotate(-330deg); }
+}
