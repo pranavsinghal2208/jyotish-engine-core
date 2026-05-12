@@ -2743,6 +2743,10 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 
 /* ── Component dark overrides (cards not covered above) ── */
 
+/* Numerology profile header */
+.results-screen .jy-profile-name { color: rgba(255,255,255,0.92); }
+.results-screen .jy-profile-meta { color: rgba(255,255,255,0.45); }
+
 /* Numerology number cards */
 .results-screen .jy-num-card {
     background: rgba(21,17,43,0.82);
