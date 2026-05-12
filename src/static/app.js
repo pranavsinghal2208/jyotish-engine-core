@@ -58,10 +58,14 @@ function initHeroSearch() {
 
         debounce = setTimeout(async () => {
             try {
-                const res  = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&addressdetails=1&limit=5`);
+                const res  = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&addressdetails=1&limit=10`);
                 const data = await res.json();
+                // Keep only city/town/village/district results — exclude roads, railways, junctions
+                const CITY_TYPES = ['city','town','village','municipality','district','county','administrative','state_district','suburb'];
+                const cities = data.filter(r => CITY_TYPES.includes(r.addresstype) || r.class === 'boundary' || (r.class === 'place' && r.type !== 'postcode'));
+                const shown = cities.length > 0 ? cities.slice(0, 5) : data.slice(0, 5);
                 cityResults.innerHTML = '';
-                data.forEach(city => {
+                shown.forEach(city => {
                     const label = city.display_name.split(',').slice(0, 2).join(', ');
                     const div   = document.createElement('div');
                     div.className = 'city-item';

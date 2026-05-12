@@ -2115,6 +2115,17 @@ body {
 
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 768px) {
+    /* Technical view: side-by-side → stacked */
+    .tech-layout {
+        flex-direction: column !important;
+    }
+    .tech-left {
+        width: 100% !important;
+    }
+    .tech-right {
+        width: 100%;
+    }
+
     /* Landing: 2-col → 1-col */
     .landing-screen {
         grid-template-columns: 1fr;
