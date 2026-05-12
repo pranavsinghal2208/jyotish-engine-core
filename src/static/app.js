@@ -890,6 +890,15 @@ function populateTechnicalView() {
     // Dasha timeline
     const dashaTimeline = document.getElementById('dashaTimeline');
     dashaTimeline.innerHTML = '';
+    // Discovery hint
+    const dashaHint = dashaTimeline.previousElementSibling;
+    if (dashaHint && !document.getElementById('dashaHint')) {
+        const hint = document.createElement('div');
+        hint.id = 'dashaHint';
+        hint.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:10px;font-style:italic';
+        hint.textContent = 'Tap any period to see what it means for you — narrative, what to expect, and daily practices.';
+        dashaTimeline.parentElement.insertBefore(hint, dashaTimeline);
+    }
     dashas.forEach(md => {
         const isActiveMD = md.lord === activeMD;
         const item       = document.createElement('div');
@@ -1029,6 +1038,14 @@ function populateAdvancedAnalysis(data) {
             6: "Daily Work", 7: "Partners", 8: "Change", 9: "Wisdom", 10: "Career",
             11: "Gains", 12: "Solitude"
         };
+        // Legend above the grid
+        const ashParent = ashEl.parentElement;
+        if (ashParent && !ashParent.querySelector('.ashtak-legend')) {
+            const legend = document.createElement('div');
+            legend.className = 'ashtak-legend';
+            legend.innerHTML = `Each house score is out of 56 max. <strong style="color:#22c55e">28+ = Strong</strong> · <strong style="color:#ef4444">Below 28 = Weak</strong>. Tap any house for your strategic playbook.`;
+            ashParent.insertBefore(legend, ashEl);
+        }
         ashEl.innerHTML = Object.keys(houses).sort((a, b) => +a - +b).map(k => {
             const h = houses[k];
             return `<div class="ashtak-cell ${(h.strength || '').toLowerCase()}" onclick="interpretHouse(${k}, ${h.bindus ?? h.score ?? 0}, '${h.strength}')">

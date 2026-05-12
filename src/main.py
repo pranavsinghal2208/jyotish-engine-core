@@ -134,8 +134,11 @@ async def google_login(request: Request):
     """Initiates Google OAuth Flow."""
     redirect_uri = _get_redirect_uri(request)
     try:
-        auth_url, state = google_auth.get_login_url(redirect_uri)
-        return RedirectResponse(auth_url)
+        auth_url, state, code_verifier = google_auth.get_login_url(redirect_uri)
+        response = RedirectResponse(auth_url)
+        if code_verifier:
+            response.set_cookie("_gcv", code_verifier, httponly=True, max_age=600, samesite="lax")
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -150,7 +153,8 @@ async def google_callback(request: Request, code: str = None, error: str = None,
     redirect_uri = _get_redirect_uri(request)
 
     try:
-        creds_dict = google_auth.exchange_code(code, redirect_uri)
+        code_verifier = request.cookies.get("_gcv")
+        creds_dict = google_auth.exchange_code(code, redirect_uri, code_verifier=code_verifier)
         user_email = creds_dict.get("email") or FALLBACK_EMAIL
 
         user = db.query(User).filter(User.email == user_email).first()

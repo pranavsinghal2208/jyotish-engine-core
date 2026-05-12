@@ -587,6 +587,23 @@ async function loadCompatibilityV2() {
                 <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border); font-size:13px; line-height:1.6; color:var(--text)">
                     ${d.interpretation || 'This combination suggests a unique energetic resonance. Focus on shared goals and clear communication.'}
                 </div>
+
+                <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--border)">
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Why this score?</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                        <div style="background:var(--surface);border-radius:10px;padding:10px;border:1px solid var(--border)">
+                            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">${aName} leads · ${c.dynamics?.a_leads_b?.score ?? '—'}/100</div>
+                            ${(c.dynamics?.a_leads_b?.pros || []).map(p => `<div style="font-size:12px;color:#22c55e;line-height:1.4">+ ${p}</div>`).join('')}
+                            ${(c.dynamics?.a_leads_b?.cons || []).map(p => `<div style="font-size:12px;color:#ef4444;line-height:1.4">− ${p}</div>`).join('')}
+                        </div>
+                        <div style="background:var(--surface);border-radius:10px;padding:10px;border:1px solid var(--border)">
+                            <div style="font-size:11px;color:var(--muted);margin-bottom:4px">${bName} leads · ${c.dynamics?.b_leads_a?.score ?? '—'}/100</div>
+                            ${(c.dynamics?.b_leads_a?.pros || []).map(p => `<div style="font-size:12px;color:#22c55e;line-height:1.4">+ ${p}</div>`).join('')}
+                            ${(c.dynamics?.b_leads_a?.cons || []).map(p => `<div style="font-size:12px;color:#ef4444;line-height:1.4">− ${p}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div style="font-size:12px;color:var(--muted);margin-top:8px">${c.summary || ''}</div>
+                </div>
             </div>`;
     } catch (e) {
         console.error('Compat error:', e);
