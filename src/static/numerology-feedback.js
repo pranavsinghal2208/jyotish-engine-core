@@ -411,16 +411,16 @@ async function loadForecast(yearOffset) {
             const borderHighlight = isAction ? ';border-color:rgba(34,197,94,0.35)' : isRest ? ';border-color:rgba(245,158,11,0.25)' : '';
             const dasha = dashaMap[m.month];
             const dashaStrip = dasha
-                ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${dasha.md_lord} MD · ${dasha.ad_lord} Bhukti">${dasha.md_lord} · ${dasha.ad_lord}</div>`
+                ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${dasha.md_lord} MD · ${dasha.ad_lord} Bhukti">${dasha.md_lord} · ${dasha.ad_lord}</div>`
                 : '';
             return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 12px;box-shadow:var(--shadow)${borderHighlight}">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">${m.month_name}</div>
+                    <div style="font-size:13px;font-weight:700;color:var(--muted)">${m.month_name}</div>
                     ${tag}
                 </div>
                 <div style="font-size:32px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:6px">${m.personal_month}</div>
-                <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">${m.theme}</div>
-                <div style="font-size:11px;color:var(--muted)">${m.energy} · ${m.planet}</div>
+                <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px">${m.theme}</div>
+                <div style="font-size:13px;color:var(--muted)">${m.energy} · ${m.planet}</div>
                 ${dashaStrip}
             </div>`;
         }).join('');
