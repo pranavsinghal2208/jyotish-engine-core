@@ -2595,6 +2595,14 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 
 .results-screen {
     background: var(--cosmic-dark, #0C0A1E);
+    /* Override CSS variables so ALL inline styles using var(--surface/text/muted/border/bg)
+       automatically pick up dark values — fixes SVG Kundali cells, month cards, tables */
+    --surface: rgba(21, 17, 43, 0.88);
+    --bg:      rgba(12, 10, 30, 0.95);
+    --text:    rgba(255, 255, 255, 0.88);
+    --muted:   rgba(255, 255, 255, 0.45);
+    --border:  rgba(200, 168, 106, 0.12);
+    --shadow:  0 4px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* Nav bar — dark glass */
