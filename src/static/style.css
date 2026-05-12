@@ -2741,6 +2741,81 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .dc-compat-range, .jy-loshu-legend         { font-size: 12px; }
 .kundali-legend span                       { font-size: 12px; }
 
+/* ── Component dark overrides (cards not covered above) ── */
+
+/* Numerology number cards */
+.results-screen .jy-num-card {
+    background: rgba(21,17,43,0.82);
+    border-color: rgba(200,168,106,0.12);
+}
+.results-screen .jy-num-label    { color: rgba(200,168,106,0.75); font-size: 12px; }
+.results-screen .jy-num-value    { color: var(--gold,#C8A86A); }
+
+/* Lo Shu grid cells */
+.results-screen .jy-loshu-table td.absent  { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.22); }
+.results-screen .jy-loshu-table td.present { background: rgba(200,168,106,0.14); color: var(--gold,#C8A86A); }
+
+/* Yoga cards */
+.results-screen .yoga-card       { background: rgba(21,17,43,0.82); border-color: rgba(200,168,106,0.12); }
+.results-screen .yoga-card-type  { color: rgba(200,168,106,0.65); }
+.results-screen .yoga-card-desc  { color: rgba(255,255,255,0.80); }
+.results-screen .yoga-card-impact{ color: rgba(255,255,255,0.50); }
+.results-screen .yoga-card-strength         { background: rgba(99,91,255,0.15); color: #a5b4fc; }
+.results-screen .yoga-card-strength.very-strong { background: rgba(34,197,94,0.14); color: #4ade80; }
+
+/* Sade Sati / Mangal Dosha */
+.results-screen .adv-status-desc { color: rgba(255,255,255,0.75); }
+.results-screen .adv-status-title{ color: rgba(255,255,255,0.90); }
+
+/* Timing action cards */
+.results-screen .timing-action-card  { background: rgba(21,17,43,0.82); border-color: rgba(200,168,106,0.10); }
+.results-screen .timing-action-label { color: rgba(255,255,255,0.88); }
+.results-screen .timing-action-advice{ color: rgba(255,255,255,0.65); }
+.results-screen .timing-action-window{ color: rgba(200,168,106,0.65); }
+.results-screen .timing-action-score { color: var(--gold,#C8A86A); }
+.results-screen .timing-desc         { color: rgba(255,255,255,0.78); }
+.results-screen .timing-dasha-note   { color: rgba(255,255,255,0.40); }
+
+/* "Best Day" box */
+.results-screen .timing-best-day   { background: rgba(200,168,106,0.07); border: 1px solid rgba(200,168,106,0.14); }
+.results-screen .timing-best-label { color: rgba(200,168,106,0.65); }
+.results-screen .timing-best-value { color: rgba(255,255,255,0.90); }
+.results-screen .timing-best-date  { color: rgba(255,255,255,0.42); }
+
+/* Morning brief cycle boxes (Personal Day / Moon / Lucky Color) */
+.results-screen .brief-cycle       { background: rgba(21,17,43,0.75); border: 1px solid rgba(200,168,106,0.10); }
+.results-screen .brief-cycle-label { color: rgba(200,168,106,0.65); }
+.results-screen .brief-cycle-theme { color: rgba(255,255,255,0.50); }
+.results-screen .brief-highlight   { color: rgba(255,255,255,0.80); border-bottom-color: rgba(200,168,106,0.08); }
+.results-screen .brief-action      { color: rgba(255,255,255,0.50); border-top-color: rgba(200,168,106,0.08); }
+.results-screen .brief-action strong{ color: rgba(255,255,255,0.85); }
+.results-screen .brief-reconcile   { color: rgba(255,255,255,0.60); background: rgba(99,91,255,0.08); }
+
+/* ════════════════════════════════════════════════════
+   TYPOGRAPHY SCALE — font sizes bumped up globally
+   ════════════════════════════════════════════════════ */
+
+/* Labels that were 10–11px */
+.brief-cycle-label    { font-size: 12px; }
+.brief-cycle-theme    { font-size: 12px; }
+.timing-best-label    { font-size: 12px; }
+.timing-best-date     { font-size: 12px; }
+.timing-action-window { font-size: 12px; }
+.timing-dasha-note    { font-size: 13px; }
+.yoga-card-type       { font-size: 12px; }
+.yoga-card-strength   { font-size: 12px; }
+.jy-num-label         { font-size: 12px; }
+.adv-status-badge     { font-size: 12px; }
+
+/* Body text that was 12–13px */
+.timing-action-advice { font-size: 14px; }
+.yoga-card-desc       { font-size: 14px; }
+.yoga-card-impact     { font-size: 13px; }
+.brief-highlight      { font-size: 14px; }
+.brief-action         { font-size: 14px; }
+.brief-reconcile      { font-size: 13px; }
+.adv-status-desc      { font-size: 14px; }
+
 /* ── Mobile: dark border on stacked layout ── */
 @media (max-width: 768px) {
     .landing-left  { border-bottom: 1px solid rgba(200,168,106,0.12); }
