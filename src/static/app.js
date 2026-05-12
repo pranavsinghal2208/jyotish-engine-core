@@ -139,11 +139,35 @@ function showWelcomeToast(email) {
     setTimeout(() => { toast.classList.remove("reveal"); setTimeout(() => toast.remove(), 400); }, 4000);
 }
 
+// ── Consent ───────────────────────────────────────────────
+function showConsentIfNeeded(onAccepted) {
+    if (localStorage.getItem('cosmicOsConsent') === '1') { onAccepted(); return; }
+    window._pendingChartGenerate = onAccepted;
+    document.getElementById('consentModal').classList.remove('hidden');
+}
+function acceptConsent() {
+    localStorage.setItem('cosmicOsConsent', '1');
+    document.getElementById('consentModal').classList.add('hidden');
+    if (window._pendingChartGenerate) { window._pendingChartGenerate(); window._pendingChartGenerate = null; }
+}
+function declineConsent() {
+    document.getElementById('consentModal').classList.add('hidden');
+    const btn = document.getElementById('generateBtn');
+    if (btn) { btn.textContent = 'Generate My Chart →'; btn.disabled = false; }
+}
+
 // ── Generate chart ────────────────────────────────────────
 async function generateChart() {
     const btn  = document.getElementById('generateBtn');
     const name = document.getElementById('fullName')?.value.trim();
     if (name) localStorage.setItem('cosmicOsName', name);
+
+    // Show consent modal on first-ever chart generation
+    if (localStorage.getItem('cosmicOsConsent') !== '1') {
+        btn.textContent = 'Generate My Chart →'; btn.disabled = false;
+        showConsentIfNeeded(generateChart);
+        return;
+    }
 
     btn.textContent = 'Computing…';
     btn.disabled    = true;
@@ -1034,21 +1058,23 @@ function populateAdvancedAnalysis(data) {
     if (ashEl && ashtakavarga?.houses) {
         const houses = ashtakavarga.houses;
         const HOUSE_DOMAINS = {
-            1: "Self", 2: "Wealth", 3: "Effort", 4: "Home", 5: "Intellect",
-            6: "Daily Work", 7: "Partners", 8: "Change", 9: "Wisdom", 10: "Career",
-            11: "Gains", 12: "Solitude"
+            1: "Self & Health", 2: "Wealth & Family", 3: "Effort & Skills",
+            4: "Home & Peace", 5: "Intellect & Luck", 6: "Work & Obstacles",
+            7: "Marriage & Partners", 8: "Change & Secrets", 9: "Fortune & Wisdom",
+            10: "Career & Status", 11: "Gains & Network", 12: "Expenses & Solitude"
         };
         // Legend above the grid
         const ashParent = ashEl.parentElement;
         if (ashParent && !ashParent.querySelector('.ashtak-legend')) {
             const legend = document.createElement('div');
             legend.className = 'ashtak-legend';
-            legend.innerHTML = `Each house score is out of 56 max. <strong style="color:#22c55e">28+ = Strong</strong> · <strong style="color:#ef4444">Below 28 = Weak</strong>. Tap any house for your strategic playbook.`;
+            legend.innerHTML = `Score out of 8 per house. <strong style="color:#16a34a">6–8 = Strong</strong> · <strong style="color:#d97706">4–5 = Moderate</strong> · <strong style="color:#dc2626">0–3 = Weak</strong>. Tap any house for your strategic playbook.`;
             ashParent.insertBefore(legend, ashEl);
         }
         ashEl.innerHTML = Object.keys(houses).sort((a, b) => +a - +b).map(k => {
             const h = houses[k];
-            return `<div class="ashtak-cell ${(h.strength || '').toLowerCase()}" onclick="interpretHouse(${k}, ${h.bindus ?? h.score ?? 0}, '${h.strength}')">
+            const str = (h.strength || 'Weak').toLowerCase();
+            return `<div class="ashtak-cell ${str}" onclick="interpretHouse(${k}, ${h.bindus ?? h.score ?? 0}, '${h.strength}')">
                 <div class="ashtak-house">House ${k}</div>
                 <div class="ashtak-domain">${HOUSE_DOMAINS[k] || ""}</div>
                 <div class="ashtak-score">${h.bindus ?? h.score ?? 0}</div>

@@ -248,15 +248,13 @@
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
                 </button>
+                <button onclick="window.print()" class="pdf-btn-inline" title="Save as PDF">⬇ PDF</button>
             </div>
         </header>
 
         <!-- STRATEGIC VIEW -->
         <div id="strategicView" class="view-panel">
             <div class="panel-inner">
-            <div style="text-align:right;margin-bottom:8px">
-                <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
-            </div>
 
                 <div class="hero-card">
                     <div class="hero-card-label">Today's theme <span style="font-weight:400;opacity:0.6;text-transform:none;letter-spacing:0;font-size:10px">· current sky, same date for everyone</span></div>
@@ -378,9 +376,6 @@
     <!-- TECHNICAL VIEW -->
     <div id="technicalView" class="view-panel hidden">
         <div class="panel-inner tech-layout">
-        <div style="text-align:right;margin-bottom:8px">
-            <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
-        </div>
 
             <div class="tech-left">
                 <div class="card">
@@ -476,9 +471,6 @@
     <!-- NUMEROLOGY VIEW -->
     <div id="numerologyView" class="view-panel hidden">
         <div class="panel-inner">
-            <div style="text-align:right;margin-bottom:8px">
-                <button onclick="window.print()" class="pdf-btn-inline">⬇ Save as PDF</button>
-            </div>
 
             <!-- Loading state -->
             <div id="jyLoadingState" class="jy-loading hidden">Computing your numerology profile…</div>
@@ -685,6 +677,28 @@
                 </div>
             </form>
             <div id="feedbackStatus" class="feedback-status hidden"></div>
+        </div>
+    </div>
+
+    <!-- ── CONSENT MODAL ── -->
+    <div id="consentModal" class="consent-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+        <div class="consent-box">
+            <div class="consent-icon">🔒</div>
+            <h2 class="consent-title" id="consentTitle">Before we begin</h2>
+            <p class="consent-body">
+                To generate your cosmic reading, we store your <strong>birth details</strong> (date, time, city) on our secure servers. This is used solely to personalise your chart and is never sold or shared with third parties.
+            </p>
+            <ul class="consent-list">
+                <li>Your data is encrypted and stored on Render (EU/US infrastructure)</li>
+                <li>Google Calendar data is used only to generate your alerts — we do not store calendar content</li>
+                <li>You can delete your data at any time by emailing <strong>privacy@cosmicos.app</strong></li>
+                <li>No ads. No third-party data sharing. Ever.</li>
+            </ul>
+            <div class="consent-actions">
+                <button class="consent-agree" onclick="acceptConsent()">I Agree — Show My Chart</button>
+                <button class="consent-decline" onclick="declineConsent()">Not Now</button>
+            </div>
+            <div class="consent-footer">By continuing you accept our <a href="#" onclick="return false">Privacy Policy</a></div>
         </div>
     </div>
 

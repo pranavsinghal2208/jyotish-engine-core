@@ -1358,6 +1358,115 @@ body {
     pointer-events: none;
 }
 
+/* ── Consent Modal ── */
+.consent-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.consent-box {
+    background: #15112B;
+    border: 1px solid rgba(200,168,106,0.25);
+    border-radius: 20px;
+    padding: 32px 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+}
+
+.consent-icon { font-size: 32px; margin-bottom: 12px; }
+
+.consent-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+}
+
+.consent-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.consent-list {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.consent-list li {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.consent-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #C8A86A;
+    font-weight: 700;
+}
+
+.consent-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.consent-agree {
+    background: #C8A86A;
+    color: #0C0A1E;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.2s;
+}
+.consent-agree:hover { opacity: 0.88; }
+
+.consent-decline {
+    background: transparent;
+    color: rgba(255,255,255,0.40);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+.consent-decline:hover { color: rgba(255,255,255,0.65); }
+
+.consent-footer {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+}
+.consent-footer a { color: rgba(200,168,106,0.6); text-decoration: underline; }
+
 /* ── Utilities ── */
 .hidden { display: none !important; }
 
@@ -1866,47 +1975,65 @@ body {
 
 .ashtak-cell {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 12px 8px;
+    padding: 12px 8px 10px;
     text-align: center;
-    transition: transform 0.2s ease;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+    position: relative;
 }
 
 .ashtak-cell:hover { transform: translateY(-2px); border-color: var(--cta); }
 
 .ashtak-house {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     color: var(--muted);
 }
 
 .ashtak-domain {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text);
     margin: 3px 0 6px;
+    line-height: 1.3;
 }
 
 .ashtak-score {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 800;
     color: var(--text);
     line-height: 1;
 }
 
 .ashtak-label {
-    font-size: 11px;
+    display: inline-block;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    margin-top: 5px;
+    letter-spacing: 0.06em;
+    margin-top: 6px;
+    padding: 2px 7px;
+    border-radius: 20px;
 }
 
-.ashtak-cell.strong { border-color: #22c55e; background: rgba(34,197,94,0.03); }
+/* Strong: green */
+.ashtak-cell.strong { border-color: #22c55e; background: rgba(34,197,94,0.05); }
 .ashtak-cell.strong .ashtak-score { color: #16a34a; }
-.ashtak-cell.weak { border-color: #f59e0b; background: rgba(245,158,11,0.03); }
+.ashtak-cell.strong .ashtak-label { background: rgba(34,197,94,0.15); color: #16a34a; }
+
+/* Moderate: amber */
+.ashtak-cell.moderate { border-color: #f59e0b; background: rgba(245,158,11,0.04); }
+.ashtak-cell.moderate .ashtak-score { color: #d97706; }
+.ashtak-cell.moderate .ashtak-label { background: rgba(245,158,11,0.15); color: #b45309; }
+
+/* Weak: red */
+.ashtak-cell.weak { border-color: #ef4444; background: rgba(239,68,68,0.04); }
+.ashtak-cell.weak .ashtak-score { color: #dc2626; }
+.ashtak-cell.weak .ashtak-label { background: rgba(239,68,68,0.12); color: #dc2626; }
 
 /* Divisional charts */
 .div-chart-planet {
@@ -2142,10 +2269,10 @@ body {
 
     /* Results header: compact + scrollable tabs */
     .results-header {
-        gap: 12px;
-        padding: 0 16px;
+        gap: 8px;
+        padding: 0 14px;
         height: auto;
-        min-height: 56px;
+        min-height: 52px;
         flex-wrap: wrap;
     }
     .header-brand {
@@ -2157,12 +2284,23 @@ body {
         scrollbar-width: none;
         flex: 1 1 100%;
         order: 3;
-        padding-bottom: 8px;
+        padding-bottom: 6px;
     }
     .tab-nav::-webkit-scrollbar { display: none; }
-    .auth-links, #headerLogoutBtn, #editDetailsBtn, #shareReadingBtn {
+    .auth-links, #headerLogoutBtn, #editDetailsBtn {
         order: 2;
     }
+    /* Hide Cosmic ID download + Share button in mobile header — too cluttered */
+    .header-right a[download], #shareReadingBtn {
+        display: none !important;
+    }
+    /* Edit Details: text only, no border on mobile */
+    #editDetailsBtn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+    /* Save as PDF: move to top of each view panel — hide the floating one */
+    .pdf-btn-inline { font-size: 11px; }
 
     /* Landing trust bar: wrap */
     .landing-trust {
@@ -2764,6 +2902,15 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .jy-compat-badge.compat-high { background: rgba(34,197,94,0.15); color: #4ade80; }
 .results-screen .jy-compat-badge.compat-mid  { background: rgba(245,158,11,0.15); color: #fbbf24; }
 .results-screen .jy-compat-badge.compat-low  { background: rgba(239,68,68,0.15);  color: #f87171; }
+
+/* Ashtak cells on dark bg — keep colour classes vivid */
+.results-screen .ashtak-cell { background: rgba(21,17,43,0.70); border-color: rgba(200,168,106,0.12); }
+.results-screen .ashtak-house { color: rgba(255,255,255,0.38); }
+.results-screen .ashtak-domain { color: rgba(255,255,255,0.80); }
+.results-screen .ashtak-cell.strong { border-color: #22c55e; background: rgba(34,197,94,0.08); }
+.results-screen .ashtak-cell.moderate { border-color: #f59e0b; background: rgba(245,158,11,0.07); }
+.results-screen .ashtak-cell.weak { border-color: #ef4444; background: rgba(239,68,68,0.07); }
+.results-screen .ashtak-legend { color: rgba(255,255,255,0.45); }
 
 /* ════════════════════════════════════════════════════
    TYPOGRAPHY SCALE — Consistent font sizes throughout
