@@ -267,6 +267,7 @@
                     </div>
                 </div>
 
+                <div class="section-title">Today's Energy</div>
                 <div class="hero-card">
                     <div id="luckyNumberBadge" class="lucky-number-badge hidden">
                         Lucky Number <span id="luckyNumberValue">—</span>
@@ -276,14 +277,14 @@
                     <div id="energySignature" class="hero-card-sign">—</div>
                     <p id="upliftNarrative" class="hero-card-body"></p>
                     <div id="nakshatraStrip" class="nakshatra-strip hidden">
-                        <span class="nak-label">Birth Nakshatra</span>
+                        <span class="nak-label">Birth Nakshatra <span class="qmark" data-tooltip="One of 27 lunar mansions in Vedic astrology. Your birth Nakshatra reveals deeper personality traits, a ruling deity, and specific themes your soul is here to work with.">?</span></span>
                         <span id="nakshatraName" class="nak-name"></span>
                         <span id="nakshatraMeta" class="nak-meta"></span>
                     </div>
                     <div id="panchangaStrip" class="panchanga-strip hidden">
-                        <span class="panch-item"><span class="panch-label">Tithi</span><span id="tithiName" class="panch-value"></span></span>
+                        <span class="panch-item"><span class="panch-label">Tithi <span class="qmark" data-tooltip="The lunar day in the Hindu calendar — one of 30 phases of the Moon's cycle. Each Tithi has a quality (auspicious, neutral, challenging) that affects the energy of activities done on that day.">?</span></span><span id="tithiName" class="panch-value"></span></span>
                         <span class="panch-dot">·</span>
-                        <span class="panch-item"><span class="panch-label">Yoga</span><span id="yogaName" class="panch-value"></span></span>
+                        <span class="panch-item"><span class="panch-label">Yoga <span class="qmark" data-tooltip="A daily combination formed by the Sun and Moon's combined longitude. 27 Yogas cycle through, each with a name and quality that influences the overall flavor of a day.">?</span></span><span id="yogaName" class="panch-value"></span></span>
                     </div>
                 </div>
 
@@ -304,16 +305,16 @@
 
                 <!-- Morning Brief — moved to top: most actionable daily content -->
                 <div id="morningBriefSection" class="hidden">
-                    <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
                         Today · Your Morning Brief
-                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">Sync to Calendar</span>
+                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500; font-weight:400; border-left:none; padding-left:0;">Sync to Calendar</span>
                     </div>
                     <div class="card brief-card" id="morningBriefCard"></div>
                 </div>
 
                 <!-- LUCKY WINDOWS (v2) -->
                 <div id="luckyWindowsSection" class="hidden">
-                    <div class="section-label">This Week · Best Days to Act</div>
+                    <div class="section-title">This Week · Best Days to Act</div>
                     <div class="card lucky-card">
                         <div id="luckyWindowsGrid" class="lucky-grid">
                             <!-- JS injected windows -->
@@ -328,11 +329,12 @@
 
                 <!-- Business Timing Advisor -->
                 <div id="timingAdvisorSection" class="hidden">
-                    <div class="section-label">This Week · When to Act</div>
+                    <div class="section-title">This Week · When to Act</div>
                     <div class="card" id="timingOverviewCard"></div>
                     <div id="timingActionsGrid" class="timing-grid"></div>
                 </div>
 
+                <div class="section-title">Today · Your Directives</div>
                 <div class="two-col">
                     <div id="superpowerList" class="card"></div>
                     <div class="card">
@@ -345,6 +347,7 @@
                     </div>
                 </div>
 
+                <div class="section-title">Life Timing · Your Current Chapter <span class="qmark tip-left" data-tooltip="A Vedic life chapter (Maha-Dasha) lasting 6–20 years, ruled by one planet. Inside it runs a sub-period (Bhukti) that fine-tunes the energy. You are always in one chapter and one sub-chapter simultaneously.">?</span></div>
                 <div class="card pulse-card">
                     <div class="card-label">Life Cycle · Dasha Intelligence</div>
                     <div class="pulse-row">
@@ -361,13 +364,13 @@
                 </div>
 
                 <div id="cosmicScheduleSection" class="hidden">
-                    <div class="section-label">Calendar performance alerts</div>
+                    <div class="section-title">Calendar · Performance Alerts</div>
                     <div id="alertList"></div>
                 </div>
 
                 <!-- REMEDIES & PROGRESS (v2) -->
                 <div id="remediesSection" class="hidden">
-                    <div class="section-label">Strategic Remedies & Progress Signals</div>
+                    <div class="section-title">Strategic Remedies & Progress Signals</div>
                     <div id="remediesGrid" class="remedies-grid"></div>
                 </div>
 
@@ -380,32 +383,33 @@
 
             <div class="tech-left">
                 <div class="card">
-                    <div class="card-label">Birth Chart · Kundali</div>
-                    <div class="card-hint">This is a map of where every planet was in the sky at the exact moment you were born. Each box is a zodiac sign; planets inside it show where their energy was concentrated for you. Tap a sign to read it.</div>
+                    <div class="card-label">Birth Chart · Kundali <span class="qmark" data-tooltip="A map of where every planet was in the sky at your exact birth moment. Each box is a zodiac sign; planets inside show where their energy was concentrated for you. Tap a planet to read its interpretation.">?</span></div>
+                    <div class="card-hint">A map of where every planet was in the sky at the exact moment you were born. Each box is a zodiac sign; planets inside it show where their energy was concentrated for you. Tap a sign to read it.</div>
                     <div id="kundaliChart"></div>
                     <div class="kundali-legend">
                         <span>Su = Sun</span><span>Mo = Moon</span><span>Ma = Mars</span>
                         <span>Me = Mercury</span><span>Ju = Jupiter</span><span>Ve = Venus</span>
                         <span>Sa = Saturn</span><span>Ra = Rahu</span><span>Ke = Ketu</span>
-                        <span>Lg = Lagna (Rising sign)</span>
+                        <span>Lg = Lagna <span class="qmark tip-right" data-tooltip="Your rising sign — the zodiac sign on the eastern horizon at the exact moment of your birth. The most personal point in your chart; governs your physical self, identity, and first impression.">?</span></span>
+                    </div>
+                </div>
+                <!-- Interpretation first (U-001: theme before data) -->
+                <div class="card interp-card">
+                    <div class="card-label">What this means for you</div>
+                    <div id="techInterpretation" class="interp-placeholder">
+                        Tap any planet in the chart above to see its personalised reading.
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-label">Planetary Positions</div>
+                    <div class="card-label">Planetary Positions <span class="qmark" data-tooltip="Tap any planet to read its personalised interpretation. Each planet occupies a zodiac sign and a house — the combination shapes a specific area of your life.">?</span></div>
                     <div class="card-hint">Tap any planet for its reading</div>
                     <div id="planetGrid"></div>
                 </div>
             </div>
 
             <div class="tech-right">
-                <div class="card interp-card">
-                    <div class="card-label">Interpretation</div>
-                    <div id="techInterpretation" class="interp-placeholder">
-                        Select a planet to view its personalised reading.
-                    </div>
-                </div>
                 <div class="card">
-                    <div class="card-label">Dasha Timeline — Your Life Chapters</div>
+                    <div class="card-label">Dasha Timeline — Your Life Chapters <span class="qmark tip-left" data-tooltip="Vedic astrology divides your life into planetary chapters (Maha-Dashas) lasting 6–20 years each. Inside each is a sub-period (Bhukti/Antardasha) that tunes the energy further. Tap a chapter to expand it.">?</span></div>
                     <div class="card-hint">Vedic astrology divides your life into planetary chapters called Maha-Dashas (major periods) — each lasting 6–20 years with a specific ruling planet and theme. Inside each chapter are sub-periods (Bhuktis/Antardashas) that tune the energy further. You are always in one chapter and one sub-chapter simultaneously. Tap a chapter to expand it.</div>
                     <div id="dashaTimeline"></div>
                 </div>
@@ -415,10 +419,11 @@
 
         <!-- ADVANCED ANALYSIS SECTION -->
         <div class="adv-section">
+            <div class="section-title" style="margin-bottom:16px">Advanced Analysis · Deeper Layers of Your Chart</div>
 
             <!-- Yogas -->
             <div class="adv-block">
-                <div class="adv-block-label">Active Yogas</div>
+                <div class="adv-block-label">Active Yogas <span class="qmark" data-tooltip="A Yoga is a rare planetary combination in your birth chart that gives you a specific edge — like a natural talent, a stroke of luck in a particular area, or a recurring life theme. These are yours for life.">?</span></div>
                 <div class="adv-block-hint">A Yoga is a rare planetary combination in your birth chart that gives you a specific edge — like a natural talent, a stroke of luck in a particular area, or a recurring life theme. These are yours for life.</div>
                 <div id="yogaCards" class="yoga-grid"></div>
             </div>
@@ -426,12 +431,12 @@
             <!-- Sade Sati + Mangal Dosha row -->
             <div class="adv-duo-row">
                 <div class="card adv-condition-card">
-                    <div class="card-label">Sade Sati</div>
+                    <div class="card-label">Sade Sati <span class="qmark" data-tooltip="A 7.5-year Saturn transit over your Moon sign — a period of pressure, restructuring, and ultimately growth. Not a curse; a crucible. Three phases: approach, peak, departure.">?</span></div>
                     <div class="card-hint">A 7.5-year Saturn transit over your Moon sign — a period of pressure, restructuring, and ultimately growth. Not a curse; a crucible.</div>
                     <div id="sadeSatiCard"></div>
                 </div>
                 <div class="card adv-condition-card">
-                    <div class="card-label">Mangal Dosha</div>
+                    <div class="card-label">Mangal Dosha <span class="qmark" data-tooltip="Mars placed in houses 1, 2, 4, 7, 8, or 12 creates heightened Mars energy in relationships and drive. Not a curse — when channelled, it is a force multiplier.">?</span></div>
                     <div class="card-hint">Mars placed in certain houses creates extra intensity in relationships and drive. When channelled, it's a force multiplier.</div>
                     <div id="mangalDoshaCard"></div>
                 </div>
@@ -439,7 +444,7 @@
 
             <!-- Ashtakavarga -->
             <div class="adv-block">
-                <div class="adv-block-label">Sarvashtakavarga — House Strength</div>
+                <div class="adv-block-label">Sarvashtakavarga — House Strength <span class="qmark" data-tooltip="A scoring system measuring how much planetary support each of your 12 life houses receives. Score out of 56: 28+ = Strong, 22–27 = Moderate, below 22 = Weak. Shows where your chart is naturally fortified.">?</span></div>
                 <div class="adv-block-hint">Your life is divided into 12 houses (career, relationships, health, wealth…). Each house gets a score 0–8 based on how many planets support it. <strong>6+ = Strong</strong> · 4–5 = Moderate · 0–3 = Weak. Low scores are normal — most people have only 2–3 strong houses. Invest your energy in your strong ones.</div>
                 <div id="ashtakavargaGrid" class="ashtak-grid"></div>
             </div>
@@ -447,12 +452,12 @@
             <!-- Divisional Charts row -->
             <div class="adv-duo-row">
                 <div class="card adv-condition-card">
-                    <div class="card-label">D-9 · Navamsa <span class="card-tag-hint">Marriage &amp; Dharma</span></div>
+                    <div class="card-label">D-9 · Navamsa <span class="card-tag-hint">Marriage &amp; Dharma</span> <span class="qmark" data-tooltip="The 9th divisional chart. Reveals deeper soul-level patterns around relationships, dharma, and spiritual path. Shows how your chart evolves and matures — especially after your late 20s.">?</span></div>
                     <div class="card-hint">A deeper layer of your chart revealing your soul's purpose and how your partnerships will evolve after your 30s.</div>
                     <div id="navamsaCard"></div>
                 </div>
                 <div class="card adv-condition-card">
-                    <div class="card-label">D-10 · Dasamsa <span class="card-tag-hint">Career &amp; Public Life</span></div>
+                    <div class="card-label">D-10 · Dasamsa <span class="card-tag-hint">Career &amp; Public Life</span> <span class="qmark" data-tooltip="The 10th divisional chart, focused entirely on career, profession, and public life. Shows the most suitable fields for you and how your professional arc is likely to unfold.">?</span></div>
                     <div class="card-hint">Shows the trajectory of your professional life — which fields suit you and how your career is likely to evolve.</div>
                     <div id="dasamsaCard"></div>
                 </div>
@@ -460,7 +465,7 @@
 
             <!-- Varshaphal -->
             <div class="adv-block">
-                <div class="adv-block-label">Varshaphal · Solar Return</div>
+                <div class="adv-block-label">Varshaphal · Solar Return <span class="qmark" data-tooltip="Every year on your birthday, the Sun returns to its exact birth position — resetting the annual clock. This chart shows the planetary setup for your current year and the theme it carries.">?</span></div>
                 <div class="adv-block-hint">Every year on your birthday, the Sun returns to its exact birth position — resetting the annual clock. This chart shows the planetary setup for your current year and what theme it carries.</div>
                 <div class="card" id="varshaphalCard"></div>
             </div>
@@ -488,47 +493,68 @@
                     <div class="jy-profile-meta" id="jyMeta">—</div>
                 </div>
 
-                <!-- Core numbers row -->
-                <div class="jy-numbers-row">
-                    <div class="jy-num-card">
-                        <div class="jy-num-label">Driver (Mulank)</div>
-                        <div class="jy-num-value" id="jyMulank">—</div>
+                <!-- ── GROUP 1: Core Identity ── -->
+                <div class="num-group">
+                    <div class="section-title">Core Identity <span class="qmark" data-tooltip="Your foundational numbers, calculated from your birth date. They define your natural personality, instinctive drive, and the opportunities that gravitate toward you.">?</span></div>
+                    <div class="section-desc">Who you are and what drives you — your most consistent, unchanging qualities.</div>
+                    <div class="num-pair">
+                        <div class="jy-num-card">
+                            <div class="jy-num-label">Driver (Mulank) <span class="qmark" data-tooltip="Calculated from your birth day alone. Shapes your natural personality, instinctive reactions, and the energy you lead with in any situation.">?</span></div>
+                            <div class="jy-num-value" id="jyMulank">—</div>
+                        </div>
+                        <div class="jy-num-card">
+                            <div class="jy-num-label">Conductor (Bhagyank) <span class="qmark" data-tooltip="Calculated from your full birth date (DD+MM+YYYY). Governs your life path, destiny, and the kind of opportunities that naturally find you.">?</span></div>
+                            <div class="jy-num-value" id="jyBhagyank">—</div>
+                        </div>
                     </div>
-                    <div class="jy-num-card">
-                        <div class="jy-num-label">Conductor (Bhagyank)</div>
-                        <div class="jy-num-value" id="jyBhagyank">—</div>
-                    </div>
-                    <div class="jy-num-card">
-                        <div class="jy-num-label">Gift Number</div>
-                        <div class="jy-num-value" id="jyGift">—</div>
-                        <div id="jyGiftHint"></div>
-                        <div class="jy-num-sub">Sum of all name letters before reduction. Master numbers (11, 22, 33) kept as-is.</div>
-                    </div>
-                    <div class="jy-num-card">
-                        <div class="jy-num-label">KUA Number</div>
-                        <div class="jy-num-value" id="jyKua">—</div>
-                    </div>
-                    <div class="jy-num-card">
-                        <div class="jy-num-label">Name (Namank)</div>
-                        <div class="jy-num-value" id="jyNamank">—</div>
+                    <!-- Luck Numbers -->
+                    <div id="lotterySection" class="card lottery-card-new" style="margin-top:16px">
+                        <div class="card-label">Your Luck Numbers</div>
+                        <div class="card-hint">Numbers that carry the least resistance for you in the material world — your cosmic shortcuts.</div>
+                        <div class="lottery-grid-new" id="lotteryGrid"><!-- JS Injected --></div>
                     </div>
                 </div>
 
-                <!-- Lottery Numbers (New) -->
-                <div id="lotterySection" class="card lottery-card-new" style="margin-bottom:28px">
-                    <div class="card-label">Your Lottery & Luck Numbers</div>
-                    <div class="card-hint">These are your cosmic 'shortcuts' — numbers that carry the least resistance for you in the material world.</div>
-                    <div class="lottery-grid-new" id="lotteryGrid">
-                        <!-- JS Injected -->
+                <!-- ── GROUP 2: Personality & Compatibility ── -->
+                <div class="num-group">
+                    <div class="section-title">Personality &amp; Compatibility</div>
+                    <div class="section-desc">How you relate to others and the energy you carry in social and professional settings.</div>
+                    <div class="jy-mid-row">
+                        <!-- KUA Number -->
+                        <div class="card jy-loshu-card" style="flex:0 0 auto; min-width:140px">
+                            <div class="card-label">KUA Number <span class="qmark" data-tooltip="A Feng Shui number from your birth year and gender. Tells you your best directions for sleeping, working, and facing — and which people energies complement yours.">?</span></div>
+                            <div class="jy-num-value" id="jyKua" style="font-size:36px; margin:12px 0">—</div>
+                        </div>
+                        <!-- DC Profile -->
+                        <div class="card jy-dc-card">
+                            <div class="card-label">Driver~Conductor Profile <span class="qmark" data-tooltip="The unique profile formed by your Driver + Conductor combination. Out of 81 possible profiles, each has a distinct mode, strengths, challenges, and best-fit industries.">?</span></div>
+                            <div class="jy-dc-compat">
+                                <span id="jyDcLabel">—</span>
+                                <span class="jy-compat-badge" id="jyCompatBadge">—%</span>
+                            </div>
+                            <div class="jy-dc-mode" id="jyDcMode">—</div>
+                            <div class="jy-dc-section-title">Industries</div>
+                            <div class="jy-dc-industries" id="jyDcIndustries">—</div>
+                            <div class="jy-dc-cols">
+                                <div>
+                                    <div class="jy-dc-section-title pros">Strengths</div>
+                                    <ul class="jy-dc-list" id="jyDcPros"></ul>
+                                </div>
+                                <div>
+                                    <div class="jy-dc-section-title cons">Challenges</div>
+                                    <ul class="jy-dc-list" id="jyDcCons"></ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Lo Shu + DC Profile side-by-side -->
-                <div class="jy-mid-row">
-
-                    <!-- Lo Shu Grid -->
+                <!-- ── GROUP 3: Life Grid ── -->
+                <div class="num-group">
+                    <div class="section-title">Life Grid <span class="qmark" data-tooltip="A 3×3 magic square from ancient Chinese numerology. Each cell (1–9) maps a life domain: mental strength, relationships, creativity, discipline. Missing numbers show gaps; repeating numbers show excess.">?</span></div>
+                    <div class="section-desc">A 9-cell map of your strengths and missing energies, derived from your birth digits.</div>
                     <div class="card jy-loshu-card">
-                        <div class="card-label">Lo Shu Grid</div>
+                        <div class="card-label">Lo Shu Grid <span class="qmark tip-right" data-tooltip="Fill each cell with how many times that digit appears in your birth date. Missing cells (shaded) indicate life areas needing attention. Repeated cells are your natural strengths.">?</span></div>
                         <table class="jy-loshu-table" id="jyLoShuTable">
                             <tbody>
                                 <tr><td></td><td></td><td></td></tr>
@@ -539,40 +565,38 @@
                         <div class="jy-missing-line">Missing: <span id="jyMissingNums">—</span></div>
                         <div class="jy-loshu-legend">× = times digit appears in date of birth · shaded = absent</div>
                     </div>
+                    <!-- Missing Number Remedies -->
+                    <div id="jyRemediesSection" class="jy-remedies-section">
+                        <div class="jy-section-heading">Missing Number Remedies</div>
+                        <div class="jy-remedies-row" id="jyRemediesRow"></div>
+                    </div>
+                </div>
 
-                    <!-- DC Profile -->
-                    <div class="card jy-dc-card">
-                        <div class="card-label">Driver~Conductor Profile</div>
-                        <div class="jy-dc-compat">
-                            <span id="jyDcLabel">—</span>
-                            <span class="jy-compat-badge" id="jyCompatBadge">—%</span>
+                <!-- ── GROUP 4: Name Influence ── -->
+                <div class="num-group">
+                    <div class="section-title">Name Influence <span class="qmark" data-tooltip="Your name carries its own numerical vibration that either amplifies or softens your birth numbers. Namank is your expression number; Gift Number is the unreduced total of all name letters.">?</span></div>
+                    <div class="section-desc">What your name adds or subtracts from your core number energy.</div>
+                    <div class="num-pair">
+                        <div class="jy-num-card">
+                            <div class="jy-num-label">Name (Namank) <span class="qmark" data-tooltip="The numerological value of your full name, reduced to a single digit. Reveals how others perceive you and the energy your name projects into the world.">?</span></div>
+                            <div class="jy-num-value" id="jyNamank">—</div>
                         </div>
-                        <div class="jy-dc-mode" id="jyDcMode">—</div>
-                        <div class="jy-dc-section-title">Industries</div>
-                        <div class="jy-dc-industries" id="jyDcIndustries">—</div>
-                        <div class="jy-dc-cols">
-                            <div>
-                                <div class="jy-dc-section-title pros">Strengths</div>
-                                <ul class="jy-dc-list" id="jyDcPros"></ul>
-                            </div>
-                            <div>
-                                <div class="jy-dc-section-title cons">Challenges</div>
-                                <ul class="jy-dc-list" id="jyDcCons"></ul>
-                            </div>
+                        <div class="jy-num-card">
+                            <div class="jy-num-label">Gift Number <span class="qmark" data-tooltip="The unreduced sum of all letters in your full name. Master numbers (11, 22, 33) are kept as-is. Reveals a latent talent or amplified energy that isn't immediately obvious.">?</span></div>
+                            <div class="jy-num-value" id="jyGift">—</div>
+                            <div id="jyGiftHint"></div>
+                            <div class="jy-num-sub">Sum of all name letters before reduction. Master numbers kept as-is.</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Missing Number Remedies -->
-                <div id="jyRemediesSection" class="jy-remedies-section">
-                    <div class="jy-section-heading">Missing Number Remedies</div>
-                    <div class="jy-remedies-row" id="jyRemediesRow"></div>
-                </div>
-
-                <!-- Personal Cycles -->
-                <div id="cyclesSection" class="hidden" style="margin-top:28px">
-                    <div class="jy-section-heading">Current Cycles</div>
-                    <div class="cycles-row" id="cyclesRow"></div>
+                <!-- ── GROUP 5: Right Now ── -->
+                <div class="num-group">
+                    <div class="section-title">Right Now</div>
+                    <div class="section-desc">Where you are in your current numerological rhythm — your active year, month, and day cycles.</div>
+                    <div id="cyclesSection" class="hidden">
+                        <div class="cycles-row" id="cyclesRow"></div>
+                    </div>
                 </div>
 
             </div>

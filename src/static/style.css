@@ -3122,6 +3122,111 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .timing-best-date     { font-size: 12px; }
 .timing-action-window { font-size: 12px; }
 .timing-dasha-note    { font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════
+   P1 — SECTION TITLES · TOOLTIPS · NUMEROLOGY GROUPS
+   ══════════════════════════════════════════════════════ */
+
+/* Prominent section-level headings */
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--text);
+    margin: 28px 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+}
+.section-title:first-child { margin-top: 0; }
+
+.section-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+/* Numerology group containers */
+.num-group + .num-group {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    margin-top: 4px;
+}
+.num-group + .num-group .section-title:first-child { margin-top: 0; }
+
+/* ── Tooltip: ? badge ── */
+.qmark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(134,134,139,0.20);
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: help;
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.15s;
+    vertical-align: middle;
+}
+.qmark:hover { background: rgba(200,168,106,0.30); color: #C8A86A; }
+
+/* ── Tooltip popup ── */
+[data-tooltip] { position: relative; }
+
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E1A38;
+    color: rgba(255,255,255,0.90);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1.55;
+    padding: 10px 14px;
+    border-radius: 10px;
+    width: 240px;
+    white-space: normal;
+    z-index: 500;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    border: 1px solid rgba(200,168,106,0.25);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.40);
+}
+[data-tooltip]:hover::after { opacity: 1; }
+
+/* Keep tooltip inside viewport on left-edge elements */
+[data-tooltip].tip-right::after { left: 0; transform: translateX(0); }
+[data-tooltip].tip-left::after  { left: auto; right: 0; transform: translateX(0); }
+
+/* ── Dark mode overrides ── */
+.results-screen .section-title {
+    color: var(--gold, #C8A86A);
+    border-left: 2px solid rgba(200,168,106,0.45);
+    padding-left: 10px;
+}
+.results-screen .section-desc  { color: rgba(255,255,255,0.42); }
+.results-screen .qmark         { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.40); }
+.results-screen .qmark:hover   { background: rgba(200,168,106,0.20); color: var(--gold,#C8A86A); }
+.results-screen .num-group + .num-group { border-top-color: rgba(200,168,106,0.10); }
+
+/* Num-group two-column number row */
+.num-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 0;
+}
 .yoga-card-type       { font-size: 12px; }
 .yoga-card-strength   { font-size: 12px; }
 .jy-num-label         { font-size: 12px; }
