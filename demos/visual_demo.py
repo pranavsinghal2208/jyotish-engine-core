@@ -160,6 +160,12 @@ async def audit():
         print("╚══════════════════════════════════════════╝")
 
         await page.click("#generateBtn")
+        # Dismiss consent modal if it appears
+        try:
+            await page.wait_for_selector(".consent-agree", timeout=3000)
+            await page.click(".consent-agree")
+        except Exception:
+            pass
         try:
             await wait_visible(page, "#resultsScreen", timeout=20000)
             await asyncio.sleep(2.0)

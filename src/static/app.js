@@ -1620,3 +1620,128 @@ function renderPersona(data) {
     // Log for marketing analysis
     console.log(`[Marketing] Detected Persona: ${data.name} | Hook: ${data.retention_hook}`);
 }
+
+// ══════════════════════════════════════════════════════════
+// HINDI LANGUAGE TOGGLE — Gemini 1.5 Flash translation
+// ══════════════════════════════════════════════════════════
+
+let _currentLang = 'en';
+const _translationCache = {};
+
+// Selectors for elements that should be translated
+const TRANSLATE_SELECTORS = [
+    '.section-title',
+    '.section-desc',
+    '.card-label',
+    '.card-hint',
+    '.adv-block-label',
+    '.adv-block-hint',
+    '.hero-card-label',
+    '#dailyTheme',
+    '#energySignature',
+    '#upliftNarrative',
+    '#operationalPointer',
+    '#pulseFocus',
+    '#pulseStrategy',
+    '#targetKpi',
+    '.tldr-eyebrow',
+    '.jy-profile-meta',
+    '.landing-h1',
+    '.landing-sub',
+    '.brand-sub',
+];
+
+function _collectTranslatables() {
+    const items = [];
+    TRANSLATE_SELECTORS.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            // Skip empty, hidden, or already a qmark tooltip badge
+            const txt = el.textContent.trim();
+            if (!txt || el.classList.contains('qmark')) return;
+            // Skip if only contains child elements with no direct text
+            const directText = Array.from(el.childNodes)
+                .filter(n => n.nodeType === Node.TEXT_NODE)
+                .map(n => n.textContent.trim())
+                .join(' ').trim();
+            if (!directText) return;
+            items.push({ el, text: txt });
+        });
+    });
+    return items;
+}
+
+async function toggleLanguage() {
+    const btn = document.getElementById('langToggleBtn');
+    if (!btn) return;
+
+    if (_currentLang === 'en') {
+        await _applyHindi(btn);
+    } else {
+        _restoreEnglish(btn);
+    }
+}
+
+async function _applyHindi(btn) {
+    const items = _collectTranslatables();
+    if (!items.length) return;
+
+    btn.classList.add('loading');
+    btn.textContent = 'अनुवाद हो रहा है…';
+
+    const cacheKey = items.map(i => i.text).join('||');
+    let translations = _translationCache[cacheKey];
+
+    if (!translations) {
+        try {
+            const res = await fetch('/api/translate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ texts: items.map(i => i.text), target: 'hi' })
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            translations = data.translations;
+            _translationCache[cacheKey] = translations;
+        } catch (err) {
+            console.error('[Hindi] Translation failed:', err);
+            btn.classList.remove('loading');
+            btn.textContent = 'EN | हिं';
+            return;
+        }
+    }
+
+    // Apply translations, storing originals as data attribute
+    items.forEach((item, i) => {
+        if (!translations[i]) return;
+        item.el.dataset.enText = item.text;
+        // Replace only direct text nodes, preserving child elements (qmark badges etc.)
+        const nodes = Array.from(item.el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
+        if (nodes.length) {
+            nodes.forEach((n, ni) => {
+                if (ni === 0) n.textContent = translations[i];
+                else n.textContent = '';
+            });
+        }
+    });
+
+    document.documentElement.lang = 'hi';
+    btn.classList.remove('loading');
+    btn.classList.add('hindi');
+    btn.textContent = 'हिं | EN';
+    _currentLang = 'hi';
+}
+
+function _restoreEnglish(btn) {
+    TRANSLATE_SELECTORS.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            if (!el.dataset.enText) return;
+            const nodes = Array.from(el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE);
+            if (nodes.length) nodes[0].textContent = el.dataset.enText;
+            delete el.dataset.enText;
+        });
+    });
+    document.documentElement.lang = 'en';
+    btn.classList.remove('hindi');
+    btn.textContent = 'EN | हिं';
+    _currentLang = 'en';
+}

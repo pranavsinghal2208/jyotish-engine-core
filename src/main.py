@@ -818,6 +818,61 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
         return FileResponse("src/static/index.html")
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
+# ── Hindi Translation Endpoint (Gemini 1.5 Flash — POWER zone) ──
+class TranslateRequest(BaseModel):
+    texts: List[str]
+    target: str = "hi"
+
+@app.post("/api/translate")
+async def translate_texts(req: TranslateRequest):
+    """Batch-translate UI strings to Hindi via Gemini 1.5 Flash."""
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="GEMINI_API_KEY not configured")
+    if not req.texts:
+        return {"translations": []}
+
+    try:
+        from google import genai as gai
+        client = gai.Client(api_key=api_key)
+
+        numbered = "\n".join(f"{i+1}. {t}" for i, t in enumerate(req.texts))
+        prompt = (
+            "Translate the following English strings to natural, conversational Hindi. "
+            "Keep astrology and numerology Sanskrit terms exactly as-is "
+            "(Dasha, Bhukti, Nakshatra, Lagna, Yoga, Tithi, Muhurta, Mulank, Bhagyank, "
+            "KUA, Ashtakavarga, Navamsa, Dasamsa, Varshaphal, Sade Sati, Mangal Dosha). "
+            "Return ONLY the translated lines in the same numbered format. No extra text.\n\n"
+            + numbered
+        )
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-lite",
+            contents=prompt
+        )
+        raw = response.text.strip()
+
+        # Parse numbered lines back into list
+        translations = []
+        for line in raw.split("\n"):
+            line = line.strip()
+            if not line:
+                continue
+            # Strip leading "N. " pattern
+            import re
+            cleaned = re.sub(r"^\d+\.\s*", "", line)
+            translations.append(cleaned)
+
+        # Pad or trim to match input length
+        while len(translations) < len(req.texts):
+            translations.append(req.texts[len(translations)])
+        translations = translations[:len(req.texts)]
+
+        return {"translations": translations}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
+
 # Mount static files last — must come after all API route definitions
 # because app.mount("/") is a catch-all that intercepts anything not yet matched.
 app.mount("/", StaticFiles(directory="src/static", html=True), name="static")
