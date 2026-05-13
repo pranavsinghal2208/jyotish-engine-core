@@ -1,8 +1,8 @@
-# Astro: Project Instructions (GEMINI.md)
+# Cosmic OS: Project Instructions (GEMINI.md)
 
 ## Core Mandates
-- **Brand Identity:** Astro (formerly Cosmic OS). 
-- **Design Standard:** PSBC Premium Minimalism. Inter font, -0.022em tracking, massive whitespace, monochromatic base (#ffffff/#fbfbfd), PSBC accent (#635bff).
+- **Brand Identity:** Cosmic OS. Do not rename — see DECISIONS.md D-006.
+- **Design Standard:** PSBC Premium Minimalism. Inter font, -0.022em tracking, massive whitespace. Background #DCE6F2, warm cream cards #fffdf9, gold accent #C8A86A (content), purple #635bff (CTAs only).
 - **Tone:** "Operational Sanctuary" for the Overwhelmed Achiever. Use "Strategy Consultant" terminology (e.g., Information Arbitrage, System Precision).
 - **Logic:** Swiss Ephemeris (Lahiri Ayanamsa) calculating Dasha-Bhukti and real-time transits.
 
