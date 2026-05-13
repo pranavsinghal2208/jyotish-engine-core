@@ -1879,7 +1879,8 @@ body {
 }
 .timing-action-icon  { font-size: 18px; }
 .timing-action-label { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
-.timing-action-score { font-size: 20px; font-weight: 800; color: var(--accent); }
+.timing-action-score { font-size: 20px; font-weight: 800; color: var(--accent); cursor: help; }
+.timing-action-score .score-max { font-size: 11px; font-weight: 500; opacity: 0.55; margin-left: 1px; }
 .timing-action-window {
     font-size: 11px;
     font-weight: 700;
@@ -1888,10 +1889,24 @@ body {
     color: var(--muted);
     margin-bottom: 6px;
 }
-.timing-action-advice {
+.timing-action-why {
     font-size: 12px;
     color: var(--text);
     line-height: 1.5;
+}
+.timing-action-transits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+.transit-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: rgba(200,168,106,0.1);
+    color: rgba(200,168,106,0.8);
+    border: 1px solid rgba(200,168,106,0.2);
 }
 
 /* ─── Advanced Analysis Section ──────────────────────────────── */
@@ -3090,7 +3105,7 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 /* Timing action cards */
 .results-screen .timing-action-card  { background: rgba(21,17,43,0.82); border-color: rgba(200,168,106,0.10); }
 .results-screen .timing-action-label { color: rgba(255,255,255,0.88); }
-.results-screen .timing-action-advice{ color: rgba(255,255,255,0.65); }
+.results-screen .timing-action-why{ color: rgba(255,255,255,0.65); }
 .results-screen .timing-action-window{ color: rgba(200,168,106,0.65); }
 .results-screen .timing-action-score { color: var(--gold,#C8A86A); }
 .results-screen .timing-desc         { color: rgba(255,255,255,0.78); }
@@ -3254,7 +3269,7 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .adv-status-badge     { font-size: 12px; }
 
 /* Body text that was 12–13px */
-.timing-action-advice { font-size: 14px; }
+.timing-action-why { font-size: 14px; }
 .yoga-card-desc       { font-size: 14px; }
 .yoga-card-impact     { font-size: 13px; }
 .brief-highlight      { font-size: 14px; }

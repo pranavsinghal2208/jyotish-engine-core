@@ -476,14 +476,17 @@ async function loadTimingAdvisor() {
 
         grid.innerHTML = (d.actions || []).map(a => {
             const wClass = a.window.toLowerCase().replace(' ', '-');
+            const transitChips = (a.transit_notes || []).slice(0, 2)
+                .map(n => `<span class="transit-chip">${n}</span>`).join('');
             return `<div class="timing-action-card timing-action-${wClass}">
                 <div class="timing-action-top">
                     <span class="timing-action-icon">${a.icon}</span>
                     <span class="timing-action-label">${a.label}</span>
-                    <span class="timing-action-score">${a.score}</span>
+                    <span class="timing-action-score" title="Score out of 100 — Dasha (40pts) + Transits (40pts) + Nakshatra (20pts)">${a.score}<span class="score-max">/100</span></span>
                 </div>
                 <div class="timing-action-window">${a.window}</div>
-                <div class="timing-action-advice">${a.advice}</div>
+                <div class="timing-action-why">${a.dasha_note}</div>
+                ${transitChips ? `<div class="timing-action-transits">${transitChips}</div>` : ''}
             </div>`;
         }).join('');
         section.classList.remove('hidden');

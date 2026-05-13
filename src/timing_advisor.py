@@ -104,26 +104,46 @@ def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
     # Dasha contribution (0-40)
     if dasha_lord in rules["avoid_dashas"]:
         dasha_score = 5
-        dasha_note = f"{dasha_lord} Dasha works against this action type."
+        dasha_status = "blocks"
     elif dasha_lord in rules["favorable_dashas"]:
         dasha_score = 35
-        dasha_note = f"{dasha_lord} Dasha actively supports this."
+        dasha_status = "supports"
     else:
         dasha_score = 20
-        dasha_note = f"{dasha_lord} Dasha is neutral."
+        dasha_status = "neutral"
 
     # Transit contribution (0-40): count favorable vs avoid planets in benefic houses
     transit_score = 20  # base
-    transit_notes = []
+    favorable_transits = []
+    caution_transits = []
     for p in rules["favorable_planets"]:
         if p in current_planets:
             transit_score += 5
-            transit_notes.append(f"{p} favorable")
+            favorable_transits.append(p)
     for p in rules["avoid_planets"]:
         if p in current_planets:
             transit_score -= 4
-            transit_notes.append(f"{p} caution")
+            caution_transits.append(p)
     transit_score = max(0, min(40, transit_score))
+    transit_notes = [f"{p} favorable" for p in favorable_transits] + \
+                    [f"{p} caution" for p in caution_transits]
+
+    # Build a specific combined why-line
+    if dasha_status == "supports" and favorable_transits:
+        top_planets = " + ".join(favorable_transits[:2])
+        dasha_note = f"{dasha_lord} Dasha + {top_planets} transits align for this."
+    elif dasha_status == "supports":
+        dasha_note = f"{dasha_lord} Dasha is the primary driver here — transits are mixed."
+    elif dasha_status == "blocks" and caution_transits:
+        top_caution = " and ".join(caution_transits[:2])
+        dasha_note = f"{dasha_lord} Dasha + {top_caution} create friction — proceed cautiously."
+    elif dasha_status == "blocks":
+        dasha_note = f"{dasha_lord} Dasha works against this — wait for a better window."
+    elif favorable_transits:
+        top_planets = " + ".join(favorable_transits[:2])
+        dasha_note = f"Transits ({top_planets}) compensate for a neutral Dasha period."
+    else:
+        dasha_note = f"{dasha_lord} Dasha is neutral — timing is workable but not amplified."
 
     # Nakshatra contribution (0-20)
     nak_q = NAK_QUALITY.get(nakshatra, 2)
