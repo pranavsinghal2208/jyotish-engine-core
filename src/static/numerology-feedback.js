@@ -146,7 +146,8 @@ async function loadMyNumerology() {
         }
         const kuaInfo = NUM_DESC.kua[d.kua_number];
         if (kuaInfo) {
-            _setOrCreate('jyKuaDesc', `<strong>${kuaInfo.group}</strong> · Best directions: ${kuaInfo.directions} · ${kuaInfo.desc}`);
+            const kuaEl = document.getElementById('jyKuaDesc');
+            if (kuaEl) kuaEl.innerHTML = `<strong style="color:var(--gold,#C8A86A)">${kuaInfo.group}</strong><br>Best directions: <strong>${kuaInfo.directions}</strong><br><span style="opacity:0.8">${kuaInfo.desc}</span>`;
         }
         // Gift Number: full reduction chain + personal meaning
         const giftRaw = d.gift_number;

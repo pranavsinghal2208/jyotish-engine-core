@@ -1297,7 +1297,7 @@ function editDetails() {
 // ── Share reading ─────────────────────────────────────────
 function buildShareText(data) {
     const name    = data.user_name ? `${data.user_name}'s` : 'My';
-    const coach   = data.coach_insights || {};
+    const coach   = data.insights || data.coach_insights || {};
     const pulse   = data.business_pulse || {};
     const natal   = data.natal_planets  || data.planets || {};
     const lagna   = data.lagna || {};

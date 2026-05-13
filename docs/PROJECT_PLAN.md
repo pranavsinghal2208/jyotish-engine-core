@@ -3,6 +3,7 @@
 
 > **Rule:** Every AI working on this project MUST read this file first. When new features ship or goals change, update this file.
 > **Also read:** `DECISIONS.md` — confirmed decisions with rationale. Check it before changing anything in UI, color, auth, or product copy.
+> **Audit rule:** Every feature marked ✅ must have ≥1 passing check in `demos/master_audit.py`. Run `venv/bin/python3 demos/master_audit.py` at session start and after every feature ship. Last score: ✅ 44 / ⚠️ 3 / ❌ 0 (2026-05-14).
 
 ---
 
@@ -16,7 +17,8 @@ A personal "Cosmic Operating System" for Pranav Singhal — combining Vedic Astr
 - **Frontend:** Pure HTML/CSS/JS (no frameworks) at `src/static/`
 - **Server:** `source venv/bin/activate && python3 -m src.main` → port 5004
 - **Dashboard:** `http://127.0.0.1:5004`
-- **Visual validation:** `python3 demos/visual_demo.py` (headless=False, slow_mo=1500ms)
+- **Audit:** `venv/bin/python3 demos/master_audit.py` — 7-dimension, 46 checks, headless (fast, ~2 min)
+- **Visual walkthrough:** `python3 demos/visual_demo.py` (headless=False, slow_mo=1500ms — use for manual inspection only)
 
 ---
 
@@ -140,18 +142,15 @@ A personal "Cosmic Operating System" for Pranav Singhal — combining Vedic Astr
   - OAuth token auto-refresh test with a real Google account
   - Live calendar event → high-stakes detection → banner trigger
 
-**10. Hindi language toggle**
-- Language selector on landing + results pages
-- All text, labels, and coach insights translated via Gemini 1.5 Flash (POWER zone — never Groq)
-- Numerology Sanskrit terms retain names, explained in Hindi
-- Future: Gemini 2.5 Flash Live API for real-time voice Q&A in local language (log only, not P1)
+**10. ✅ Hindi language toggle** *(shipped May 14)*
+- Gemini 2.5-flash-lite, batch translate, Sanskrit terms preserved, EN↔HI toggle in header
 
-**11. AI People Compatibility — discoverability**
-- Backend + score UI shipped (May 12)
-- Needs: clearer entry point in the Numbers tab (currently buried)
+**11. ✅ AI People Compatibility — discoverability** *(shipped May 14)*
+- Gold "Compare →" CTA in DC Profile card, smooth-scrolls to People Intelligence section
+- `#compatSection` now has `.section-title` + tooltip
 
-**12. Yearly Forecast**
-- Personal Year Number breakdown, month-by-month Lo Shu cycle, PDF export
+**12. ✅ Yearly Forecast** *(shipped May 14)*
+- 12-month grid rendering, year navigation, Dasha overlay when available, PDF via print
 
 ---
 

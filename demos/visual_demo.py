@@ -174,13 +174,34 @@ async def audit():
             observe("ACT 3", "fail", f"Chart generation failed: {e}")
 
         await scroll_top(page)
+
+        # TL;DR card — first thing user sees (P1 May 13)
+        tldr_visible = await check_visible(page, "#tldrCard")
+        tldr_line    = await safe_text(page, "#tldrLine")
+        tldr_lucky   = await safe_text(page, "#tldrLucky")
+        tldr_move    = await safe_text(page, "#tldrMove")
+        observe("ACT 3", "ok"   if tldr_visible          else "warn", "TL;DR card visible above fold: " + ("yes" if tldr_visible else "MISSING — add to Morning Brief load"))
+        observe("ACT 3", "ok"   if tldr_line and tldr_line != "—" else "warn", f"TL;DR focus line: '{tldr_line[:60]}'")
+        observe("ACT 3", "ok"   if tldr_lucky and tldr_lucky != "—" else "warn", f"TL;DR lucky number: '{tldr_lucky}'")
+        observe("ACT 3", "ok"   if tldr_move  and tldr_move  != "—" else "warn", f"TL;DR best move: '{tldr_move}'")
+
+        # Section titles presence (P1 May 14)
+        section_titles = await page.locator("#strategicView .section-title").all_text_contents()
+        observe("ACT 3", "ok" if len(section_titles) >= 5 else "warn",
+                f"Section titles in Today tab: {len(section_titles)} found — {section_titles[:4]}")
+
+        # ? tooltips wired (P1 May 14)
+        qmark_count = await page.locator("#strategicView .qmark[data-tooltip]").count()
+        observe("ACT 3", "ok" if qmark_count >= 1 else "warn",
+                f"? tooltip badges in Today tab: {qmark_count} (expect ≥1)")
+
         theme = await safe_text(page, "#dailyTheme")
         energy = await safe_text(page, "#energySignature")
         uplift = await safe_text(page, "#upliftNarrative")
         observe("ACT 3", "ok"   if theme  else "fail", f"Today's theme: '{theme}'")
         observe("ACT 3", "ok"   if energy else "warn", f"Energy signature: '{energy}'")
         observe("ACT 3", "ok"   if uplift else "warn", f"Uplift narrative present: " + ("yes" if uplift else "no"))
-        await shot(page, "05_strategic_hero", "FIRST SCREEN — is this immediately clear?")
+        await shot(page, "05_strategic_hero", "FIRST SCREEN — TL;DR card + section titles visible?")
 
         # Natal Blueprint
         await page.evaluate("window.scrollBy({top:400, behavior:'smooth'})")
@@ -260,7 +281,24 @@ async def audit():
         legend_visible = await check_visible(page, ".kundali-legend")
         observe("ACT 5", "ok" if legend_visible else "fail", "Planet abbreviation legend: " + ("visible" if legend_visible else "MISSING"))
 
-        await shot(page, "11_technical_kundali_fresh", "Technical tab: first view — kundali + planet table")
+        # U-001: interpretation card must appear BEFORE planetary grid in DOM (P1 May 14)
+        interp_order  = await page.evaluate("""
+            () => {
+                const interp = document.querySelector('.interp-card');
+                const grid   = document.querySelector('#planetGrid');
+                if (!interp || !grid) return -1;
+                return interp.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING ? 1 : 0;
+            }
+        """)
+        observe("ACT 5", "ok" if interp_order == 1 else "warn",
+                "U-001: interpretation card is " + ("BEFORE planetary grid ✓" if interp_order == 1 else "AFTER planetary grid — U-001 violation"))
+
+        # ? tooltips in Full Chart tab
+        fc_qmarks = await page.locator("#technicalView .qmark[data-tooltip]").count()
+        observe("ACT 5", "ok" if fc_qmarks >= 5 else "warn",
+                f"? tooltip badges in Full Chart tab: {fc_qmarks} (expect ≥5)")
+
+        await shot(page, "11_technical_kundali_fresh", "Technical tab: interpretation before planetary grid?")
 
         # Click a planet to check interpretation
         try:
@@ -353,7 +391,25 @@ async def audit():
             gift_hint = await check_visible(page, ".jy-num-hint")
             observe("ACT 6", "ok" if gift_hint else "warn", "'unreduced' hint on Gift Number: " + ("visible" if gift_hint else "missing"))
 
-            await shot(page, "19_numerology_numbers", "Core numbers — Driver/Conductor/Gift/KUA/Namank")
+            # Numerology 5-group structure (P1 May 14)
+            num_groups = await page.locator("#jyProfilePanel .num-group").count()
+            group_titles = await page.locator("#jyProfilePanel .num-group .section-title").all_text_contents()
+            observe("ACT 6", "ok" if num_groups >= 5 else "warn",
+                    f"Numerology 5-group structure: {num_groups} groups found (expect 5)")
+            observe("ACT 6", "ok" if len(group_titles) >= 5 else "warn",
+                    f"Group titles: {[t.strip()[:20] for t in group_titles]}")
+
+            # ? tooltips in Numbers tab
+            num_qmarks = await page.locator("#numerologyView .qmark[data-tooltip]").count()
+            observe("ACT 6", "ok" if num_qmarks >= 8 else "warn",
+                    f"? tooltip badges in Numbers tab: {num_qmarks} (expect ≥8)")
+
+            # KUA number visible in Personality group
+            kua_val = await safe_text(page, "#jyKua")
+            observe("ACT 6", "ok" if kua_val and kua_val != "—" else "warn",
+                    f"KUA number in Personality group: '{kua_val}'")
+
+            await shot(page, "19_numerology_numbers", "5-group structure — Core Identity, Personality, Life Grid, Name, Right Now")
 
             # DC Profile + compat range
             await page.evaluate("window.scrollBy({top:280, behavior:'smooth'})")

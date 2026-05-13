@@ -273,7 +273,7 @@
                     <div id="luckyNumberBadge" class="lucky-number-badge hidden">
                         Lucky Number <span id="luckyNumberValue">—</span>
                     </div>
-                    <div class="hero-card-label">Today's theme <span style="font-weight:400;opacity:0.6;text-transform:none;letter-spacing:0;font-size:10px">· current sky, same date for everyone</span></div>
+                    <div class="hero-card-label">Today's Theme</div>
                     <div id="dailyTheme" class="hero-card-title">—</div>
                     <div id="energySignature" class="hero-card-sign">—</div>
                     <p id="upliftNarrative" class="hero-card-body"></p>
@@ -509,9 +509,9 @@
                         </div>
                     </div>
                     <!-- Luck Numbers -->
-                    <div id="lotterySection" class="card lottery-card-new" style="margin-top:16px">
-                        <div class="card-label">Your Luck Numbers</div>
-                        <div class="card-hint">Numbers that carry the least resistance for you in the material world — your cosmic shortcuts.</div>
+                    <div class="section-title" style="margin-top:24px">Your Luck Numbers <span class="qmark" data-tooltip="Numbers that carry the least resistance for you in the material world. When these digits appear in dates, addresses, phone numbers, or tokens — the cosmic friction is at its lowest.">?</span></div>
+                    <div class="section-desc">Your cosmic shortcuts — digits where material resistance is lowest.</div>
+                    <div id="lotterySection" class="lottery-card-new" style="margin-top:8px">
                         <div class="lottery-grid-new" id="lotteryGrid"><!-- JS Injected --></div>
                     </div>
                 </div>
@@ -522,9 +522,10 @@
                     <div class="section-desc">How you relate to others and the energy you carry in social and professional settings.</div>
                     <div class="jy-mid-row">
                         <!-- KUA Number -->
-                        <div class="card jy-loshu-card" style="flex:0 0 auto; min-width:140px">
+                        <div class="card jy-loshu-card" style="flex:0 0 auto; min-width:160px">
                             <div class="card-label">KUA Number <span class="qmark" data-tooltip="A Feng Shui number from your birth year and gender. Tells you your best directions for sleeping, working, and facing — and which people energies complement yours.">?</span></div>
                             <div class="jy-num-value" id="jyKua" style="font-size:36px; margin:12px 0">—</div>
+                            <div id="jyKuaDesc" style="font-size:12px;line-height:1.55;color:rgba(255,255,255,0.65);margin-top:4px"></div>
                         </div>
                         <!-- DC Profile -->
                         <div class="card jy-dc-card">
@@ -546,6 +547,9 @@
                                     <ul class="jy-dc-list" id="jyDcCons"></ul>
                                 </div>
                             </div>
+                            <button class="compat-discover-btn" onclick="document.getElementById('compatSection').scrollIntoView({behavior:'smooth'}); document.getElementById('compatSection').classList.add('compat-highlight')">
+                                Compare your energy with a partner or colleague →
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -604,11 +608,11 @@
 
             <!-- Yearly Forecast -->
             <div id="forecastSection" class="hidden" style="margin-top:32px">
-                <div class="jy-section-heading">
-                    Yearly Forecast
-                    <span style="float:right;display:flex;gap:8px;align-items:center">
+                <div class="section-title" style="justify-content:space-between">
+                    <span>Yearly Forecast <span class="qmark" data-tooltip="Your 12-month numerological rhythm for any year. Each month has a Personal Month number that sets the energy theme. Action months (high numbers) are for pushing; Rest months are for consolidating.">?</span></span>
+                    <span style="display:flex;gap:8px;align-items:center">
                         <button class="jy-load-btn" onclick="loadForecast(-1)" style="padding:4px 12px;font-size:12px">‹ Prev</button>
-                        <span id="forecastYearLabel" style="font-size:14px;font-weight:600;color:#635bff"></span>
+                        <span id="forecastYearLabel" style="font-size:13px;font-weight:700;color:var(--gold,#C8A86A)"></span>
                         <button class="jy-load-btn" onclick="loadForecast(1)" style="padding:4px 12px;font-size:12px">Next ›</button>
                         <button class="jy-load-btn" onclick="window.print()" style="padding:4px 12px;font-size:12px" title="Print / Save as PDF">⬇ PDF</button>
                     </span>
@@ -620,8 +624,8 @@
 
             <!-- Two-Person Compatibility -->
             <div id="compatSection" style="margin-top:32px">
-                <div class="jy-section-heading">People Intelligence (Me vs. Anyone)</div>
-                <div class="card-hint" style="margin-bottom:16px">Compare your energy with anyone — partners, business colleagues, or celebrities. Enter their details or pick from the atlas.</div>
+                <div class="section-title">People Intelligence <span class="qmark" data-tooltip="Compare your Driver~Conductor profile with anyone. The score measures how well your core numbers complement each other — useful for partnerships, hiring, or relationships.">?</span></div>
+                <div class="section-desc" style="margin-bottom:16px">Compare your energy with anyone — partners, colleagues, or anyone you choose.</div>
                 
                 <div class="compat-selector-v2">
                     <div class="compat-box">

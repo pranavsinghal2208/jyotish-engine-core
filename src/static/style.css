@@ -3262,6 +3262,33 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .brief-reconcile      { font-size: 13px; }
 .adv-status-desc      { font-size: 14px; }
 
+/* ── People Compatibility discoverability ── */
+.compat-discover-btn {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid rgba(200,168,106,0.35);
+    border-radius: 8px;
+    color: var(--gold, #C8A86A);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+.compat-discover-btn:hover {
+    background: rgba(200,168,106,0.08);
+    border-color: rgba(200,168,106,0.65);
+}
+@keyframes compatPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(200,168,106,0.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(200,168,106,0); }
+    100% { box-shadow: 0 0 0 0 rgba(200,168,106,0); }
+}
+.compat-highlight { animation: compatPulse 0.7s ease; }
+
 /* ── Mobile: dark border on stacked layout ── */
 @media (max-width: 768px) {
     .landing-left  { border-bottom: 1px solid rgba(200,168,106,0.12); }
