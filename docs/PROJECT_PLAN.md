@@ -17,8 +17,8 @@ A personal "Cosmic Operating System" for Pranav Singhal — combining Vedic Astr
 - **Frontend:** Pure HTML/CSS/JS (no frameworks) at `src/static/`
 - **Server:** `source venv/bin/activate && python3 -m src.main` → port 5004
 - **Dashboard:** `http://127.0.0.1:5004`
-- **Audit:** `venv/bin/python3 demos/master_audit.py` — 7-dimension, 46 checks, headless (fast, ~2 min)
-- **Visual walkthrough:** `python3 demos/visual_demo.py` (headless=False, slow_mo=1500ms — use for manual inspection only)
+- **Audit:** `venv/bin/python3 demos/master_audit.py` — 7-dimension, 47 checks, headless (fast, ~2 min)
+- **Visual walkthrough:** `venv/bin/python3 demos/master_audit.py --visual` (headless=False, slow_mo=1200ms)
 
 ---
 
@@ -80,20 +80,23 @@ A personal "Cosmic Operating System" for Pranav Singhal — combining Vedic Astr
 
 ---
 
-## PENDING TASKS — Consolidated & Prioritized
-*Sources: DECISIONS.md flags (⚠️), user feedback May 2026, git log scan, this session review.*
+## PENDING TASKS
+*Last cleaned: 2026-05-14. Done items removed. Conflicts resolved.*
 
 ---
 
-### 🔴 P0 — Hygiene (Non-negotiable, do first)
+### 🔴 P0 — Fix Now
 
-**1. Commit staged repo reorganization**
-- Large staged commit sitting uncommitted: demos/, docs/, scripts/ dirs + pyproject.toml + CI workflow
-- Today's UX changes (index.html, app.js, style.css) need a separate commit on top
+**1. ⚠️ Hindi toggle broken**
+- Root cause: `_collectTranslatables()` was sending full `el.textContent` (child links/buttons included) → Gemini returned multi-line output → parser misaligned all translations
+- Fix deployed (commit 70c761a): direct text nodes only, skips `—`, added `⚠ Retry` error state; `?v=3` cache bust on scripts
+- **Next step:** Hard-refresh (Cmd+Shift+R) → click "EN | हिं" → if still broken, open DevTools Console and paste the error
 
-**2. Fix stale GEMINI.md**
-- File says "Astro" as product name — unauthorized change (DECISIONS.md D-006)
-- Correct name: Cosmic OS. Update GEMINI.md
+**2. ⚠️ House system — Whole Sign vs Placidus**
+- PySwissEph defaults to Placidus; Jyotish requires Whole Sign
+- Every house-based interpretation (yoga detection, Sarvashtakavarga, house lords) is potentially wrong until this is fixed
+- Must be resolved **before** any KB rules are written — rules depend on correct house assignment
+- Fix: set `hsys=b'W'` explicitly in `engine.py` house calculation call
 
 **3. Fix pytest in venv**
 - `python3 -m pytest` fails — pytest not installed in venv
@@ -101,78 +104,74 @@ A personal "Cosmic Operating System" for Pranav Singhal — combining Vedic Astr
 
 ---
 
-### 🔴 P1 — UX: Human Depth (In-flight, this week)
-*Core principle: every screen must answer "What does this mean for me, right now, and what should I do?"*
+### 🟡 P1 — Product Depth
 
-**4. Section headers — all 3 tabs**
-- Every section needs a visible title (not just a small chip label) + time window
-- Today tab: 8 sections to header
-- Full Chart tab: 10 sections to header
-- Numbers tab: all numerology groups
-
-**5. Tooltip glossary — `?` hover descriptions**
-- Add `?` icon next to every jargon term; on hover: what it is + what this user's value means + action
-- Priority order: Mulank · Bhagyank · KUA Number · Lo Shu Grid · Dasha · Bhukti · Nakshatra · Tithi · Yoga · Lagna · Sade Sati · Mangal Dosha · Ashtakavarga · Navamsa · Dasamsa · Varshaphal
-- Implementation: CSS `::after` tooltip on `?` span (no JS for basic); popover for mobile
-
-**6. Numerology tab — section categorization**
-- Group into named sections with 1-line descriptions:
-  - **Core Identity** — Mulank (Driver) + Bhagyank (Conductor): who you are and what drives you
-  - **Personality & Compatibility** — KUA Number + DC Profile: how you relate and pair with others
-  - **Life Grid** — Lo Shu: the 9-cell map of your strengths and gaps
-  - **Name Influence** — Namank: what your name adds or subtracts
-  - **Right Now** — Personal Year / Month / Day cycles: where you are in your current rhythm
-- Each individual number card gets a `?` tooltip with calculation logic
-
-**7. Full Chart tab — U-001 compliance** *(flagged in DECISIONS.md U-001 as ⚠️ pending)*
-- Hierarchy on every section: Theme (1 line) → What it means for you (2 lines) → What to do (3 bullets) → Data
-- Current gap: raw planetary grid shown before interpretation card — swap the order
-
----
-
-### 🟡 P2 — Product Depth (Next sessions)
-
-**8. Apple Login — complete**
+**4. Apple Login — complete**
 - Stub HTML commented in `index.html` (DECISIONS.md S-002)
 - `src/auth/apple_auth.py` exists, `verify_signature: True` already set
-- Un-comment button + end-to-end test
+- Un-comment button + end-to-end OAuth test
 
-**9. Calendar Alerts — live verification**
-- Banner UI shipped (May 12). Needs:
+**5. Calendar Alerts — live verification**
+- Banner UI shipped. Needs:
   - OAuth token auto-refresh test with a real Google account
   - Live calendar event → high-stakes detection → banner trigger
 
-**10. ✅ Hindi language toggle** *(shipped May 14)*
-- Gemini 2.5-flash-lite, batch translate, Sanskrit terms preserved, EN↔HI toggle in header
+---
 
-**11. ✅ AI People Compatibility — discoverability** *(shipped May 14)*
-- Gold "Compare →" CTA in DC Profile card, smooth-scrolls to People Intelligence section
-- `#compatSection` now has `.section-title` + tooltip
+### 🟢 P2 — Ship Readiness
 
-**12. ✅ Yearly Forecast** *(shipped May 14)*
-- 12-month grid rendering, year navigation, Dasha overlay when available, PDF via print
+**6. Production deployment on Render**
+- `render.yaml` ready, GitHub remote live (`pranavsinghal2208/jyotish-engine-core`)
+- Steps: render.com → New → Blueprint → connect repo → set env vars:
+  - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+  - `REDIRECT_URI` → `https://cosmic-os.onrender.com/auth/callback`
+  - `GEMINI_API_KEY` (required for Hindi toggle on live site)
+
+**7. Conversational Chatbot (private)**
+- Natural language Q&A about your chart — "What does my Venus Dasha mean for business?"
+- Model: Ollama local (private zone — chart data stays on device)
+- Context: natal chart + transits + numerology profile passed as system prompt
 
 ---
 
-### 🟢 P3 — Ship Readiness
+### 🔵 P3 — Strategic Scale
+*Full analysis + moat defense in `docs/STRATEGIC_BLUEPRINT.md`*
 
-**13. Production deployment**
-- `render.yaml` configured and ready
-- Blocker: no GitHub remote yet — add `git remote add origin <repo>` first, then push + connect Render
+**8. Fix transit scoring — house-aware**
+- Current bug: `if p in current_planets` ignores house position → Venus 8H (bad for finance) scores same as Venus 2H (good for finance)
+- Fix: pass `planet_house` dict from `engine.py` into `timing_advisor._score_action()`, check `planet_house[p] in favorable_houses`
+- Blocks: all KB rules that depend on house-specific timing
 
-**14. Chatbot / RAG**
-- Natural language Q&A about your chart
-- Context: natal chart + transits + numerology profile
-- Model: Ollama local (private zone — chart data is personal)
+**9. Outcome feedback loop (the moat)**
+- Add "Did this timing work? ✓ / ✗" on each Business Timing card
+- Store: `user_id · action_type · score · outcome · date`
+- 500 data points = proprietary correlation set no competitor can replicate
+
+**10. Knowledge Base — ingestion form**
+- Google Sheets with Section A–D columns (see `STRATEGIC_BLUEPRINT.md` Part 2)
+- Target: 500 rules Phase 1 → `scripts/import_kb.py` → SQLite → pgvector Phase 2
+- Must come after P0 item 2 (house system fix)
+
+**11. Premium report pipeline**
+- Ingestion: yt-dlp + Whisper + Firecrawl + PyMuPDF → raw text
+- Parse: Gemini 1.5 Flash (1M ctx) → structured KB entries → human review gate
+- Retrieve: pgvector semantic search on natal chart → top-K matching rules
+- Synthesize: LLM formats KB text only, never originates claims + mandatory disclaimer
+- Output: full Kundli-style report (SVG chart + 9 sections + 90-day action plan)
+- Merges with item 7 (chatbot) at the retrieval layer
+
+**12. B2B API**
+- Expose `/api/timing/advisor` as webhook-callable with API key auth
+- Target: CRM tools, sales teams, project management apps
 
 ---
 
-### 🗂 Workspace Infra (Separate from Cosmic OS — pending since May 2 session)
-- Firecrawl API key → firecrawl.dev (placeholder in Claude settings)
-- Greptile API key → GREPTILE_API_KEY env var never set
-- Postgres connection string → placeholder in both configs
-- n8n → `npm install -g n8n` not done yet
-- Docker Desktop → open once to complete initial setup
+### 🗂 Workspace Infra (pending since May 2)
+- Firecrawl API key → firecrawl.dev
+- Greptile API key → `GREPTILE_API_KEY` env var
+- Postgres connection string
+- n8n → `npm install -g n8n`
+- Docker Desktop → open once for initial setup
 
 ---
 
@@ -222,7 +221,7 @@ tests/unit/            — Unit tests (pytest — currently not runnable, fix ve
 ## AI Agent Instructions
 - **Never hardcode** user data — always read from DB or user input
 - **Never send** client names, PII, or financials to cloud AIs — private zone only
-- **Always verify** UI changes via `python3 demos/visual_demo.py` before marking done
+- **Always verify** UI changes via `venv/bin/python3 demos/master_audit.py` (headless) or `--visual` flag before marking done
 - **Route order:** `app.mount("/", StaticFiles(...))` must be the LAST line in `main.py`
 - **Port:** Server runs on 5004 (README says 8000 — outdated, ignore it)
 - **Product name:** Cosmic OS. Not "Astro". Not "Jyotish Engine". See DECISIONS.md D-006.
