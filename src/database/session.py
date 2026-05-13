@@ -6,8 +6,11 @@ from .models import Base
 
 load_dotenv()
 
-# Default to SQLite for local development if POSTGRES_URL is not provided
+# Default to SQLite for local development if DATABASE_URL is not provided
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./cosmic_os.db")
+# Render provides postgres:// but SQLAlchemy requires postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # For SQLite, we need connect_args={"check_same_thread": False}
 if DATABASE_URL.startswith("sqlite"):
