@@ -374,6 +374,20 @@ async function loadMorningBrief() {
             luckyBadge.classList.remove('hidden');
         }
 
+        // Populate TL;DR card
+        const tldrCard   = document.getElementById('tldrCard');
+        const tldrLine   = document.getElementById('tldrLine');
+        const tldrLucky  = document.getElementById('tldrLucky');
+        const tldrMove   = document.getElementById('tldrMove');
+        const tldrWindow = document.getElementById('tldrWindow');
+        if (tldrCard && tldrLine) {
+            tldrLine.textContent   = pd.focus || d.overall_description || '—';
+            if (tldrLucky)  tldrLucky.textContent  = pd.number ? `${pd.number} · ${pd.theme}` : '—';
+            if (tldrMove)   tldrMove.textContent   = d.top_action?.label || '—';
+            if (tldrWindow) tldrWindow.textContent = d.overall_window || '—';
+            tldrCard.classList.remove('hidden');
+        }
+
         const highlightHtml = (d.transit_highlights || [])
             .map(h => `<div class="brief-highlight">${h}</div>`).join('');
         const windowPositive = ['Optimal', 'Good', 'Strong'].some(w => d.overall_window?.includes(w));

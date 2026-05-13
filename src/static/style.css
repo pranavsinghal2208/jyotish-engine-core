@@ -69,10 +69,10 @@ body {
 }
 
 .landing-h1 {
-    font-size: 44px;
+    font-size: 32px;
     font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.08;
+    letter-spacing: -0.03em;
+    line-height: 1.18;
     color: var(--text);
     margin-bottom: 14px;
 }
@@ -105,6 +105,44 @@ body {
 .pill-ex {
     color: var(--muted);
     font-weight: 400;
+}
+
+/* TL;DR card */
+.tldr-card {
+    background: var(--cta);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+.tldr-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 6px;
+}
+.tldr-line {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 14px;
+}
+.tldr-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.tldr-chip {
+    font-size: 12px;
+    font-weight: 400;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+.tldr-chip strong {
+    font-weight: 700;
 }
 
 /* Input stack */

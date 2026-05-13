@@ -33,16 +33,16 @@
         <div class="landing-left">
             <div class="brand-mark">Cosmic OS <span class="brand-sub">· Daily Astrology & Numerology Intelligence</span></div>
 
-            <h1 class="landing-h1">Know your day.<br>Own your path.</h1>
-            <p class="landing-sub">Vedic astrology and numerology made simple. Get clear, doable advice based on your birth moment.</p>
+            <h1 class="landing-h1">Walk away knowing three things:<br>what today feels like, what to do,<br>and where you are in your life right now.</h1>
+            <p class="landing-sub">Takes 30 seconds. Built on 5000 years of Vedic timing science.</p>
 
             <!-- What you get -->
             <div class="feature-pills">
-                <span class="pill">☉ Today's Vibe <span class="pill-ex">· Moon energy</span></span>
-                <span class="pill">♃ Life Chapter <span class="pill-ex">· Venus MD</span></span>
-                <span class="pill">✦ Lucky Number <span class="pill-ex">· 5 today</span></span>
-                <span class="pill">☿ Daily Actions <span class="pill-ex">· 3 moves</span></span>
-                <span class="pill">☽ Morning Brief <span class="pill-ex">· Daily Guide</span></span>
+                <span class="pill">What today feels like</span>
+                <span class="pill">Where you are in life right now</span>
+                <span class="pill">Your lucky number today</span>
+                <span class="pill">3 things to do</span>
+                <span class="pill">Your morning brief</span>
             </div>
 
             <!-- Form -->
@@ -221,9 +221,9 @@
     <header class="results-header">
             <div class="header-brand">Cosmic OS<span class="header-descriptor"> · Vedic Intelligence</span><span id="headerName" class="header-name-chip"></span></div>
             <nav class="tab-nav">
-                <button class="tab-btn active" data-view="strategic">Strategic</button>
-                <button class="tab-btn" data-view="technical">Technical</button>
-                <button class="tab-btn" data-view="numerology">Numerology</button>
+                <button class="tab-btn active" data-view="strategic">Today</button>
+                <button class="tab-btn" data-view="technical">Full Chart</button>
+                <button class="tab-btn" data-view="numerology">Numbers</button>
             </nav>
             <div class="header-right">
                 <span id="headerAuthBadge" class="connected-badge hidden">
@@ -255,6 +255,17 @@
         <!-- STRATEGIC VIEW -->
         <div id="strategicView" class="view-panel">
             <div class="panel-inner">
+
+                <!-- TODAY IN ONE LINE -->
+                <div id="tldrCard" class="tldr-card hidden">
+                    <div class="tldr-eyebrow">Today in one line</div>
+                    <div id="tldrLine" class="tldr-line">—</div>
+                    <div class="tldr-chips">
+                        <span class="tldr-chip">Lucky number: <strong id="tldrLucky">—</strong></span>
+                        <span class="tldr-chip">Best move: <strong id="tldrMove">—</strong></span>
+                        <span class="tldr-chip">Window: <strong id="tldrWindow">—</strong></span>
+                    </div>
+                </div>
 
                 <div class="hero-card">
                     <div id="luckyNumberBadge" class="lucky-number-badge hidden">
@@ -291,9 +302,18 @@
                     </div>
                 </div>
 
+                <!-- Morning Brief — moved to top: most actionable daily content -->
+                <div id="morningBriefSection" class="hidden">
+                    <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
+                        Today · Your Morning Brief
+                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">Sync to Calendar</span>
+                    </div>
+                    <div class="card brief-card" id="morningBriefCard"></div>
+                </div>
+
                 <!-- LUCKY WINDOWS (v2) -->
                 <div id="luckyWindowsSection" class="hidden">
-                    <div class="section-label">Weekly Strategic Map (7-Day Scoped Intelligence)</div>
+                    <div class="section-label">This Week · Best Days to Act</div>
                     <div class="card lucky-card">
                         <div id="luckyWindowsGrid" class="lucky-grid">
                             <!-- JS injected windows -->
@@ -306,18 +326,9 @@
                     </div>
                 </div>
 
-                <!-- Morning Brief -->
-                <div id="morningBriefSection" class="hidden">
-                    <div class="section-label" style="display:flex; justify-content:space-between; align-items:center;">
-                        Morning Brief
-                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500;">Sync to Calendar</span>
-                    </div>
-                    <div class="card brief-card" id="morningBriefCard"></div>
-                </div>
-
                 <!-- Business Timing Advisor -->
                 <div id="timingAdvisorSection" class="hidden">
-                    <div class="section-label">Business Timing Advisor</div>
+                    <div class="section-label">This Week · When to Act</div>
                     <div class="card" id="timingOverviewCard"></div>
                     <div id="timingActionsGrid" class="timing-grid"></div>
                 </div>
