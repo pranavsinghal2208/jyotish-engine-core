@@ -1656,18 +1656,21 @@ const TRANSLATE_SELECTORS = [
 
 function _collectTranslatables() {
     const items = [];
+    const seen = new WeakSet();
     TRANSLATE_SELECTORS.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => {
-            // Skip empty, hidden, or already a qmark tooltip badge
-            const txt = el.textContent.trim();
-            if (!txt || el.classList.contains('qmark')) return;
-            // Skip if only contains child elements with no direct text
+            if (seen.has(el)) return;
+            seen.add(el);
+            if (el.classList.contains('qmark')) return;
+            // Only use direct text nodes — never recurse into child elements
+            // (avoids sending link text, button text, etc. to translation API)
             const directText = Array.from(el.childNodes)
                 .filter(n => n.nodeType === Node.TEXT_NODE)
                 .map(n => n.textContent.trim())
                 .join(' ').trim();
-            if (!directText) return;
-            items.push({ el, text: txt });
+            // Skip placeholders and empty elements
+            if (!directText || directText === '—' || directText === '-') return;
+            items.push({ el, text: directText });
         });
     });
     return items;
@@ -1708,7 +1711,8 @@ async function _applyHindi(btn) {
         } catch (err) {
             console.error('[Hindi] Translation failed:', err);
             btn.classList.remove('loading');
-            btn.textContent = 'EN | हिं';
+            btn.textContent = '⚠ Retry';
+            setTimeout(() => { btn.textContent = 'EN | हिं'; }, 3000);
             return;
         }
     }

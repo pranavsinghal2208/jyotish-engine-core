@@ -3251,7 +3251,8 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 }
 .lang-toggle-btn:hover { border-color: var(--cta); color: var(--cta); }
 .lang-toggle-btn.hindi { background: var(--cta); color: #fff; border-color: var(--cta); }
-.lang-toggle-btn.loading { opacity: 0.55; pointer-events: none; }
+.lang-toggle-btn.loading { opacity: 0.75; pointer-events: none; }
+.results-screen .lang-toggle-btn.loading { color: rgba(255,255,255,0.75); border-color: rgba(200,168,106,0.4); }
 .results-screen .lang-toggle-btn { border-color: rgba(200,168,106,0.25); color: rgba(255,255,255,0.40); }
 .results-screen .lang-toggle-btn:hover { border-color: var(--gold,#C8A86A); color: var(--gold,#C8A86A); }
 .results-screen .lang-toggle-btn.hindi { background: rgba(200,168,106,0.12); color: var(--gold,#C8A86A); border-color: var(--gold,#C8A86A); }
