@@ -278,7 +278,7 @@ body {
 .motif-planet.p4 { bottom: 15%; right: 25%; }
 
 .card-hint {
-...    font-size: 12px;
+    font-size: 12px;
     color: var(--muted);
     margin-bottom: 12px;
     margin-top: -8px;
@@ -733,6 +733,39 @@ body {
     border-radius: var(--radius);
     padding: 32px;
     color: #fff;
+    position: relative;
+}
+
+.lucky-number-badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(200,168,106,0.12);
+    border: 1px solid rgba(200,168,106,0.25);
+    color: #C8A86A;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.lucky-number-badge span {
+    background: #C8A86A;
+    color: #0C0A1E;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 .hero-card-label {
@@ -2177,6 +2210,43 @@ body {
 
 
 /* ── WELCOME TOAST ── */
+.welcome-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 32px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    max-width: 320px;
+    z-index: 1000;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+}
+
+.welcome-toast.reveal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.welcome-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+}
+
+.welcome-body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+/* ── STRATEGIC AUDIT REFINEMENTS ── */
 .welcome-toast {
     position: fixed;
     bottom: 32px;

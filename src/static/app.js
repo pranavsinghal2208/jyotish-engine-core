@@ -365,6 +365,15 @@ async function loadMorningBrief() {
         if (!res.ok) return;
         const d = await res.json();
         const pd = d.personal_day;
+
+        // Populate Lucky Number badge in hero card
+        const luckyBadge = document.getElementById('luckyNumberBadge');
+        const luckyValue = document.getElementById('luckyNumberValue');
+        if (luckyBadge && luckyValue && pd.number) {
+            luckyValue.textContent = pd.number;
+            luckyBadge.classList.remove('hidden');
+        }
+
         const highlightHtml = (d.transit_highlights || [])
             .map(h => `<div class="brief-highlight">${h}</div>`).join('');
         const windowPositive = ['Optimal', 'Good', 'Strong'].some(w => d.overall_window?.includes(w));
