@@ -680,7 +680,13 @@ async def timing_advisor(user: User = Depends(get_current_user)):
         pulse = generate_business_pulse(dashas, datetime.utcnow())
         active_dasha = pulse.get("active_dasha", "Sun-Sun")
 
-        advice = get_timing_advice(active_dasha, current_planets, nakshatra.get("name", ""))
+        dob_fmt = datetime.strptime(user.birth_date, "%Y-%m-%d").strftime("%d-%m-%Y")
+        today_ist_ta = datetime.utcnow() + timedelta(hours=5, minutes=30)
+        cycles_ta = numerology_engine.get_personal_cycles(dob_fmt, today_ist_ta)
+        advice = get_timing_advice(
+            active_dasha, current_planets, nakshatra.get("name", ""),
+            personal_day=cycles_ta["personal_day"]["number"]
+        )
         return advice
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -709,7 +715,10 @@ async def morning_brief(user: User = Depends(get_current_user)):
         today_ist = datetime.utcnow() + timedelta(hours=5, minutes=30)
         cycles = numerology_engine.get_personal_cycles(dob_formatted, today_ist)
 
-        timing = get_timing_advice(active_dasha, current_planets, nakshatra.get("nakshatra", ""))
+        timing = get_timing_advice(
+            active_dasha, current_planets, nakshatra.get("nakshatra", ""),
+            personal_day=cycles["personal_day"]["number"]
+        )
         top_action = timing["actions"][0] if timing["actions"] else {}
 
         # Transit highlights: check if any planet is in a sign that matches natal key planets

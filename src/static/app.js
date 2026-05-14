@@ -404,7 +404,7 @@ async function loadMorningBrief() {
                 <div class="brief-date">${d.day_name}, ${d.date}</div>
                 <div class="brief-window-badge">${d.overall_window}</div>
             </div>
-            <div class="brief-desc">${pd.focus || d.overall_description}</div>
+            <div class="brief-desc">${d.overall_description}</div>
             <div class="brief-cycles-row">
                 <div class="brief-cycle">
                     <div class="brief-cycle-label">Personal Day</div>
@@ -1107,6 +1107,13 @@ function populateAdvancedAnalysis(data) {
                 <div class="ashtak-label">${h.strength}</div>
             </div>`;
         }).join('');
+
+        // Auto-show the strongest house on load so user sees interpretation immediately
+        const strongestKey = Object.keys(houses).reduce((a, b) =>
+            (houses[a].bindus ?? houses[a].score ?? 0) >= (houses[b].bindus ?? houses[b].score ?? 0) ? a : b
+        );
+        const sh = houses[strongestKey];
+        interpretHouse(+strongestKey, sh.bindus ?? sh.score ?? 0, sh.strength || 'Weak');
     }
 
     // Divisional Charts
@@ -1193,6 +1200,11 @@ function populateAdvancedAnalysis(data) {
     }
 function _renderDivChart(chartData, title, impactText) {
     if (!chartData) return '<div style="color:var(--muted);font-size:13px;padding:12px">Data unavailable</div>';
+    const header = `<div class="div-chart-header">
+        <span class="div-planet-name" style="color:var(--muted);font-weight:600">Planet</span>
+        <span class="div-planet-sign" style="color:var(--muted);font-weight:600">This Chart</span>
+        <span class="div-planet-deg" style="color:var(--muted);font-weight:600;font-size:11px">← Birth Chart</span>
+    </div>`;
     const rows = Object.entries(chartData).map(([p, d]) =>
         `<div class="div-chart-planet">
             <span class="div-planet-name">${p}</span>
@@ -1200,9 +1212,9 @@ function _renderDivChart(chartData, title, impactText) {
             <span class="div-planet-deg" style="font-size:11px;color:var(--muted)">${d.natal_sign ? '← ' + d.natal_sign : ''}</span>
         </div>`).join('');
     const impactBlock = impactText
-        ? `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--text);line-height:1.6">${impactText}</div>`
+        ? `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--text);line-height:1.6"><strong>What this means for you:</strong> ${impactText}</div>`
         : '';
-    return `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;padding:12px 0 0">${title}</div>${rows}${impactBlock}`;
+    return `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;padding:12px 0 0">${title}</div>${header}${rows}${impactBlock}`;
 }
 
 // ── Progressive landing reveal ────────────────────────────

@@ -73,6 +73,22 @@ NAK_QUALITY = {
     "Bharani": 1, "Purva Phalguni": 1, "Purva Ashadha": 1, "Purva Bhadrapada": 1, "Magha": 1,
 }
 
+# Personal day number → action type score adjustments
+# Makes "Best move" personal to each user and changes daily
+PERSONAL_DAY_BOOSTS: Dict[int, Dict[str, int]] = {
+    1:  {"Launch": 15, "Negotiate": 5},                      # Initiation energy
+    2:  {"Sign": 15, "Hire": 10, "Negotiate": 8},            # Partnership / agreements
+    3:  {"Negotiate": 15, "Sign": 8},                        # Communication / persuasion
+    4:  {"Invest": 15, "Hire": 8},                           # Foundation / structure
+    5:  {"Travel": 15, "Launch": 8, "Negotiate": 6},         # Change / movement
+    6:  {"Hire": 15, "Invest": 8},                           # Responsibility / commitment
+    7:  {"Launch": -10, "Sign": -6, "Invest": -6},           # Introspection — avoid big moves
+    8:  {"Launch": 12, "Sign": 10, "Invest": 12},            # Power / business execution
+    9:  {"Sign": 12, "Negotiate": 8},                        # Completion / close / finalise
+    11: {"Negotiate": 15, "Sign": 10},                       # Master: intuitive communication
+    22: {"Invest": 15, "Launch": 10},                        # Master: visionary builder
+}
+
 WEEKDAY_Q = {0: 4, 1: 2, 2: 5, 3: 5, 4: 4, 5: 2, 6: 3}
 WEEKDAY_NAME = {0: "Monday", 1: "Tuesday", 2: "Wednesday",
                 3: "Thursday", 4: "Friday", 5: "Saturday", 6: "Sunday"}
@@ -98,7 +114,7 @@ NAK_LORD = {
 
 
 def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
-                  nakshatra: str) -> Dict[str, Any]:
+                  nakshatra: str, personal_day: int = 0) -> Dict[str, Any]:
     rules = ACTION_RULES[action_key]
 
     # Dasha contribution (0-40)
@@ -149,7 +165,10 @@ def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
     nak_q = NAK_QUALITY.get(nakshatra, 2)
     nak_score = round((nak_q / 5) * 20)
 
-    total = dasha_score + transit_score + nak_score  # max 100
+    # Personal day contribution — makes recommendation user-specific and changes daily
+    pd_boost = PERSONAL_DAY_BOOSTS.get(personal_day, {}).get(action_key, 0)
+
+    total = dasha_score + transit_score + nak_score + pd_boost
 
     if total >= 75:
         window = "Excellent"
@@ -180,15 +199,17 @@ def get_timing_advice(
     active_dasha: str,
     current_planets: Dict,
     nakshatra: str,
+    personal_day: int = 0,
 ) -> Dict[str, Any]:
     """
     Return action-by-action timing scores for today and best weekday this week.
     active_dasha: e.g. "Venus-Saturn" — we use the Maha-Dasha lord.
+    personal_day: numerology personal day number (1-9, 11, 22) — differentiates per user.
     """
     md_lord = active_dasha.split("-")[0].strip() if active_dasha else "Sun"
 
     actions = [
-        _score_action(k, md_lord, current_planets, nakshatra)
+        _score_action(k, md_lord, current_planets, nakshatra, personal_day)
         for k in ACTION_RULES
     ]
     actions.sort(key=lambda x: x["score"], reverse=True)
