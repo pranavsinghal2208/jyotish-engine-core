@@ -446,19 +446,18 @@ async function loadMorningBrief() {
             <div class="brief-desc">${d.overall_description}</div>
             <div class="brief-cycles-row">
                 <div class="brief-cycle">
-                    <div class="brief-cycle-label">Personal Day</div>
+                    <div class="brief-cycle-label">Day</div>
                     <div class="brief-cycle-num">${pd.number}</div>
                     <div class="brief-cycle-theme">${pd.theme}</div>
                 </div>
                 <div class="brief-cycle">
-                    <div class="brief-cycle-label">Moon Today</div>
+                    <div class="brief-cycle-label">Moon</div>
                     <div class="brief-cycle-num" style="font-size:18px">${moonSign}</div>
                     <div class="brief-cycle-theme">${d.active_dasha}</div>
                 </div>
                 <div class="brief-cycle">
                     <div class="brief-cycle-label">Lucky Color</div>
                     <div class="brief-cycle-num" style="font-size:18px">${pd.color || '—'}</div>
-                    <div class="brief-cycle-theme">${pd.focus || pd.theme}</div>
                 </div>
             </div>
             ${d.top_action?.label ? `<div class="brief-action">Best move today: <strong>${d.top_action.label}</strong> — ${d.top_action.window}${actionCaveat}</div>` : ''}`;
