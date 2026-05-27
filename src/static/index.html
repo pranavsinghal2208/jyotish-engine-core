@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmic OS — Vedic Intelligence</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
     <link rel="stylesheet" href="numerology-feedback.css">
     <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -271,7 +271,6 @@
                     </div>
                 </div>
 
-                <div class="section-title">Today's Energy</div>
                 <div class="hero-card">
                     <div id="luckyNumberBadge" class="lucky-number-badge hidden">
                         Lucky Number <span id="luckyNumberValue">—</span>
@@ -307,36 +306,40 @@
                     </div>
                 </div>
 
-                <!-- Morning Brief — moved to top: most actionable daily content -->
-                <div id="morningBriefSection" class="hidden">
-                    <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                        Today · Your Morning Brief
-                        <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500; font-weight:400; border-left:none; padding-left:0;">Sync to Calendar</span>
+                <!-- Morning Brief + Timing: side-by-side on desktop -->
+                <div class="brief-timing-row">
+                    <div id="morningBriefSection" class="hidden">
+                        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                            Today · Your Morning Brief
+                            <span class="cal-link" onclick="window.open('/api/calendar/feed')" style="font-size: 0.7rem; cursor: pointer; color: var(--cta); font-weight: 500; font-weight:400; border-left:none; padding-left:0;">Sync to Calendar</span>
+                        </div>
+                        <div class="card brief-card" id="morningBriefCard"></div>
                     </div>
-                    <div class="card brief-card" id="morningBriefCard"></div>
+
+                    <div class="timing-col">
+                        <!-- LUCKY WINDOWS (v2) -->
+                        <div id="luckyWindowsSection" class="hidden">
+                            <div class="section-title">This Week · Best Days to Act</div>
+                            <div class="card lucky-card">
+                                <div id="luckyWindowsGrid" class="lucky-grid"></div>
+                                <div class="lucky-legend">
+                                    <span class="leg-item"><span class="dot peak"></span> Peak Momentum</span>
+                                    <span class="leg-item"><span class="dot good"></span> Favorable</span>
+                                    <span class="leg-item"><span class="dot neut"></span> Neutral</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Timing Advisor -->
+                        <div id="timingAdvisorSection" class="hidden">
+                            <div class="section-title">This Week · When to Act</div>
+                            <div class="card" id="timingOverviewCard"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- LUCKY WINDOWS (v2) -->
-                <div id="luckyWindowsSection" class="hidden">
-                    <div class="section-title">This Week · Best Days to Act</div>
-                    <div class="card lucky-card">
-                        <div id="luckyWindowsGrid" class="lucky-grid">
-                            <!-- JS injected windows -->
-                        </div>
-                        <div class="lucky-legend">
-                            <span class="leg-item"><span class="dot peak"></span> Peak Momentum</span>
-                            <span class="leg-item"><span class="dot good"></span> Favorable</span>
-                            <span class="leg-item"><span class="dot neut"></span> Neutral</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Business Timing Advisor -->
-                <div id="timingAdvisorSection" class="hidden">
-                    <div class="section-title">This Week · When to Act</div>
-                    <div class="card" id="timingOverviewCard"></div>
-                    <div id="timingActionsGrid" class="timing-grid"></div>
-                </div>
+                <!-- Timing action cards — full width always -->
+                <div id="timingActionsGrid" class="timing-grid"></div>
 
                 <div class="section-title">Today · Your Directives</div>
                 <div class="two-col">
@@ -429,7 +432,7 @@
 
         <!-- ADVANCED ANALYSIS SECTION -->
         <div class="adv-section">
-            <div class="section-title" style="margin-bottom:16px">Advanced Analysis · Deeper Layers of Your Chart</div>
+            <div class="section-title" style="margin-bottom:16px">Advanced Analysis</div>
 
             <!-- Yogas -->
             <div class="adv-block">
@@ -750,6 +753,6 @@
     </div>
 
     <script src="app.js?v=9"></script>
-    <script src="numerology-feedback.js?v=6"></script>
+    <script src="numerology-feedback.js?v=7"></script>
 </body>
 </html>
