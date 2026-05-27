@@ -3534,3 +3534,32 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     line-height: 1.72;
     color: var(--text);
 }
+
+/* ── AM/PM toggle ────────────────────────────────────────── */
+.ampm-toggle { display: flex; gap: 8px; margin-top: 10px; }
+.ampm-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+.ampm-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── D-9 / D-10 divisional chart — dark mode readability ── */
+.results-screen .div-chart-planet { border-color: rgba(200,168,106,0.10); }
+.results-screen .div-planet-name  { color: rgba(255,255,255,0.90); }
+.results-screen .div-planet-sign  { color: rgba(255,255,255,0.65); }
+.results-screen .div-planet-deg   { color: rgba(200,168,106,0.80); font-size: 11px; }
+
+/* ── Remedy cards — dark mode ────────────────────────────── */
+.results-screen .remedy-card      { background: rgba(15,12,35,0.65); border-color: rgba(200,168,106,0.12); }
+.results-screen .rem-challenge    { color: rgba(255,255,255,0.92); }
+.results-screen .rem-tag          { background: rgba(200,168,106,0.10); color: rgba(200,168,106,0.85); }
+.results-screen .rem-label        { color: rgba(200,168,106,0.65); }
+.results-screen .rem-value        { color: rgba(255,255,255,0.80); }

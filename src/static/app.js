@@ -106,11 +106,16 @@ async function checkUserProfile() {
             quickUnlock();
             document.getElementById("time").value = d.time;
             if (d.time) {
-                const [hh, mm] = d.time.split(':');
+                const [hhRaw, mm] = d.time.split(':');
+                const h24 = parseInt(hhRaw, 10);
+                const h12 = h24 % 12 || 12;
+                _ampm = h24 >= 12 ? 'PM' : 'AM';
                 const hhEl = document.getElementById('timeHH');
                 const mmEl = document.getElementById('timeMM');
-                if (hhEl) hhEl.value = hh;
+                if (hhEl) hhEl.value = h12;
                 if (mmEl) mmEl.value = mm;
+                _showAmPmToggle(false);
+                document.getElementById('time').value = d.time;
             }
             document.getElementById("lat").value = d.lat;
             document.getElementById("lon").value = d.lon;
@@ -1662,36 +1667,82 @@ function initDobInputs() {
     yyyyEl.addEventListener('blur', tryCommit);
 }
 
-function initTimeInputs() {
-    const hhEl = document.getElementById('timeHH');
-    const mmEl = document.getElementById('timeMM');
-    const hidden = document.getElementById('time');
-    if (!hhEl || !mmEl) return;
+let _ampm = 'AM';
 
-    function commitTime() {
-        const hh = hhEl.value.padStart(2, '0');
-        const mm = mmEl.value.padStart(2, '0');
-        const h = +hhEl.value, m = +mmEl.value;
-        if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
-            hidden.value = `${hh}:${mm}`;
-        }
+function setAmPm(val) {
+    _ampm = val;
+    const amBtn = document.getElementById('ampmAM');
+    const pmBtn = document.getElementById('ampmPM');
+    if (amBtn) amBtn.classList.toggle('active', val === 'AM');
+    if (pmBtn) pmBtn.classList.toggle('active', val === 'PM');
+    _commitTimeAmPm();
+}
+
+function _commitTimeAmPm() {
+    const hhEl  = document.getElementById('timeHH');
+    const mmEl  = document.getElementById('timeMM');
+    const hidden = document.getElementById('time');
+    if (!hhEl || !mmEl || !hidden) return;
+    let h = parseInt(hhEl.value, 10);
+    const m = parseInt(mmEl.value, 10);
+    if (isNaN(h) || isNaN(m) || m < 0 || m > 59) return;
+    if (_ampm === 'PM' && h < 12) h += 12;
+    if (_ampm === 'AM' && h === 12) h = 0;
+    if (h >= 0 && h <= 23) {
+        hidden.value = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
     }
+}
+
+function _showAmPmToggle(isAuto24h) {
+    const toggle = document.getElementById('ampmToggle');
+    if (!toggle) return;
+    toggle.classList.remove('hidden');
+    if (isAuto24h) {
+        // hour > 12 typed — auto-select PM, lock display
+        _ampm = 'PM';
+        const amBtn = document.getElementById('ampmAM');
+        const pmBtn = document.getElementById('ampmPM');
+        if (amBtn) amBtn.classList.remove('active');
+        if (pmBtn) pmBtn.classList.add('active');
+    }
+}
+
+function initTimeInputs() {
+    const hhEl   = document.getElementById('timeHH');
+    const mmEl   = document.getElementById('timeMM');
+    if (!hhEl || !mmEl) return;
 
     hhEl.addEventListener('input', function() {
         this.value = this.value.replace(/\D/g, '');
-        if (+this.value > 23) this.value = '23';
-        if (this.value.length >= 2) { mmEl.focus(); commitTime(); }
+        const h = parseInt(this.value, 10);
+        if (h > 23) this.value = '23';
+
+        if (this.value.length >= 1) {
+            const hv = parseInt(this.value, 10);
+            if (hv > 12) {
+                _showAmPmToggle(true);   // 24h → auto PM
+            } else {
+                _showAmPmToggle(false);  // ambiguous → show AM/PM choice
+            }
+        }
+        if (this.value.length >= 2) {
+            mmEl.focus();
+            _commitTimeAmPm();
+        }
     });
+
     mmEl.addEventListener('input', function() {
         this.value = this.value.replace(/\D/g, '');
         if (+this.value > 59) this.value = '59';
-        if (this.value.length >= 2) commitTime();
+        if (this.value.length >= 2) _commitTimeAmPm();
     });
+
     mmEl.addEventListener('keydown', function(e) {
         if (e.key === 'Backspace' && this.value === '') hhEl.focus();
     });
-    hhEl.addEventListener('blur', commitTime);
-    mmEl.addEventListener('blur', commitTime);
+
+    hhEl.addEventListener('blur', _commitTimeAmPm);
+    mmEl.addEventListener('blur', _commitTimeAmPm);
 }
 
 async function quickUnlock() {

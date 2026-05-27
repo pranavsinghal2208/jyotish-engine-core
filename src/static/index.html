@@ -95,12 +95,16 @@
                         <div class="field-wrap">
                             <label class="field-label">Time of birth</label>
                             <div class="dob-row">
-                                <input type="text" id="timeHH" class="dob-part" placeholder="HH" inputmode="numeric" maxlength="2" autocomplete="off">
+                                <input type="text" id="timeHH" class="dob-part" placeholder="H" inputmode="numeric" maxlength="2" autocomplete="off">
                                 <span class="dob-sep">:</span>
                                 <input type="text" id="timeMM" class="dob-part" placeholder="MM" inputmode="numeric" maxlength="2" autocomplete="off">
                             </div>
+                            <div id="ampmToggle" class="ampm-toggle hidden">
+                                <button type="button" class="ampm-btn active" id="ampmAM" onclick="setAmPm('AM')">AM</button>
+                                <button type="button" class="ampm-btn" id="ampmPM" onclick="setAmPm('PM')">PM</button>
+                            </div>
                             <input type="hidden" id="time" value="12:00">
-                            <span class="field-hint">Approximate is fine</span>
+                            <span class="field-hint">Type hour → AM/PM appears</span>
                         </div>
                     </div>
                 </div>
@@ -743,7 +747,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=5"></script>
-    <script src="numerology-feedback.js?v=4"></script>
+    <script src="app.js?v=6"></script>
+    <script src="numerology-feedback.js?v=5"></script>
 </body>
 </html>

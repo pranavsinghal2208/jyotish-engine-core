@@ -440,7 +440,8 @@ async function loadForecast(yearOffset) {
                 </div>
                 <div style="font-size:32px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:6px">${m.personal_month}</div>
                 <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px">${m.theme}</div>
-                <div style="font-size:13px;color:var(--muted)">${m.energy} · ${m.planet}</div>
+                <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${m.energy} · ${m.planet}</div>
+                ${m.focus ? `<div style="font-size:12px;color:var(--text);opacity:0.75;line-height:1.45;border-top:1px solid var(--border);padding-top:8px;margin-top:4px">${m.focus}</div>` : ''}
                 ${dashaStrip}
             </div>`;
         }).join('');
