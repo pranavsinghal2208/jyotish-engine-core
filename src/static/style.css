@@ -2463,6 +2463,24 @@ body {
     margin-bottom: 12px;
     line-height: 1.5;
 }
+.ashtak-narrative {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    margin: 14px 0 4px;
+    padding: 14px;
+    background: rgba(99,91,255,0.06);
+    border-radius: 10px;
+    border-left: 3px solid var(--accent);
+}
+.ashtak-house-detail {
+    margin-top: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+}
 
 /* ── DC Profile compat range + color states ─────────────────── */
 .dc-compat-range {
@@ -3041,6 +3059,8 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .ashtak-cell.moderate { border-color: #f59e0b; background: rgba(245,158,11,0.07); }
 .results-screen .ashtak-cell.weak { border-color: #ef4444; background: rgba(239,68,68,0.07); }
 .results-screen .ashtak-legend { color: rgba(255,255,255,0.45); }
+.results-screen .ashtak-narrative { color: rgba(255,255,255,0.82); background: rgba(99,91,255,0.08); }
+.results-screen .ashtak-house-detail { background: rgba(21,17,43,0.80); border-color: rgba(200,168,106,0.18); }
 
 /* ════════════════════════════════════════════════════
    TYPOGRAPHY SCALE — Consistent font sizes throughout
@@ -3563,3 +3583,28 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .rem-tag          { background: rgba(200,168,106,0.10); color: rgba(200,168,106,0.85); }
 .results-screen .rem-label        { color: rgba(200,168,106,0.65); }
 .results-screen .rem-value        { color: rgba(255,255,255,0.80); }
+
+/* ── Kundali chart — visible borders on dark background ────── */
+.results-screen #kundaliChart {
+    --surface: rgba(38, 32, 68, 0.96);
+    --border:  rgba(200,168,106,0.35);
+    --muted:   rgba(255,255,255,0.55);
+    --text:    rgba(255,255,255,0.90);
+}
+
+/* ── PDF / Print layout ─────────────────────────────────────── */
+@media print {
+    body { background: #fff !important; color: #111 !important; }
+    .results-screen { background: #fff !important; --surface: #fff; --text: #111; --muted: #555; --border: #ddd; }
+    .results-header, .tab-nav, .feedback-float, #feedbackWidget,
+    .consent-overlay, .landing-screen, #langToggleBtn,
+    button, .cta-btn, .pdf-btn-inline, .cal-link,
+    .auth-btn-signin, .sign-out-btn { display: none !important; }
+    .view-panel { display: block !important; }
+    .tech-layout { flex-direction: column !important; }
+    .card { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; margin-bottom: 16px; }
+    .results-screen * { color: #111 !important; background: transparent !important; border-color: #ddd !important; }
+    .results-screen .results-header { display: none !important; }
+    h1, h2, h3 { color: #000 !important; }
+    a { color: #333 !important; text-decoration: none; }
+}

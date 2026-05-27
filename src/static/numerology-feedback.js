@@ -321,13 +321,8 @@ async function submitFeedback() {
     const feedbackText = document.getElementById('feedbackText').value.trim();
     const featureUsed = document.getElementById('featureUsed').value;
 
-    if (!currentRating) {
-        alert('Please select a rating');
-        return;
-    }
-
     if (!feedbackText) {
-        alert('Please provide feedback text');
+        alert('Please share what you observed — even one line helps.');
         return;
     }
 

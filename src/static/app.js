@@ -363,13 +363,20 @@ function populateStrategicView(data) {
         }
     } else {
         banner.classList.add('hidden');
-        // Show connect nudge in the section
         section.classList.remove('hidden');
-        alertList.innerHTML = `<div class="cal-connect-nudge">
-            <span>📅</span>
-            <span>Connect Google Calendar for high-stakes meeting and deadline alerts.</span>
-            <a href="/auth/google/login">Connect →</a>
-        </div>`;
+        if (window._isReturnUser) {
+            // Logged in but no high-stakes alerts this week
+            alertList.innerHTML = `<div class="cal-connect-nudge" style="color:rgba(255,255,255,0.55)">
+                <span>✅</span>
+                <span>Calendar connected. No high-stakes alerts in the next 7 days — your window is clear.</span>
+            </div>`;
+        } else {
+            alertList.innerHTML = `<div class="cal-connect-nudge">
+                <span>📅</span>
+                <span>Connect Google Calendar for high-stakes meeting and deadline alerts.</span>
+                <a href="/auth/google/login">Connect →</a>
+            </div>`;
+        }
     }
 
     // Morning Brief + Timing Advisor (fetched async after chart load)
@@ -1163,6 +1170,36 @@ function populateAdvancedAnalysis(data) {
             </div>`;
         }).join('');
 
+        // Sarvashtakavarga summary narrative
+        const narEl = document.getElementById('ashtakNarrative');
+        if (narEl) {
+            const scores = Object.keys(houses).sort((a, b) => +a - +b).map(k => ({
+                num: +k,
+                score: houses[k].bindus ?? houses[k].score ?? 0,
+                name: HOUSE_DOMAINS[k] || `House ${k}`,
+                strength: (houses[k].strength || 'Weak').toLowerCase()
+            }));
+            const total = scores.reduce((s, h) => s + h.score, 0);
+            const strong = scores.filter(h => h.strength === 'strong').sort((a, b) => b.score - a.score).slice(0, 3);
+            const weak   = scores.filter(h => h.strength === 'weak').sort((a, b) => a.score - b.score).slice(0, 2);
+            const overallTone = total >= 42 ? 'broad planetary support across your chart'
+                              : total >= 32 ? 'moderate support with clear peaks and troughs'
+                              : 'a life structure requiring deliberate effort in several areas';
+            let narrative;
+            if (strong.length && weak.length) {
+                const sNames = strong.map(h => `House ${h.num} (${h.name})`).join(', ');
+                const wNames = weak.map(h => `House ${h.num} (${h.name})`).join(' and ');
+                narrative = `Your chart shows ${overallTone}. The universe has concentrated its strongest backing in ${sNames} — these are your natural leverage zones where effort compounds fastest. The areas requiring most attention are ${wNames}, where planetary support is thin and outcomes depend more on your discipline than external luck. Most charts have 2–3 power zones and 2–3 challenge zones. The skill is working with your strong houses while actively shoring up the weak ones. Tap any house cell below to see your personalised playbook.`;
+            } else if (strong.length) {
+                const sNames = strong.map(h => `House ${h.num} (${h.name})`).join(', ');
+                narrative = `Your chart shows unusually broad planetary support. Strongest backing in ${sNames}. You operate with fewer structural headwinds than most — the risk is underestimating how much the environment is working in your favour. Tap any house to see what to do with it.`;
+            } else {
+                narrative = `Your chart shows a year requiring active navigation. Planetary support is spread thin, meaning outcomes depend more on your effort than on favourable conditions. Focus on one house at a time rather than spreading yourself thin. Tap any house below for your personalised playbook.`;
+            }
+            narEl.textContent = narrative;
+            narEl.style.display = 'block';
+        }
+
         // Auto-show the strongest house on load so user sees interpretation immediately
         const strongestKey = Object.keys(houses).reduce((a, b) =>
             (houses[a].bindus ?? houses[a].score ?? 0) >= (houses[b].bindus ?? houses[b].score ?? 0) ? a : b
@@ -1215,6 +1252,21 @@ function populateAdvancedAnalysis(data) {
                 ${focusList ? `<div class="varsha-impact-label">Operational Focus</div><ul class="varsha-impact-list">${focusList}</ul>` : ''}
                 ${remedyList ? `<div class="varsha-impact-label">Systemic Remedies</div><ul class="varsha-impact-list">${remedyList}</ul>` : ''}
             </div>` : '';
+        const VP_LAGNA_STORY = {
+            'Aries':       'Bold, initiating year. The universe hands you a first-mover card — act before others even decide. High energy, high visibility. Best suited for launches, new projects, and stepping into leadership roles you have been circling.',
+            'Taurus':      'A year of consolidation and value-building. You are not here to sprint — you are here to build something that lasts. Financial decisions made this year carry multi-year weight. Slow down and choose carefully.',
+            'Gemini':      'A year of information, networking, and rapid communication. Multiple opportunities arrive simultaneously — your job is to filter signal from noise. The right conversation this year can redirect your entire trajectory.',
+            'Cancer':      'A deeply intuitive year. Your inner compass is more reliable than any external data. Home, family, and emotional foundations take priority. Trust your gut over spreadsheets.',
+            'Leo':         'A year of visibility and authority. You are meant to be seen. Hiding your capabilities costs you more than putting yourself forward. This is the year to lead, publish, and be recognised.',
+            'Virgo':       'A year of precision and process. Small optimisations compound into major gains. The detail you ignored last year becomes the leverage point this year. Audit everything.',
+            'Libra':       'A year of partnerships and negotiation. Every major win this year comes through collaboration. Solo effort is less efficient than usual. Choose your partners carefully — they shape the year.',
+            'Scorpio':     'A year of deep transformation. Something ends so something better can begin. Do not resist the change — it is the mechanism, not the obstacle. Research, hidden knowledge, and strategic depth are your advantages.',
+            'Sagittarius': 'A year of expansion and long-range vision. You are being asked to think bigger than last year. Travel, education, and philosophical shifts all carry high ROI. Follow the horizon.',
+            'Capricorn':   'A year of serious, sustained ambition. Results are proportional to discipline. This is not the year for shortcuts. Every brick you lay now is load-bearing. Build with intention.',
+            'Aquarius':    'A year of innovation and collective thinking. The unconventional path outperforms the traditional one. Communities, networks, and shared intelligence are your highest-leverage inputs.',
+            'Pisces':      'A year of spiritual depth and creative imagination. Logic alone will not serve you — intuition and empathy are the real differentiators. Your creative output this year has unusual reach.',
+        };
+        const vpNarrative = VP_LAGNA_STORY[lagnaSign] || 'Your solar return chart sets the energetic template for the year ahead. The planetary positions at the moment of your birthday solar return reveal the dominant themes, opportunities, and areas requiring attention.';
         vpEl.innerHTML = `
             <div class="varsha-grid">
                 <div class="varsha-cell"><div class="varsha-cell-label">Return Date</div><div class="varsha-cell-value" style="font-size:14px">${varshaphal.return_date || '—'}</div></div>
@@ -1222,6 +1274,7 @@ function populateAdvancedAnalysis(data) {
                 <div class="varsha-cell"><div class="varsha-cell-label">Lagna</div><div class="varsha-cell-value">${lagnaSign}</div></div>
                 <div class="varsha-cell"><div class="varsha-cell-label">Year</div><div class="varsha-cell-value">${varshaphal.year || '—'}</div></div>
             </div>
+            <p style="font-size:14px;line-height:1.7;color:var(--text);margin:14px 0 6px;padding:14px;background:rgba(99,91,255,0.06);border-radius:10px;border-left:3px solid var(--accent)">${vpNarrative}</p>
             <div class="varsha-planets">
                 <div class="varsha-section-title">${vpTheme}</div>
                 ${planetRows}
@@ -1275,7 +1328,15 @@ function populateAdvancedAnalysis(data) {
     const activeCell = Array.from(document.querySelectorAll('.ashtak-cell')).find(c => c.innerText.includes(`House ${num}`));
     if (activeCell) activeCell.style.borderColor = 'var(--cta)';
 
-    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Inline detail panel (below the grid — no scroll-up needed)
+    const detail = document.getElementById('ashtakHouseDetail');
+    if (detail) {
+        detail.innerHTML = container.innerHTML;
+        detail.style.display = 'block';
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
     }
 function _renderDivChart(chartData, title, impactText) {
     if (!chartData) return '<div style="color:var(--muted);font-size:13px;padding:12px">Data unavailable</div>';
@@ -1981,6 +2042,29 @@ const TRANSLATE_SELECTORS = [
     '.yoga-card-desc',
     '.yoga-card-impact',
     '.pulse-strategy',
+    // Timing advisor + morning brief
+    '.action-reason',
+    '.action-label',
+    '#morningBriefText',
+    '#morningBriefDate',
+    '.brief-recommendation',
+    '.brief-summary',
+    '.alert-reason',
+    '.alert-action',
+    '.alert-event',
+    // Panchangam strip
+    '.panch-value',
+    // Cycle / KPI cards
+    '.cycle-focus',
+    '.cycle-theme',
+    '.cycle-energy',
+    // Forecast
+    '.forecast-focus',
+    // Missing number / remedy
+    '.rem-value',
+    '.rem-label',
+    // Calendar section
+    '.cal-connect-nudge span:last-child',
 ];
 
 function _collectTranslatables() {
