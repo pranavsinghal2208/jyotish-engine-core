@@ -751,10 +751,26 @@ body {
 @media (min-width: 900px) {
     .brief-timing-row {
         flex-direction: row;
-        align-items: flex-start;
+        align-items: stretch;
     }
-    .brief-timing-row > #morningBriefSection { flex: 1.1; }
-    .brief-timing-row > .timing-col         { flex: 0.9; min-width: 0; }
+    .brief-timing-row > #morningBriefSection {
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+    }
+    .brief-timing-row > #morningBriefSection .brief-card { flex: 1; }
+    .brief-timing-row > .timing-col {
+        flex: 0.9;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    #timingAdvisorSection {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    #timingAdvisorSection > .card { flex: 1; }
 }
 
 /* ── CARDS ── */
