@@ -732,7 +732,7 @@ body {
     padding: 32px 24px 64px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 28px;
 }
 
 /* ── CARDS ── */
@@ -1752,18 +1752,16 @@ body {
     margin-bottom: 16px;
 }
 .brief-cycles-row {
-    display: flex;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     margin-bottom: 16px;
-    flex-wrap: wrap;
 }
 .brief-cycle {
-    flex: 1;
-    min-width: 120px;
     text-align: center;
     background: var(--bg);
     border-radius: var(--radius-sm);
-    padding: 12px;
+    padding: 14px 10px;
 }
 .brief-cycle-label {
     font-size: 10px;
@@ -3175,7 +3173,7 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     font-weight: 700;
     letter-spacing: 0;
     color: var(--text);
-    margin: 28px 0 4px;
+    margin: 40px 0 8px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -3586,10 +3584,14 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 
 /* ── Kundali chart — visible borders on dark background ────── */
 .results-screen #kundaliChart {
-    --surface: rgba(38, 32, 68, 0.96);
-    --border:  rgba(200,168,106,0.35);
-    --muted:   rgba(255,255,255,0.55);
-    --text:    rgba(255,255,255,0.90);
+    background: rgba(252, 248, 240, 0.97);
+    border-radius: 10px;
+    padding: 6px;
+    --surface: rgba(252, 248, 240, 0.97);
+    --border:  rgba(50, 35, 10, 0.22);
+    --muted:   rgba(30, 20, 5, 0.52);
+    --text:    rgba(15, 10, 35, 0.90);
+    --hero-bg: rgba(99, 91, 255, 0.08);
 }
 
 /* ── PDF / Print layout ─────────────────────────────────────── */
