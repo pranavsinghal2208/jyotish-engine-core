@@ -433,17 +433,11 @@ async function loadMorningBrief() {
             tldrCard.classList.remove('hidden');
         }
 
-        const highlightHtml = (d.transit_highlights || [])
-            .map(h => `<div class="brief-highlight">${h}</div>`).join('');
-        const windowPositive = ['Optimal', 'Good', 'Strong'].some(w => d.overall_window?.includes(w));
-        const pdPositive = [1, 3, 5, 8].includes(pd.number);
-        const reconcileNote = (windowPositive !== pdPositive)
-            ? `<div class="brief-reconcile">Mixed signals: Numerology (${pd.theme}) vs Astrology (${d.overall_window}). Lean into your current intuition.</div>`
-            : '';
         const pdIntrospective = [7, 9].includes(pd.number);
         const actionCaveat = d.top_action?.label && pdIntrospective
-            ? ` <span style="color:var(--muted);font-size:12px">(Personal Day ${pd.number}: ${pd.theme} — favour reflection over new moves)</span>`
+            ? ` <span style="color:var(--muted);font-size:12px">— favour reflection over new moves today</span>`
             : '';
+        const moonSign = (d.transit_highlights?.[0] || '').replace('Moon transiting ', '').replace(' today.', '') || '—';
         briefCard.innerHTML = `
             <div class="brief-top-row">
                 <div class="brief-date">${d.day_name}, ${d.date}</div>
@@ -458,18 +452,16 @@ async function loadMorningBrief() {
                 </div>
                 <div class="brief-cycle">
                     <div class="brief-cycle-label">Moon Today</div>
-                    <div class="brief-cycle-num" style="font-size:18px">${(d.transit_highlights?.[0] || '').replace('Moon transiting ', '').replace(' today.', '') || '—'}</div>
+                    <div class="brief-cycle-num" style="font-size:18px">${moonSign}</div>
                     <div class="brief-cycle-theme">${d.active_dasha}</div>
                 </div>
                 <div class="brief-cycle">
                     <div class="brief-cycle-label">Lucky Color</div>
                     <div class="brief-cycle-num" style="font-size:18px">${pd.color || '—'}</div>
-                    <div class="brief-cycle-theme">Personal Day ${pd.number}</div>
+                    <div class="brief-cycle-theme">${pd.focus || pd.theme}</div>
                 </div>
             </div>
-            ${highlightHtml ? `<div class="brief-highlights">${highlightHtml}</div>` : ''}
-            ${reconcileNote}
-            ${d.top_action?.label ? `<div class="brief-action">Top action today: <strong>${d.top_action.label}</strong> — ${d.top_action.window}${actionCaveat}</div>` : ''}`;
+            ${d.top_action?.label ? `<div class="brief-action">Best move today: <strong>${d.top_action.label}</strong> — ${d.top_action.window}${actionCaveat}</div>` : ''}`;
         briefSection.classList.remove('hidden');
         if (window._isReturnUser) {
             setTimeout(() => briefSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
@@ -507,17 +499,13 @@ async function loadTimingAdvisor() {
         const d = await res.json();
         overview.innerHTML = `
             <div class="timing-overview-row">
-                <div>
-                    <div class="timing-window-badge timing-${d.overall_window.toLowerCase().replace(' ','-')}">${d.overall_window}</div>
-                    <div class="timing-desc">${d.overall_description}</div>
-                </div>
+                <div class="timing-dasha-note">${d.dasha_lord} Maha-Dasha · ${d.nakshatra} Nakshatra</div>
                 <div class="timing-best-day">
                     <div class="timing-best-label">Best day this week</div>
                     <div class="timing-best-value">${d.best_day_this_week?.day}</div>
                     <div class="timing-best-date">${d.best_day_this_week?.date}</div>
                 </div>
-            </div>
-            <div class="timing-dasha-note">${d.dasha_lord} Maha-Dasha · ${d.nakshatra} Nakshatra</div>`;
+            </div>`;
 
         grid.innerHTML = (d.actions || []).map(a => {
             const wClass = a.window.toLowerCase().replace(' ', '-');
