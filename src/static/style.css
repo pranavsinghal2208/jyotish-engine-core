@@ -3077,6 +3077,12 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .bhukti-cell.active-ad { background: rgba(99,91,255,0.12); color: #a5b4fc; }
 .results-screen .bhukti-cell .ad-dates { color: rgba(255,255,255,0.35); }
 
+/* Framework text blocks — explicit color, no var() inheritance needed */
+.results-screen .interp-structured { color: rgba(255, 255, 255, 0.80); }
+.results-screen .interp-structured strong { color: rgba(255, 255, 255, 0.55); }
+.results-screen .remedy-framework { color: rgba(255, 255, 255, 0.80); }
+.results-screen .remedy-framework strong { color: rgba(255, 255, 255, 0.55); }
+
 /* Ashtak cells on dark bg — keep colour classes vivid */
 .results-screen .ashtak-cell { background: rgba(21,17,43,0.70); border-color: rgba(200,168,106,0.12); }
 .results-screen .ashtak-house { color: rgba(255,255,255,0.38); }
