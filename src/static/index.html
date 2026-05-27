@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmic OS — Vedic Intelligence</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <link rel="stylesheet" href="numerology-feedback.css">
     <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -414,20 +414,24 @@
                     <div class="card-hint">Vedic Chronology (Major Chapters) spanning 6–20 years. Sub-periods (Sub-Chapters) modulate the primary energy. Tap to audit sub-cycles.</div>
                     <div id="dashaTimeline"></div>
                 </div>
-                <div class="card">
-                    <div class="card-label">Planetary Positions <span class="qmark" data-tooltip="Tap any planet to read its personalised interpretation. Each planet occupies a zodiac sign and a house — the combination shapes a specific area of your life.">?</span></div>
-                    <div class="card-hint">Tap any planet for its reading</div>
-                    <div id="planetGrid"></div>
-                </div>
-                <!-- Interpretation — updates on planet tap -->
-                <div class="card interp-card" id="interpCard">
-                    <div class="card-label">Planet Reading <span style="font-size:10px;font-weight:400;color:var(--cta);text-transform:none;letter-spacing:0">← tap any planet above</span></div>
-                    <div id="techInterpretation" class="interp-placeholder">
-                        Tap any planet in the grid above to see its personalised reading here.
-                    </div>
-                </div>
             </div>
 
+        </div>
+
+        <!-- Planetary Positions + Planet Reading — full-width row below Kundali & Life Chapters -->
+        <div class="tech-planet-row">
+            <div class="card">
+                <div class="card-label">Planetary Positions <span class="qmark" data-tooltip="Tap any planet to read its personalised interpretation. Each planet occupies a zodiac sign and a house — the combination shapes a specific area of your life.">?</span></div>
+                <div class="card-hint">Tap any planet for its reading</div>
+                <div id="planetGrid"></div>
+            </div>
+            <!-- Interpretation — updates on planet tap -->
+            <div class="card interp-card" id="interpCard">
+                <div class="card-label">Planet Reading <span style="font-size:10px;font-weight:400;color:var(--cta);text-transform:none;letter-spacing:0">← tap any planet above</span></div>
+                <div id="techInterpretation" class="interp-placeholder">
+                    Tap any planet in the grid above to see its personalised reading here.
+                </div>
+            </div>
         </div>
 
         <!-- ADVANCED ANALYSIS SECTION -->
@@ -752,7 +756,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=9"></script>
+    <script src="app.js?v=10"></script>
     <script src="numerology-feedback.js?v=7"></script>
 </body>
 </html>

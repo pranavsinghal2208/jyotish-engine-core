@@ -977,8 +977,10 @@ body {
     gap: 20px;
 }
 
-.tech-left { width: 300px; flex-shrink: 0; }
+.tech-left { width: 400px; flex-shrink: 0; }
 .tech-right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.tech-planet-row { display: flex; flex-direction: row; gap: 20px; margin-top: 20px; }
+.tech-planet-row > .card { flex: 1; min-width: 0; }
 
 /* Planet grid */
 .planet-row {
@@ -2396,6 +2398,9 @@ body {
     .tech-right {
         width: 100%;
     }
+    .tech-planet-row {
+        flex-direction: column !important;
+    }
 
     /* Landing: 2-col → 1-col */
     .landing-screen {
@@ -3311,6 +3316,12 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 0;
+}
+
+.jy-mid-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
 }
 .yoga-card-type       { font-size: 12px; }
 .yoga-card-strength   { font-size: 12px; }

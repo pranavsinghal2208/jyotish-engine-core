@@ -1059,7 +1059,7 @@ function populateTechnicalView() {
 function _renderFramework(fw) {
     if (!fw) return '';
     return `
-        <div class="interp-structured" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:12px">
+        <div class="interp-structured" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:12px; color:var(--text)">
             <div style="margin-bottom:6px"><strong>Meaning:</strong> ${fw.meaning}</div>
             <div style="margin-bottom:6px"><strong>Personal Impact:</strong> ${fw.effect}</div>
             <div><strong>Operational Resolution:</strong> ${fw.resolution}</div>
@@ -1288,7 +1288,7 @@ function populateAdvancedAnalysis(data) {
         strategyHtml = `<p class="interp-body" style="font-weight:600; color:var(--text)">${houseData.if_strong}</p>`;
     } else if (isWeak && typeof houseData.if_weak === 'object') {
         strategyHtml = `
-            <div class="interp-structured">
+            <div class="interp-structured" style="color:var(--text)">
                 <div class="interp-struct-item" style="margin-bottom:8px"><strong>Meaning:</strong> ${houseData.if_weak.meaning}</div>
                 <div class="interp-struct-item" style="margin-bottom:8px"><strong>Personal Impact:</strong> ${houseData.if_weak.effect}</div>
                 <div class="interp-struct-item"><strong>Actionable Resolution:</strong> ${houseData.if_weak.resolution}</div>
