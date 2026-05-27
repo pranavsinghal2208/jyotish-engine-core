@@ -207,15 +207,36 @@ async function generateChart() {
     btn.textContent = 'Computing…';
     btn.disabled    = true;
 
-    const lat = parseFloat(document.getElementById('lat').value);
-    const lon = parseFloat(document.getElementById('lon').value);
+    let lat = parseFloat(document.getElementById('lat').value);
+    let lon = parseFloat(document.getElementById('lon').value);
     if (!document.getElementById('date').value || !document.getElementById('time').value) {
         alert('Please enter your date and time of birth.');
         btn.textContent = 'Generate Chart'; btn.disabled = false; return;
     }
     if (isNaN(lat) || isNaN(lon)) {
-        alert('Please select your birth city from the dropdown list.');
-        btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+        const cityText = document.getElementById('citySearch')?.value?.trim();
+        if (!cityText) {
+            alert('Please enter your birth city.');
+            btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+        }
+        btn.textContent = 'Finding city…';
+        try {
+            const geoRes  = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityText)}&limit=5`);
+            const geoData = await geoRes.json();
+            if (!geoData.length) {
+                alert(`"${cityText}" not found — try adding the state, e.g. "${cityText}, UP"`);
+                btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+            }
+            lat = parseFloat(geoData[0].lat);
+            lon = parseFloat(geoData[0].lon);
+            document.getElementById('lat').value = geoData[0].lat;
+            document.getElementById('lon').value = geoData[0].lon;
+            document.getElementById('citySearch').value = geoData[0].display_name.split(',').slice(0, 2).join(', ');
+        } catch (_) {
+            alert('City lookup failed — please select from the dropdown.');
+            btn.textContent = 'Generate Chart'; btn.disabled = false; return;
+        }
+        btn.textContent = 'Computing…';
     }
 
     const payload = {
