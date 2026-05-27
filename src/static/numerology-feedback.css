@@ -146,6 +146,11 @@
     min-width: 220px;
 }
 
+/* Life Grid card (standalone, not inside .jy-mid-row) — cap width so the 3×3 grid doesn't drown in empty space */
+.num-group .jy-loshu-card {
+    max-width: 360px;
+}
+
 .jy-loshu-table {
     border-collapse: separate;
     border-spacing: 6px;
@@ -191,7 +196,7 @@
 .jy-missing-line {
     font-size: 12px;
     color: var(--muted);
-    text-align: center;
+    text-align: left;
     margin-top: 4px;
 }
 
