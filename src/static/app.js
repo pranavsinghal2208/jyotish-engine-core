@@ -861,8 +861,8 @@ function renderKundali(chartData) {
                 if (row === 1 && col === 1) {
                     svg += `<rect x="${C}" y="${C}" width="${C*2}" height="${C*2}" rx="4" style="fill:var(--hero-bg)"/>`;
                     svg += `<text x="${S/2}" y="${S/2-8}" text-anchor="middle" style="fill:var(--accent);font-size:13px;font-weight:600;font-family:Inter,sans-serif;letter-spacing:0.04em">Kundali</text>`;
-                    svg += `<text x="${S/2}" y="${S/2+9}" text-anchor="middle" style="fill:rgba(245,240,232,0.45);font-size:9px;font-family:Inter,sans-serif">${lagnaSign} Rising</text>`;
-                    svg += `<text x="${S/2}" y="${S/2+23}" text-anchor="middle" style="fill:rgba(245,240,232,0.25);font-size:8px;font-family:Inter,sans-serif">South Indian Chart</text>`;
+                    svg += `<text x="${S/2}" y="${S/2+9}" text-anchor="middle" style="fill:var(--muted);font-size:9px;font-family:Inter,sans-serif">${lagnaSign} Rising</text>`;
+                    svg += `<text x="${S/2}" y="${S/2+23}" text-anchor="middle" style="fill:var(--muted);font-size:8px;opacity:0.6;font-family:Inter,sans-serif">South Indian Chart</text>`;
                 }
                 continue;
             }
