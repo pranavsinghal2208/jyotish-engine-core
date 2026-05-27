@@ -4,10 +4,6 @@ services:
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
     envVars:
       - key: GOOGLE_CLIENT_ID
         sync: false
@@ -22,4 +18,4 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:////data/cosmic_os.db
+        value: sqlite:///./cosmic_os.db
