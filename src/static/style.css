@@ -3041,6 +3041,7 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .pulse-strategy     { color: rgba(255,255,255,0.58); }
 .results-screen .planet-name        { color: rgba(255,255,255,0.90); }
 .results-screen .planet-pos         { color: rgba(255,255,255,0.48); }
+.results-screen .interp-planet-name { color: rgba(255,255,255,0.95); }
 .results-screen .interp-body        { color: rgba(255,255,255,0.80); }
 .results-screen .interp-placeholder { color: rgba(255,255,255,0.35); }
 .results-screen .interp-section-label { color: rgba(200,168,106,0.65); }

@@ -518,6 +518,7 @@ async function loadTimingAdvisor() {
         if (!res.ok) return;
         const d = await res.json();
         overview.innerHTML = `
+            <div class="card-label" style="margin-bottom:14px">Timing Context</div>
             <div class="timing-overview-row">
                 <div class="timing-dasha-note">${d.dasha_lord} Maha-Dasha · ${d.nakshatra} Nakshatra</div>
                 <div class="timing-best-day">

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmic OS — Vedic Intelligence</title>
-    <link rel="stylesheet" href="style.css?v=8">
-    <link rel="stylesheet" href="numerology-feedback.css?v=3">
+    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="numerology-feedback.css?v=4">
     <link rel="stylesheet" href="onboarding_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -582,22 +582,24 @@
                 <div class="num-group">
                     <div class="section-title">Life Grid <span class="qmark" data-tooltip="A 3×3 magic square from ancient Chinese numerology. Each cell (1–9) maps a life domain: mental strength, relationships, creativity, discipline. Missing numbers show gaps; repeating numbers show excess.">?</span></div>
                     <div class="section-desc">A 9-cell map of your strengths and missing energies, derived from your birth digits.</div>
-                    <div class="card jy-loshu-card">
-                        <div class="card-label">Lo Shu Grid <span class="qmark tip-right" data-tooltip="Fill each cell with how many times that digit appears in your birth date. Missing cells (shaded) indicate life areas needing attention. Repeated cells are your natural strengths.">?</span></div>
-                        <table class="jy-loshu-table" id="jyLoShuTable">
-                            <tbody>
-                                <tr><td></td><td></td><td></td></tr>
-                                <tr><td></td><td></td><td></td></tr>
-                                <tr><td></td><td></td><td></td></tr>
-                            </tbody>
-                        </table>
-                        <div class="jy-missing-line">Missing: <span id="jyMissingNums">—</span></div>
-                        <div class="jy-loshu-legend">× = times digit appears in date of birth · shaded = absent</div>
-                    </div>
-                    <!-- Missing Number Remedies -->
-                    <div id="jyRemediesSection" class="jy-remedies-section">
-                        <div class="jy-section-heading">Missing Number Remedies</div>
-                        <div class="jy-remedies-row" id="jyRemediesRow"></div>
+                    <div class="jy-grid-remedies-row">
+                        <div class="card jy-loshu-card">
+                            <div class="card-label">Lo Shu Grid <span class="qmark tip-right" data-tooltip="Fill each cell with how many times that digit appears in your birth date. Missing cells (shaded) indicate life areas needing attention. Repeated cells are your natural strengths.">?</span></div>
+                            <table class="jy-loshu-table" id="jyLoShuTable">
+                                <tbody>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                    <tr><td></td><td></td><td></td></tr>
+                                </tbody>
+                            </table>
+                            <div class="jy-missing-line">Missing: <span id="jyMissingNums">—</span></div>
+                            <div class="jy-loshu-legend">× = times digit appears in date of birth · shaded = absent</div>
+                        </div>
+                        <!-- Missing Number Remedies -->
+                        <div id="jyRemediesSection" class="jy-remedies-section">
+                            <div class="jy-section-heading">Missing Number Remedies</div>
+                            <div class="jy-remedies-row" id="jyRemediesRow"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -756,7 +758,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=12"></script>
+    <script src="app.js?v=13"></script>
     <script src="numerology-feedback.js?v=7"></script>
 </body>
 </html>

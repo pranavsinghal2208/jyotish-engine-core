@@ -146,9 +146,22 @@
     min-width: 220px;
 }
 
-/* Life Grid card (standalone, not inside .jy-mid-row) — cap width so the 3×3 grid doesn't drown in empty space */
-.num-group .jy-loshu-card {
-    max-width: 360px;
+/* Life Grid + Remedies side by side */
+.jy-grid-remedies-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+.jy-grid-remedies-row > .jy-loshu-card {
+    flex: 0 0 300px;
+}
+.jy-grid-remedies-row > .jy-remedies-section {
+    flex: 1;
+    margin-top: 0;
+}
+@media (max-width: 768px) {
+    .jy-grid-remedies-row { flex-direction: column; }
+    .jy-grid-remedies-row > .jy-loshu-card { flex: none; }
 }
 
 .jy-loshu-table {
