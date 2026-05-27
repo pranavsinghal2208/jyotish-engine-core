@@ -94,7 +94,12 @@
                     <div id="momentStep" class="moment-row">
                         <div class="field-wrap">
                             <label class="field-label">Time of birth</label>
-                            <input type="time" id="time" value="12:00">
+                            <div class="dob-row">
+                                <input type="text" id="timeHH" class="dob-part" placeholder="HH" inputmode="numeric" maxlength="2" autocomplete="off">
+                                <span class="dob-sep">:</span>
+                                <input type="text" id="timeMM" class="dob-part" placeholder="MM" inputmode="numeric" maxlength="2" autocomplete="off">
+                            </div>
+                            <input type="hidden" id="time" value="12:00">
                             <span class="field-hint">Approximate is fine</span>
                         </div>
                     </div>
@@ -408,10 +413,10 @@
                     <div id="planetGrid"></div>
                 </div>
                 <!-- Interpretation — updates on planet tap -->
-                <div class="card interp-card">
-                    <div class="card-label">Planet Reading</div>
+                <div class="card interp-card" id="interpCard">
+                    <div class="card-label">Planet Reading <span style="font-size:10px;font-weight:400;color:var(--cta);text-transform:none;letter-spacing:0">← tap any planet above</span></div>
                     <div id="techInterpretation" class="interp-placeholder">
-                        Tap any planet in the chart or table above to see its reading.
+                        Tap any planet in the grid above to see its personalised reading here.
                     </div>
                 </div>
             </div>
@@ -738,7 +743,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
     <script src="numerology-feedback.js?v=4"></script>
 </body>
 </html>

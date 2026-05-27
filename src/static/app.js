@@ -105,6 +105,13 @@ async function checkUserProfile() {
             setDobFromValue(d.date);
             quickUnlock();
             document.getElementById("time").value = d.time;
+            if (d.time) {
+                const [hh, mm] = d.time.split(':');
+                const hhEl = document.getElementById('timeHH');
+                const mmEl = document.getElementById('timeMM');
+                if (hhEl) hhEl.value = hh;
+                if (mmEl) mmEl.value = mm;
+            }
             document.getElementById("lat").value = d.lat;
             document.getElementById("lon").value = d.lon;
             document.getElementById("offset").value = d.offset;
@@ -119,6 +126,29 @@ async function checkUserProfile() {
             // Pre-fill name from email only for real authenticated users
             if (d.email && d.email !== "default@psbc.com" && !document.getElementById("fullName").value) {
                 document.getElementById("fullName").value = d.email.split("@")[0].charAt(0).toUpperCase() + d.email.split("@")[0].slice(1);
+            }
+            // Restore birth data saved before OAuth redirect
+            const pending = localStorage.getItem('_pendingBirth');
+            if (pending) {
+                try {
+                    const b = JSON.parse(pending);
+                    localStorage.removeItem('_pendingBirth');
+                    setDobFromValue(b.date);
+                    document.getElementById('lat').value = b.lat;
+                    document.getElementById('lon').value = b.lon;
+                    document.getElementById('time').value = b.time;
+                    document.getElementById('citySearch').value = b.city;
+                    if (b.offset) document.getElementById('offset').value = b.offset;
+                    if (b.time) {
+                        const [hh, mm] = b.time.split(':');
+                        const hhEl = document.getElementById('timeHH');
+                        const mmEl = document.getElementById('timeMM');
+                        if (hhEl) hhEl.value = hh;
+                        if (mmEl) mmEl.value = mm;
+                    }
+                    quickUnlock();
+                    generateChart();
+                } catch(e) { localStorage.removeItem('_pendingBirth'); }
             }
         }
     } catch (e) {
@@ -752,6 +782,9 @@ function interpretPlanet(name, info) {
 
     // Sync Kundali chart highlight
     document.getElementById('kundaliChart')?._syncPlanet?.(info.sign);
+
+    // Scroll into view so user sees the reading
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function interpretDasha(mdLord, adLord, start, end, duration) {
@@ -1048,7 +1081,7 @@ function populateAdvancedAnalysis(data) {
                     <div class="yoga-card-name">${y.name}</div>
                     <div class="yoga-card-type">${y.type}</div>
                     <div class="yoga-card-strength ${y.strength === 'Very Strong' ? 'very-strong' : ''}">${y.strength}</div>
-                    <div class="yoga-card-desc">${y.description || ''}</div>
+                    <div class="yoga-card-desc">${y.description || y.framework?.effect || ''}</div>
                     ${_renderFramework(y.framework)}
                     ${y.business_impact ? `<div class="yoga-card-impact">${y.business_impact}</div>` : ''}
                 </div>`).join('');
@@ -1111,7 +1144,7 @@ function populateAdvancedAnalysis(data) {
         if (ashParent && !ashParent.querySelector('.ashtak-legend')) {
             const legend = document.createElement('div');
             legend.className = 'ashtak-legend';
-            legend.innerHTML = `Score out of 8 per house. <strong style="color:#16a34a">6–8 = Strong</strong> · <strong style="color:#d97706">4–5 = Moderate</strong> · <strong style="color:#dc2626">0–3 = Weak</strong>. Tap any house for your strategic playbook.`;
+            legend.innerHTML = `Each house scored 0–8. Higher = more planetary support for that area of life. <strong style="color:#16a34a">6–8 = Strong</strong> · <strong style="color:#d97706">4–5 = Moderate</strong> · <strong style="color:#dc2626">0–3 = Weak</strong>. <em>Tap any house for your personalised playbook.</em>`;
             ashParent.insertBefore(legend, ashEl);
         }
         ashEl.innerHTML = Object.keys(houses).sort((a, b) => +a - +b).map(k => {
@@ -1236,6 +1269,8 @@ function populateAdvancedAnalysis(data) {
     document.querySelectorAll('.ashtak-cell').forEach(c => c.style.borderColor = 'var(--border)');
     const activeCell = Array.from(document.querySelectorAll('.ashtak-cell')).find(c => c.innerText.includes(`House ${num}`));
     if (activeCell) activeCell.style.borderColor = 'var(--cta)';
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 function _renderDivChart(chartData, title, impactText) {
     if (!chartData) return '<div style="color:var(--muted);font-size:13px;padding:12px">Data unavailable</div>';
@@ -1530,10 +1565,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeroSearch();
     initLandingReveal();
     initDobInputs();
+    initTimeInputs();
     initShareBtn();
     loadLiveSky();
 
     document.getElementById('generateBtn').addEventListener('click', generateChart);
+
+    // Save birth data before OAuth redirect so it can be restored after login
+    const signInLink = document.getElementById('headerGoogleLink');
+    if (signInLink) {
+        signInLink.addEventListener('click', () => {
+            const lat = document.getElementById('lat')?.value;
+            const lon = document.getElementById('lon')?.value;
+            const date = document.getElementById('date')?.value;
+            const time = document.getElementById('time')?.value;
+            const city = document.getElementById('citySearch')?.value;
+            const offset = document.getElementById('offset')?.value;
+            if (date && lat) {
+                localStorage.setItem('_pendingBirth', JSON.stringify({ lat, lon, date, time, city, offset }));
+            }
+        });
+    }
 });
 
 // ── Quick Unlock (Friction Reduction) ─────────────────────
@@ -1608,6 +1660,38 @@ function initDobInputs() {
 
     // Validate on blur too
     yyyyEl.addEventListener('blur', tryCommit);
+}
+
+function initTimeInputs() {
+    const hhEl = document.getElementById('timeHH');
+    const mmEl = document.getElementById('timeMM');
+    const hidden = document.getElementById('time');
+    if (!hhEl || !mmEl) return;
+
+    function commitTime() {
+        const hh = hhEl.value.padStart(2, '0');
+        const mm = mmEl.value.padStart(2, '0');
+        const h = +hhEl.value, m = +mmEl.value;
+        if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+            hidden.value = `${hh}:${mm}`;
+        }
+    }
+
+    hhEl.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (+this.value > 23) this.value = '23';
+        if (this.value.length >= 2) { mmEl.focus(); commitTime(); }
+    });
+    mmEl.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (+this.value > 59) this.value = '59';
+        if (this.value.length >= 2) commitTime();
+    });
+    mmEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && this.value === '') hhEl.focus();
+    });
+    hhEl.addEventListener('blur', commitTime);
+    mmEl.addEventListener('blur', commitTime);
 }
 
 async function quickUnlock() {

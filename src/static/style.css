@@ -3026,6 +3026,13 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
 .results-screen .jy-compat-badge.compat-mid  { background: rgba(245,158,11,0.15); color: #fbbf24; }
 .results-screen .jy-compat-badge.compat-low  { background: rgba(239,68,68,0.15);  color: #f87171; }
 
+/* Dasha bhukti grid on dark bg */
+.results-screen .bhukti-grid          { background: rgba(15,12,35,0.60); border-color: rgba(200,168,106,0.10); }
+.results-screen .bhukti-cell          { color: rgba(255,255,255,0.70); border-color: rgba(200,168,106,0.10); }
+.results-screen .bhukti-cell:hover    { background: rgba(200,168,106,0.06); color: rgba(255,255,255,0.90); }
+.results-screen .bhukti-cell.active-ad { background: rgba(99,91,255,0.12); color: #a5b4fc; }
+.results-screen .bhukti-cell .ad-dates { color: rgba(255,255,255,0.35); }
+
 /* Ashtak cells on dark bg — keep colour classes vivid */
 .results-screen .ashtak-cell { background: rgba(21,17,43,0.70); border-color: rgba(200,168,106,0.12); }
 .results-screen .ashtak-house { color: rgba(255,255,255,0.38); }
