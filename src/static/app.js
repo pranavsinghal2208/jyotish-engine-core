@@ -132,7 +132,7 @@ function showWelcomeToast(email) {
     toast.className = "welcome-toast";
     toast.innerHTML = `
         <div class="welcome-header">Welcome, ${email.split("@")[0]}</div>
-        <div class="welcome-body">To calibrate your personal intelligence dashboard, we need your birth coordinates once.</div>
+        <div class="welcome-body">Enter birth coordinates to calibrate your personal intelligence dashboard.</div>
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.classList.add("reveal"), 500);
@@ -332,7 +332,7 @@ function populateStrategicView(data) {
         section.classList.remove('hidden');
         alertList.innerHTML = `<div class="cal-connect-nudge">
             <span>📅</span>
-            <span>Connect Google Calendar to get cosmic alerts for your upcoming high-stakes meetings, negotiations, and deadlines.</span>
+            <span>Connect Google Calendar for high-stakes meeting and deadline alerts.</span>
             <a href="/auth/google/login">Connect →</a>
         </div>`;
     }
@@ -340,6 +340,9 @@ function populateStrategicView(data) {
     // Morning Brief + Timing Advisor (fetched async after chart load)
     loadMorningBrief();
     loadTimingAdvisor();
+
+    // Grand Synthesis card
+    buildGrandSynthesis(data);
 }
 
 async function loadMorningBrief() {
@@ -393,7 +396,7 @@ async function loadMorningBrief() {
         const windowPositive = ['Optimal', 'Good', 'Strong'].some(w => d.overall_window?.includes(w));
         const pdPositive = [1, 3, 5, 8].includes(pd.number);
         const reconcileNote = (windowPositive !== pdPositive)
-            ? `<div class="brief-reconcile">Numerology (Personal Day ${pd.number}: ${pd.theme}) and Astrology (${d.overall_window}) point in different directions — lean into whichever resonates more today.</div>`
+            ? `<div class="brief-reconcile">Mixed signals: Numerology (${pd.theme}) vs Astrology (${d.overall_window}). Lean into your current intuition.</div>`
             : '';
         const pdIntrospective = [7, 9].includes(pd.number);
         const actionCaveat = d.top_action?.label && pdIntrospective
@@ -764,13 +767,13 @@ function interpretDasha(mdLord, adLord, start, end, duration) {
     const practices   = bhukti.practices?.length ? bhukti.practices : (md.remedies || []);
 
     container.innerHTML = `
-        <div class="interp-planet-name">${mdLord} MD · ${adLord} Bhukti</div>
+        <div class="interp-planet-name">${mdLord} Major Chapter · ${adLord} Sub-Chapter</div>
         <div class="interp-placement">${start.slice(0,7).replace('-','/')} → ${end.slice(0,7).replace('-','/')} · ${duration.toFixed(1)} years</div>
 
         <div class="interp-section-label">Your life chapter</div>
         <p class="interp-body">${md.narrative || ''}</p>
 
-        <div class="interp-section-label">Right now — ${adLord} Bhukti</div>
+        <div class="interp-section-label">Right now — ${adLord} Sub-Chapter</div>
         <p class="interp-body">${(PLANET_ROLES[adLord]?.biz || '')}.</p>
 
         <div class="interp-section-label">What to expect</div>
@@ -783,8 +786,8 @@ function interpretDasha(mdLord, adLord, start, end, duration) {
         ${makeBullets(practices, 'remedy-list')}
 
         <div class="interp-meta" style="margin-top:16px">
-            <span class="interp-tag">${mdLord} MD</span>
-            <span class="interp-tag">${adLord} Bhukti</span>
+            <span class="interp-tag">${mdLord} Chapter</span>
+            <span class="interp-tag">${adLord} Sub-Chapter</span>
             <span class="interp-tag">${duration.toFixed(1)} yrs</span>
         </div>
     `;
@@ -826,7 +829,7 @@ function renderKundali(chartData) {
                     svg += `<rect x="${C}" y="${C}" width="${C*2}" height="${C*2}" rx="4" style="fill:var(--hero-bg)"/>`;
                     svg += `<text x="${S/2}" y="${S/2-8}" text-anchor="middle" style="fill:var(--accent);font-size:13px;font-weight:600;font-family:Inter,sans-serif;letter-spacing:0.04em">Kundali</text>`;
                     svg += `<text x="${S/2}" y="${S/2+9}" text-anchor="middle" style="fill:rgba(245,240,232,0.45);font-size:9px;font-family:Inter,sans-serif">${lagnaSign} Rising</text>`;
-                    svg += `<text x="${S/2}" y="${S/2+23}" text-anchor="middle" style="fill:rgba(245,240,232,0.25);font-size:8px;font-family:Inter,sans-serif">South Indian</text>`;
+                    svg += `<text x="${S/2}" y="${S/2+23}" text-anchor="middle" style="fill:rgba(245,240,232,0.25);font-size:8px;font-family:Inter,sans-serif">South Indian Chart</text>`;
                 }
                 continue;
             }
@@ -901,6 +904,7 @@ function renderKundali(chartData) {
 function populateTechnicalView() {
     if (!currentChartData) return;
     renderKundali(currentChartData);
+    buildChartOverview(currentChartData);
     const { planets, dashas, business_pulse, nakshatra } = currentChartData;
     const [activeMD, activeAD] = business_pulse.active_dasha.split('-').map(s => s.trim());
 
@@ -968,7 +972,7 @@ function populateTechnicalView() {
 
         item.innerHTML = `
             <div class="dasha-md-header ${isActiveMD ? 'active' : ''}">
-                <span class="md-lord">${md.lord} Maha-Dasha ${isActiveMD ? '· Active' : ''}</span>
+                <span class="md-lord">${md.lord} Major Chapter ${isActiveMD ? '· Active' : ''}</span>
                 <div class="md-header-right">
                     <span class="md-dates">${md.start.slice(0,4)} – ${md.end.slice(0,4)}</span>
                     <span class="md-toggle" data-expanded="${isActiveMD}">${isActiveMD ? '▴' : '▾'}</span>
@@ -1020,6 +1024,16 @@ function populateTechnicalView() {
 
 // ─── Advanced Analysis Population ────────────────────────────────────────────
 
+function _renderFramework(fw) {
+    if (!fw) return '';
+    return `
+        <div class="interp-structured" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:12px">
+            <div style="margin-bottom:6px"><strong>Meaning:</strong> ${fw.meaning}</div>
+            <div style="margin-bottom:6px"><strong>Personal Impact:</strong> ${fw.effect}</div>
+            <div><strong>Operational Resolution:</strong> ${fw.resolution}</div>
+        </div>`;
+}
+
 function populateAdvancedAnalysis(data) {
     const { yogas, sade_sati, mangal_dosha, ashtakavarga, divisional_charts, varshaphal } = data;
 
@@ -1034,8 +1048,9 @@ function populateAdvancedAnalysis(data) {
                     <div class="yoga-card-name">${y.name}</div>
                     <div class="yoga-card-type">${y.type}</div>
                     <div class="yoga-card-strength ${y.strength === 'Very Strong' ? 'very-strong' : ''}">${y.strength}</div>
-                    <div class="yoga-card-desc">${y.description}</div>
-                    <div class="yoga-card-impact">${y.business_impact}</div>
+                    <div class="yoga-card-desc">${y.description || ''}</div>
+                    ${_renderFramework(y.framework)}
+                    ${y.business_impact ? `<div class="yoga-card-impact">${y.business_impact}</div>` : ''}
                 </div>`).join('');
         }
     }
@@ -1047,15 +1062,16 @@ function populateAdvancedAnalysis(data) {
             ? (sade_sati.severity === 'High' ? 'active' : 'moderate')
             : 'inactive';
         const remediesHtml = sade_sati.remedies?.length
-            ? `<div class="adv-block-label" style="margin-top:12px">Remedies</div>
+            ? `<div class="adv-block-label" style="margin-top:12px">Systemic Remedies</div>
                <ul class="adv-remedies">${sade_sati.remedies.map(r => `<li>${r}</li>`).join('')}</ul>`
             : '';
         ssEl.innerHTML = `
             <div class="adv-status-row">
                 <div class="adv-status-badge ${badgeClass}">${sade_sati.active ? sade_sati.phase : 'Not Active'}</div>
             </div>
-            <div class="adv-status-desc">${sade_sati.description}</div>
-            ${sade_sati.active ? `<div style="font-size:12px;color:var(--muted)">~${sade_sati.years_remaining} yrs remaining</div>` : ''}
+            <div class="adv-status-desc">${typeof sade_sati.description === 'string' ? sade_sati.description : ''}</div>
+            ${_renderFramework(sade_sati.framework || (typeof sade_sati.description === 'object' ? sade_sati.description : null))}
+            ${sade_sati.active ? `<div style="font-size:12px;color:var(--muted);margin-top:8px">~${sade_sati.years_remaining} yrs remaining</div>` : ''}
             ${remediesHtml}`;
     }
 
@@ -1064,7 +1080,7 @@ function populateAdvancedAnalysis(data) {
     if (mdEl && mangal_dosha) {
         const badgeClass = mangal_dosha.active ? 'active' : 'inactive';
         const remediesHtml = mangal_dosha.remedies?.length
-            ? `<div class="adv-block-label" style="margin-top:12px">Remedies</div>
+            ? `<div class="adv-block-label" style="margin-top:12px">Systemic Remedies</div>
                <ul class="adv-remedies">${mangal_dosha.remedies.map(r => `<li>${r}</li>`).join('')}</ul>`
             : '';
         const cancHtml = mangal_dosha.cancellations?.length
@@ -1075,6 +1091,7 @@ function populateAdvancedAnalysis(data) {
                 <div class="adv-status-badge ${badgeClass}">${mangal_dosha.active ? `${mangal_dosha.severity} · H${mangal_dosha.mars_house_from_lagna}` : 'None'}</div>
             </div>
             <div class="adv-status-desc">${mangal_dosha.description}</div>
+            ${_renderFramework(mangal_dosha.framework)}
             ${cancHtml}
             ${remediesHtml}`;
     }
@@ -1146,11 +1163,19 @@ function populateAdvancedAnalysis(data) {
                 <div class="varsha-impact-theme">${imp.theme}</div>
                 ${imp.what_it_means ? `<p class="varsha-impact-body">${imp.what_it_means}</p>` : ''}
                 <div class="varsha-impact-cols">
-                    ${imp.opportunity ? `<div class="varsha-impact-col"><div class="varsha-impact-label" style="color:#22c55e">Opportunity</div><p>${imp.opportunity}</p></div>` : ''}
-                    ${imp.risk ? `<div class="varsha-impact-col"><div class="varsha-impact-label" style="color:#ef4444">Watch Out</div><p>${imp.risk}</p></div>` : ''}
+                    ${imp.opportunity ? `<div class="varsha-impact-col"><div class="varsha-impact-label" style="color:#22c55e">Opportunity Window</div><p>${imp.opportunity}</p></div>` : ''}
+                    ${imp.risk_framework ? `
+                        <div class="varsha-impact-col">
+                            <div class="varsha-impact-label" style="color:#ef4444">Risk Mitigation</div>
+                            <div style="font-size:12px; line-height:1.5">
+                                <div><strong>Meaning:</strong> ${imp.risk_framework.meaning}</div>
+                                <div><strong>Impact:</strong> ${imp.risk_framework.effect}</div>
+                                <div><strong>Resolution:</strong> ${imp.risk_framework.resolution}</div>
+                            </div>
+                        </div>` : ''}
                 </div>
-                ${focusList ? `<div class="varsha-impact-label">Focus This Year</div><ul class="varsha-impact-list">${focusList}</ul>` : ''}
-                ${remedyList ? `<div class="varsha-impact-label">Remedies</div><ul class="varsha-impact-list">${remedyList}</ul>` : ''}
+                ${focusList ? `<div class="varsha-impact-label">Operational Focus</div><ul class="varsha-impact-list">${focusList}</ul>` : ''}
+                ${remedyList ? `<div class="varsha-impact-label">Systemic Remedies</div><ul class="varsha-impact-list">${remedyList}</ul>` : ''}
             </div>` : '';
         vpEl.innerHTML = `
             <div class="varsha-grid">
@@ -1177,20 +1202,34 @@ function populateAdvancedAnalysis(data) {
     }
 
     const isStrong = strength.toLowerCase() === 'strong';
-    const strategy = isStrong ? houseData.if_strong : houseData.if_weak;
-    const statusColor = isStrong ? '#22c55e' : '#ef4444';
+    const isWeak   = strength.toLowerCase() === 'weak';
+    const statusColor = isStrong ? '#22c55e' : (isWeak ? '#ef4444' : '#d97706');
+
+    let strategyHtml = '';
+    if (isStrong) {
+        strategyHtml = `<p class="interp-body" style="font-weight:600; color:var(--text)">${houseData.if_strong}</p>`;
+    } else if (isWeak && typeof houseData.if_weak === 'object') {
+        strategyHtml = `
+            <div class="interp-structured">
+                <div class="interp-struct-item" style="margin-bottom:8px"><strong>Meaning:</strong> ${houseData.if_weak.meaning}</div>
+                <div class="interp-struct-item" style="margin-bottom:8px"><strong>Personal Impact:</strong> ${houseData.if_weak.effect}</div>
+                <div class="interp-struct-item"><strong>Actionable Resolution:</strong> ${houseData.if_weak.resolution}</div>
+            </div>`;
+    } else {
+        strategyHtml = `<p class="interp-body">${houseData.if_weak || 'Neutral influence.'}</p>`;
+    }
 
     container.innerHTML = `
         <div class="interp-planet-name">House ${num}: ${houseData.name}</div>
-        <div class="interp-placement">Score: ${score} · ${strength}</div>
+        <div class="interp-placement">Operational Score: ${score}/8 · ${strength}</div>
 
-        <div class="interp-section-label">What this means for you</div>
+        <div class="interp-section-label">Celestial Topology</div>
         <p class="interp-body">${houseData.impact}</p>
 
-        <div class="interp-section-label" style="color:${statusColor}">Your Strategic Playbook</div>
-        <p class="interp-body" style="font-weight:600; color:var(--text)">${strategy}</p>
+        <div class="interp-section-label" style="color:${statusColor}">Strategic Playbook</div>
+        ${strategyHtml}
 
-        <div class="interp-section-label">Cosmic Remedy</div>
+        <div class="interp-section-label">Systemic Remedy</div>
         <p class="interp-body"><em>${houseData.remedy}</em></p>
     `;
 
@@ -1356,6 +1395,133 @@ function initShareBtn() {
     });
 }
 
+// ── Live Sky Panel ────────────────────────────────────────
+async function loadLiveSky() {
+    try {
+        const res = await fetch('/api/sky/today');
+        const d = await res.json();
+        if (d.error) return;
+
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        set('skyMoon',   d.moon_sign + (d.moon_deg ? ` ${d.moon_deg}°` : ''));
+        set('skySun',    d.sun_sign);
+        set('skyYoga',   d.yoga);
+        set('skyTithi',  d.tithi + (d.paksha ? ` · ${d.paksha}` : ''));
+        set('skyPaksha', d.paksha || '—');
+        set('liveSkyDate', d.date || '');
+
+        const retroWrap = document.getElementById('skyRetroWrap');
+        const retroChips = document.getElementById('skyRetroChips');
+        if (d.retrograde && d.retrograde.length > 0 && retroWrap && retroChips) {
+            retroChips.innerHTML = d.retrograde.map(p => `<span class="sky-retro-chip">${p} ℞</span>`).join('');
+            retroWrap.classList.remove('hidden');
+        }
+    } catch (e) {
+        console.warn('Live sky fetch failed', e);
+    }
+}
+
+// ── Grand Synthesis Card ──────────────────────────────────
+function buildGrandSynthesis(data) {
+    const { insights, business_pulse, nakshatra, lagna } = data;
+    const lagnaSign = (lagna || {}).sign || '';
+    const dashaDisplay = business_pulse?.display_dasha || business_pulse?.active_dasha || '';
+    const focus = business_pulse?.focus || '';
+    const strategy = business_pulse?.strategy || '';
+    const topNatal = insights?.superpowers?.[0];
+    const energy = insights?.energy_signature || '';
+    const pointer = insights?.operational_pointer || '';
+
+    // Build a 2-3 sentence synthesis: Dasha context + natal identity + today
+    const parts = [];
+    if (dashaDisplay && focus) {
+        parts.push(`You are in your ${dashaDisplay} — a period defined by ${focus.toLowerCase()}.`);
+    }
+    if (topNatal?.description) {
+        parts.push(topNatal.description);
+    } else if (strategy) {
+        parts.push(strategy);
+    }
+    if (pointer) {
+        parts.push(pointer);
+    } else if (energy) {
+        parts.push(`Today's sky brings ${energy.toLowerCase()}.`);
+    }
+
+    const synthText = parts.join(' ');
+    const synthEl = document.getElementById('synthesisText');
+    if (synthEl) synthEl.textContent = synthText || '—';
+
+    // Build chips — concise factual identifiers only, no long sentences
+    const planets = data.natal_planets || data.planets || {};
+    const mdLord  = business_pulse?.active_dasha?.split('-')?.[0]?.trim() || '';
+    const adLord  = business_pulse?.active_dasha?.split('-')?.[1]?.trim() || '';
+    const chips = [];
+    if (lagnaSign) chips.push(`${lagnaSign} Rising`);
+    if (planets?.Moon?.sign) chips.push(`${planets.Moon.sign} Moon`);
+    if (nakshatra?.name) chips.push(nakshatra.name);
+    if (mdLord) chips.push(adLord ? `${mdLord}–${adLord} Cycle` : `${mdLord} Cycle`);
+
+    const chipsEl = document.getElementById('synthesisChips');
+    if (chipsEl) chipsEl.innerHTML = chips.map(c => `<span class="synthesis-chip">${c}</span>`).join('');
+
+    const card = document.getElementById('grandSynthesisCard');
+    if (card && synthText) card.classList.remove('hidden');
+}
+
+// ── Chart Overview Card ───────────────────────────────────
+function buildChartOverview(data) {
+    const planets = data.natal_planets || data.planets || {};
+    const lagna   = data.lagna || {};
+    const bp      = data.business_pulse || {};
+    const naksh   = data.nakshatra || {};
+
+    const rows = [];
+
+    if (lagna.sign) {
+        rows.push({ label: 'Rising Sign', value: lagna.sign, note: 'Your life lens & first impression' });
+    }
+    if (planets.Moon?.sign) {
+        rows.push({ label: 'Moon', value: planets.Moon.sign + (planets.Moon.degree_in_sign ? ` ${planets.Moon.degree_in_sign.toFixed(1)}°` : ''), note: 'Emotional core & instinct' });
+    }
+    if (naksh.name) {
+        rows.push({ label: 'Nakshatra', value: naksh.name, note: `Lord: ${naksh.lord || '—'} · Pada ${naksh.pada || '—'}` });
+    }
+    if (bp.display_dasha || bp.active_dasha) {
+        rows.push({ label: 'Life Chapter', value: bp.display_dasha || bp.active_dasha, note: bp.focus || 'Your current timing' });
+    }
+    const retro = Object.entries(planets).filter(([n, p]) => p?.is_retrograde && !['Rahu','Ketu'].includes(n));
+    if (retro.length > 0) {
+        rows.push({ label: 'Retrograde', value: retro.map(([n]) => n).join(', '), note: 'Internalized & reflective energy' });
+    }
+
+    const el = document.getElementById('chartOverviewContent');
+    const card = document.getElementById('chartOverviewCard');
+    if (!el || !card || rows.length === 0) return;
+
+    el.innerHTML = rows.map(r => `
+        <div class="overview-row">
+            <span class="overview-label">${r.label}</span>
+            <span class="overview-value">${r.value}</span>
+            <span class="overview-note">${r.note}</span>
+        </div>
+    `).join('');
+    card.classList.remove('hidden');
+}
+
+// ── Numerology Synthesis Card ─────────────────────────────
+function buildNumSynthesis(mulank, bhagyank, dcMode, dcLabel) {
+    if (!mulank || !bhagyank) return;
+    const el = document.getElementById('numSynthesisText');
+    const card = document.getElementById('numSynthesisCard');
+    if (!el || !card) return;
+
+    const modeText = dcMode ? ` Your combined profile — ${dcLabel || ''} — is in ${dcMode.toLowerCase()} mode.` : '';
+    const text = `Your Driver number is ${mulank} and your Conductor is ${bhagyank}.${modeText} Together, these two numbers shape how you lead, how luck finds you, and what environments bring out your best.`;
+    el.textContent = text;
+    card.classList.remove('hidden');
+}
+
 // ── Boot ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
@@ -1365,6 +1531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLandingReveal();
     initDobInputs();
     initShareBtn();
+    loadLiveSky();
 
     document.getElementById('generateBtn').addEventListener('click', generateChart);
 });
@@ -1664,6 +1831,21 @@ const TRANSLATE_SELECTORS = [
     '.landing-h1',
     '.landing-sub',
     '.brand-sub',
+    // New sections
+    '#synthesisText',
+    '#numSynthesisText',
+    '.synthesis-eyebrow',
+    '.num-synthesis-eyebrow',
+    '.overview-note',
+    '.overview-value',
+    '.power-title',
+    '.power-desc',
+    '.directive-text',
+    '.interp-body',
+    '.interp-section-label',
+    '.yoga-card-desc',
+    '.yoga-card-impact',
+    '.pulse-strategy',
 ];
 
 function _collectTranslatables() {

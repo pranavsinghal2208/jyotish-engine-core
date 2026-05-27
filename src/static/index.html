@@ -33,7 +33,7 @@
         <div class="landing-left">
             <div class="brand-mark">Cosmic OS <span class="brand-sub">· Daily Astrology & Numerology Intelligence</span></div>
 
-            <h1 class="landing-h1">Walk away knowing three things:<br>what today feels like, what to do,<br>and where you are in your life right now.</h1>
+            <h1 class="landing-h1">Know your chart.<br>Know your timing.<br>Know your next move.</h1>
             <p class="landing-sub">Takes 30 seconds. Built on 5000 years of Vedic timing science.</p>
 
             <!-- What you get -->
@@ -119,57 +119,44 @@
             </div>
         </div>
 
-        <!-- Right: depth preview -->
+        <!-- Right: live sky + depth preview -->
         <div class="landing-right">
-            <div class="preview-label">Your Cosmic Blueprint</div>
-            
-            <!-- Instant Recognition: Chart Motif -->
-            <div class="chart-motif-wrap">
-                <div class="zodiac-ring">
-                    <span class="zodiac-sign">Ar</span>
-                    <span class="zodiac-sign">Ta</span>
-                    <span class="zodiac-sign">Ge</span>
-                    <span class="zodiac-sign">Cn</span>
-                    <span class="zodiac-sign">Le</span>
-                    <span class="zodiac-sign">Vi</span>
-                    <span class="zodiac-sign">Li</span>
-                    <span class="zodiac-sign">Sc</span>
-                    <span class="zodiac-sign">Sg</span>
-                    <span class="zodiac-sign">Cp</span>
-                    <span class="zodiac-sign">Aq</span>
-                    <span class="zodiac-sign">Pi</span>
+
+            <!-- Live Sky Panel — fetched from /api/sky/today, no user input needed -->
+            <div id="liveSkyPanel" class="live-sky-panel">
+                <div class="live-sky-header">
+                    <span class="live-sky-label">Live Sky · Right Now</span>
+                    <span id="liveSkyDate" class="live-sky-date">—</span>
                 </div>
-                <div class="chart-motif">
-                    <div class="motif-circle outer"></div>
-                    <div class="motif-circle inner"></div>
-                    <div class="motif-line vertical"></div>
-                    <div class="motif-line horizontal"></div>
-                    <div class="motif-line diag1"></div>
-                    <div class="motif-line diag2"></div>
-                    <div class="motif-planet p1">Su</div>
-                    <div class="motif-planet p2">Mo</div>
-                    <div class="motif-planet p3">Ma</div>
-                    <div class="motif-planet p4">Ju</div>
+                <div class="live-sky-grid">
+                    <div class="sky-item">
+                        <div class="sky-item-label">Moon</div>
+                        <div id="skyMoon" class="sky-item-value">—</div>
+                        <div class="sky-item-sub">Collective current</div>
+                    </div>
+                    <div class="sky-item">
+                        <div class="sky-item-label">Today's Yoga</div>
+                        <div id="skyYoga" class="sky-item-value">—</div>
+                        <div id="skyTithi" class="sky-item-sub">—</div>
+                    </div>
+                    <div class="sky-item">
+                        <div class="sky-item-label">Sun</div>
+                        <div id="skySun" class="sky-item-value">—</div>
+                        <div class="sky-item-sub">Current season</div>
+                    </div>
+                    <div class="sky-item">
+                        <div class="sky-item-label">Paksha</div>
+                        <div id="skyPaksha" class="sky-item-value">—</div>
+                        <div class="sky-item-sub">Lunar phase</div>
+                    </div>
+                </div>
+                <div id="skyRetroWrap" class="sky-retro hidden">
+                    <div class="sky-retro-label">Retrograde</div>
+                    <div id="skyRetroChips" class="sky-retro-chips"></div>
                 </div>
             </div>
 
-            <div class="preview-label">What your chart reveals</div>
-
-            <!-- Personal reading sample with fade -->
-            <div class="preview-depth-card">
-                <div class="preview-card-tag" id="previewCardTag">Cosmic Intelligence</div>
-                <div class="preview-quote" style="opacity: 0.4;">Analysis pending...</div>
-                <div class="preview-quote-source" style="opacity: 0.4;">Decoded from your birth moment</div>
-                <div class="preview-fade-overlay" id="previewFadeOverlay">
-                    <div class="preview-locked-hint" id="previewLockedHint">Enter your details to unlock your reading</div>
-                </div>
-                <div class="preview-locked-body">
-                    <p class="preview-locked-text">Your Moon lord activates a specific domain of your life this week — the exact area where your attention will be most rewarded right now.</p>
-                    <p class="preview-locked-text short">One transit today opens a 12-day window for a decision you have been holding.</p>
-                    <p class="preview-locked-text">Your current Dasha lord is in direct conversation with three natal planets — this creates the specific pattern your reading is built around.</p>
-                    <p class="preview-locked-text short">The alignment forming in your chart favours one bold move over caution.</p>
-                </div>
-            </div>
+            <div class="preview-label">What your chart unlocks</div>
 
             <!-- Sun sign preview (revealed after date entered) -->
             <div id="sunSignPreview" class="preview-sun-card hidden"></div>
@@ -256,6 +243,13 @@
         <!-- STRATEGIC VIEW -->
         <div id="strategicView" class="view-panel">
             <div class="panel-inner">
+
+                <!-- GRAND SYNTHESIS — full picture in one card -->
+                <div id="grandSynthesisCard" class="grand-synthesis hidden">
+                    <div class="synthesis-eyebrow">Your Complete Picture</div>
+                    <div id="synthesisText" class="synthesis-text">—</div>
+                    <div id="synthesisChips" class="synthesis-chips"></div>
+                </div>
 
                 <!-- TODAY IN ONE LINE -->
                 <div id="tldrCard" class="tldr-card hidden">
@@ -348,9 +342,9 @@
                     </div>
                 </div>
 
-                <div class="section-title">Life Timing · Your Current Chapter <span class="qmark tip-left" data-tooltip="A Vedic life chapter (Maha-Dasha) lasting 6–20 years, ruled by one planet. Inside it runs a sub-period (Bhukti) that fine-tunes the energy. You are always in one chapter and one sub-chapter simultaneously.">?</span></div>
+                <div class="section-title">Life Timing · Strategic Chapter <span class="qmark tip-left" data-tooltip="Vedic Chronology (Major Chapter) spanning 6–20 years. Sub-period (Sub-Chapter) fine-tunes the operational focus. You are always under the simultaneous influence of both cycles.">?</span></div>
                 <div class="card pulse-card">
-                    <div class="card-label">Life Cycle · Dasha Intelligence</div>
+                    <div class="card-label">Life Cycle · Timing Intelligence</div>
                     <div class="pulse-row">
                         <div>
                             <div id="activeDasha" class="dasha-pill"></div>
@@ -384,35 +378,41 @@
 
             <div class="tech-left">
                 <div class="card">
-                    <div class="card-label">Birth Chart · Kundali <span class="qmark" data-tooltip="A map of where every planet was in the sky at your exact birth moment. Each box is a zodiac sign; planets inside show where their energy was concentrated for you. Tap a planet to read its interpretation.">?</span></div>
-                    <div class="card-hint">A map of where every planet was in the sky at the exact moment you were born. Each box is a zodiac sign; planets inside it show where their energy was concentrated for you. Tap a sign to read it.</div>
+                    <div class="card-label">Birth Chart · Kundali <span class="qmark" data-tooltip="Static celestial topology at birth. Houses represent operational domains (Career, Asset-accumulation, Health); Planets represent focused psychological archetypes.">?</span></div>
+                    <div class="card-hint">Static celestial topology at birth. Signs modulate planetary expression; Houses define the theatre of action. Tap sign for interpretation.</div>
                     <div id="kundaliChart"></div>
                     <div class="kundali-legend">
                         <span>Su = Sun</span><span>Mo = Moon</span><span>Ma = Mars</span>
                         <span>Me = Mercury</span><span>Ju = Jupiter</span><span>Ve = Venus</span>
                         <span>Sa = Saturn</span><span>Ra = Rahu</span><span>Ke = Ketu</span>
-                        <span>Lg = Lagna <span class="qmark tip-right" data-tooltip="Your rising sign — the zodiac sign on the eastern horizon at the exact moment of your birth. The most personal point in your chart; governs your physical self, identity, and first impression.">?</span></span>
+                        <span>Lg = Rising <span class="qmark tip-right" data-tooltip="The zodiac sign rising on the eastern horizon at birth. Governs the primary identity-matrix and physical battery.">?</span></span>
                     </div>
                 </div>
-                <!-- Interpretation first (U-001: theme before data) -->
-                <div class="card interp-card">
-                    <div class="card-label">What this means for you</div>
-                    <div id="techInterpretation" class="interp-placeholder">
-                        Tap any planet in the chart above to see its personalised reading.
-                    </div>
+                <!-- Chart overview — always visible, no click needed -->
+                <div class="card chart-overview-card hidden" id="chartOverviewCard">
+                    <div class="card-label">Chart At a Glance</div>
+                    <div id="chartOverviewContent"></div>
+                </div>
+
+            </div>
+
+            <div class="tech-right">
+                <div class="card">
+                    <div class="card-label">Life Chapters — Strategic Timeline <span class="qmark tip-left" data-tooltip="Vedic Chronology (Major Chapters) spanning 6–20 years. Sub-periods (Sub-Chapters) modulate the primary energy. Tap to audit sub-cycles.">?</span></div>
+                    <div class="card-hint">Vedic Chronology (Major Chapters) spanning 6–20 years. Sub-periods (Sub-Chapters) modulate the primary energy. Tap to audit sub-cycles.</div>
+                    <div id="dashaTimeline"></div>
                 </div>
                 <div class="card">
                     <div class="card-label">Planetary Positions <span class="qmark" data-tooltip="Tap any planet to read its personalised interpretation. Each planet occupies a zodiac sign and a house — the combination shapes a specific area of your life.">?</span></div>
                     <div class="card-hint">Tap any planet for its reading</div>
                     <div id="planetGrid"></div>
                 </div>
-            </div>
-
-            <div class="tech-right">
-                <div class="card">
-                    <div class="card-label">Dasha Timeline — Your Life Chapters <span class="qmark tip-left" data-tooltip="Vedic astrology divides your life into planetary chapters (Maha-Dashas) lasting 6–20 years each. Inside each is a sub-period (Bhukti/Antardasha) that tunes the energy further. Tap a chapter to expand it.">?</span></div>
-                    <div class="card-hint">Vedic astrology divides your life into planetary chapters called Maha-Dashas (major periods) — each lasting 6–20 years with a specific ruling planet and theme. Inside each chapter are sub-periods (Bhuktis/Antardashas) that tune the energy further. You are always in one chapter and one sub-chapter simultaneously. Tap a chapter to expand it.</div>
-                    <div id="dashaTimeline"></div>
+                <!-- Interpretation — updates on planet tap -->
+                <div class="card interp-card">
+                    <div class="card-label">Planet Reading</div>
+                    <div id="techInterpretation" class="interp-placeholder">
+                        Tap any planet in the chart or table above to see its reading.
+                    </div>
                 </div>
             </div>
 
@@ -487,6 +487,12 @@
 
             <!-- Profile panel (auto-loads from birth details) -->
             <div id="jyProfilePanel" class="hidden">
+
+                <!-- Numerology synthesis -->
+                <div id="numSynthesisCard" class="num-synthesis hidden">
+                    <div class="num-synthesis-eyebrow">Your Numbers Together</div>
+                    <div id="numSynthesisText" class="num-synthesis-text">—</div>
+                </div>
 
                 <!-- Name + DOB header -->
                 <div class="jy-profile-header">

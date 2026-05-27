@@ -1,6 +1,6 @@
 # Cosmic OS — Audit Report
-**Run:** 2026-05-14 02:20
-**Score:** ✅ 44 · ⚠️  3 · ❌ 0 (total 47)
+**Run:** 2026-05-25 23:31
+**Score:** ✅ 46 · ⚠️  1 · ❌ 0 (total 47)
 
 > Paste this summary into `docs/AUDIT_SPEC.md → LAST REPORT SUMMARY` section.
 > For every ❌ or ⚠️, add a tighter check to the relevant dimension in AUDIT_SPEC.md.
@@ -13,31 +13,31 @@
 - ✅ **API-05**: /api/translate → 3 translations | devanagari=True
 - ✅ **API-06**: /api/numerology/jyotish → {'mulank': 4, 'bhagyank': 1, 'kua_number': 4, 'namank': {'number': 8, 'meaning': 'The Executive — Your name vibrates with power and material success. You are seen as ambitious, authoritative, and capable of big results.'}}
 - ✅ **API-09**: /api/translate with empty texts → [] (correct)
-- ⚠️  **API-10**: Invalid date 1800-01-01 returned 200 — no input validation
+- ✅ **API-10**: Invalid date → 422 (correct rejection)
 
 ## SEC
 - ✅ **SEC-01**: .env is in .gitignore
 - ✅ **SEC-02**: /.env not exposed via HTTP → 404
 - ✅ **SEC-03**: No API key found in git history
 - ✅ **SEC-07**: /api/translate empty body → 200 (no crash)
-- ⚠️  **SEC-06**: lat=999 returned 200 — no boundary validation
+- ✅ **SEC-06**: lat=999 → 422 (correct rejection)
 
 ## UJ
 - ✅ **UJ-01**: Headline: 'Walk away knowing three things:what today feels like, what t'
 - ✅ **UJ-02**: Sub-headline: 'Takes 30 seconds. Built on 5000 years of Vedic timing scienc'
 - ✅ **UJ-03**: Feature pills: 5
 - ✅ **UJ-05**: Chart generated — results screen visible
-- ✅ **UJ-06**: TL;DR card: 'Create, communicate, network. Social energy is hig'
+- ✅ **UJ-06**: TL;DR card: 'Expect the unexpected. Travel, pivot, adapt. Freed'
 - ✅ **UJ-07**: Tab 'technical' navigates correctly
 - ✅ **UJ-07**: Tab 'numerology' navigates correctly
 - ✅ **UJ-07**: Tab 'strategic' navigates correctly
 - ✅ **UJ-11**: Hindi toggle button present in header
-- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 14 May 2026
+- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 25 May 2026
 
-Theme: Dream'
+Theme: Focus'
 
 ## CQ
-- ✅ **CQ-01**: Daily theme present: 'Dreaming & Sensing'
+- ✅ **CQ-01**: Daily theme present: 'Focus & Care'
 - ✅ **CQ-02**: Directive references planet: 'In your current Venus-Saturn chapter, focus on this: finish '
 - ✅ **CQ-05**: Section titles: 8 found, none empty
 - ✅ **CQ-06**: 28 tooltips, all meaningful
@@ -72,8 +72,6 @@ Call log:
 - ✅ **RES-05**: Invalid DOB → generate button stays hidden
 
 ## Items Requiring Attention
-- ⚠️  **API-10**: Invalid date 1800-01-01 returned 200 — no input validation
-- ⚠️  **SEC-06**: lat=999 returned 200 — no boundary validation
 - ⚠️  **RES-01**: No-name test skipped: Page.wait_for_selector: Timeout 15000ms exceeded.
 Call log:
   - waiting for locator("#resultsScreen:not(.hidden)") to be visible

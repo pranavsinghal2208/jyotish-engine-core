@@ -7,7 +7,7 @@ Produces a structured verdict at the end.
 import asyncio
 from playwright.async_api import async_playwright
 
-URL   = "http://127.0.0.1:5004"
+URL   = "http://127.0.0.1:8000"
 NAME  = "Pranav Singhal"
 DOB   = "1987-08-22"
 TIME  = "21:55"
@@ -58,7 +58,7 @@ async def check_visible(page, selector):
 async def audit():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=False, slow_mo=1500)
-        context = await browser.new_context(viewport={"width": 1280, "height": 800}, record_video_dir="/Users/pranavsinghal/Dev/professional/Estaa/videos/")
+        context = await browser.new_context(viewport={"width": 1280, "height": 800}, record_video_dir="/tmp/cosmic_os_audit_videos/")
         await context.grant_permissions(["clipboard-read", "clipboard-write"])
         page = await context.new_page()
 
@@ -323,11 +323,11 @@ async def audit():
 
         # Expand Venus MD and click bhukti
         try:
-            venus_hdr = page.locator('.dasha-md-header').filter(has_text='Venus Maha-Dasha').first
+            venus_hdr = page.locator('.dasha-md-header').filter(has_text='Venus Major Chapter').first
             await venus_hdr.scroll_into_view_if_needed()
             await venus_hdr.click()
             await asyncio.sleep(1.2)
-            await shot(page, "14_dasha_bhuktis_expanded", "Venus MD expanded — bhukti grid visible")
+            await shot(page, "14_dasha_bhuktis_expanded", "Venus Major Chapter expanded — sub-chapter grid visible")
             active_cell = page.locator('.bhukti-cell.active-ad').first
             if await active_cell.is_visible():
                 await active_cell.scroll_into_view_if_needed()
@@ -335,12 +335,12 @@ async def audit():
                 await active_cell.click()
                 await asyncio.sleep(1.0)
                 await scroll_top(page)
-                await shot(page, "15_bhukti_interpretation", "Current bhukti interpretation — is this useful?")
-                observe("ACT 5", "ok", "Bhukti interpretation loaded with dates and life chapter narrative")
+                await shot(page, "15_bhukti_interpretation", "Current sub-chapter interpretation — is this useful?")
+                observe("ACT 5", "ok", "Sub-chapter interpretation loaded with dates and life chapter narrative")
             else:
-                observe("ACT 5", "warn", "Active bhukti cell not visible after expansion")
+                observe("ACT 5", "warn", "Active sub-chapter cell not visible after expansion")
         except Exception as e:
-            observe("ACT 5", "warn", f"Bhukti expand: {e}")
+            observe("ACT 5", "warn", f"Sub-chapter expand: {e}")
 
         # Advanced Analysis orientation
         await scroll_to(page, ".adv-block")

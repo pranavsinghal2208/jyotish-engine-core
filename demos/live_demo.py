@@ -7,7 +7,7 @@ async def live_demo():
         page = await browser.new_page(viewport={'width': 1280, 'height': 800})
 
         print("Opening browser for integrated functionality testing...")
-        await page.goto("http://127.0.0.1:5004")
+        await page.goto("http://127.0.0.1:8000")
         await asyncio.sleep(2)
 
         # Add name entry

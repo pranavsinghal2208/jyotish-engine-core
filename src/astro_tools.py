@@ -67,8 +67,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
             yogas.append({
                 "name": "Gaja Kesari", "type": "Raj Yoga", "strength": "Strong",
                 "planets": ["Jupiter", "Moon"],
-                "description": "Jupiter in kendra from Moon — wisdom, reputation, institutional authority.",
-                "business_impact": "Rise through merit. Trusted advisor status. Wealth through knowledge and networks."
+                "framework": {
+                    "meaning": "Jupiter in angular resonance with Moon. Institutional wisdom.",
+                    "effect": "High-reputation coefficient. Strategic networking advantage. Natural authority in complex systems.",
+                    "resolution": "Leverage advisor roles. Lead through knowledge-arbitrage. Prioritize long-range ethical scaling."
+                }
             })
 
     # Budha-Aditya — Sun + Mercury same sign, within 15°
@@ -79,8 +82,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
                 "name": "Budha-Aditya", "type": "Intelligence Yoga",
                 "strength": "Very Strong" if orb <= 5 else "Strong",
                 "planets": ["Sun", "Mercury"],
-                "description": f"Sun and Mercury conjunct ({orb:.1f}° orb). Sharp intellect aligned with identity.",
-                "business_impact": "Excellence in negotiation, strategy, and communication-led authority roles."
+                "framework": {
+                    "meaning": "Solar-Mercurial conjunction. High-precision intellectual identity.",
+                    "effect": "Exceptional tactical agility. Optimized for negotiation and articulate command.",
+                    "resolution": "Deploy in high-stakes deal-making. Lead through clear communication. Initialize data-heavy projects."
+                }
             })
 
     # Pancha Mahapurusha — planet in own/exalted sign in kendra
@@ -101,8 +107,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
                 "name": f"{yname} Yoga", "type": "Mahapurusha",
                 "strength": "Very Strong" if in_exalt else "Strong",
                 "planets": [planet],
-                "description": f"{planet} in {'exaltation' if in_exalt else 'own sign'} ({p_s}), house {p_h}. {desc}",
-                "business_impact": f"Signature archetype of the chart — exceptional prominence in {planet}'s domains."
+                "framework": {
+                    "meaning": f"{planet} in angular dignity ({p_s}). Institutional resonance.",
+                    "effect": f"Exceptional operational authority in {planet}'s theatre. Structural legacy builds.",
+                    "resolution": f"Lead through {planet}'s archetype. Prioritize institutional progress over solo wins."
+                }
             })
 
     # Raj Yoga — kendra lord + trikona lord in conjunction
@@ -144,8 +153,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
                 yogas.append({
                     "name": "Raj Yoga", "type": "Royal Yoga", "strength": "Strong",
                     "planets": [kl, tl],
-                    "description": f"{kl} (kendra lord) and {tl} (trikona lord) conjunct in {ps(kl)}.",
-                    "business_impact": impact
+                    "framework": {
+                        "meaning": f"{kl} and {tl} lords in synergetic conjunction. Multi-layer authority.",
+                        "effect": impact,
+                        "resolution": "Leverage combined planetary momentum for senior roles and complex negotiations."
+                    }
                 })
 
     # Adhi Yoga — Jupiter, Mercury, Venus in 6/7/8 from Moon
@@ -158,8 +170,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
                 "name": "Adhi Yoga", "type": "Authority Yoga",
                 "strength": "Very Strong" if len(adhi) == 3 else "Strong",
                 "planets": adhi,
-                "description": f"{', '.join(adhi)} in 6–8th from Moon. Natural command.",
-                "business_impact": "Born to lead — command positions and authority over others."
+                "framework": {
+                    "meaning": "Benefic planets in dusthana-angular resonance from Moon.",
+                    "effect": "Natural command-window. High decisional authority. Optimized for senior management.",
+                    "resolution": "Take lead in complex organizations. Deploy diplomatic and analytical skills simultaneously."
+                }
             })
 
     # Neecha Bhanga Raja Yoga — debilitated planet, cancellation conditions met
@@ -174,8 +189,11 @@ def detect_yogas(planets: Dict, lagna: Dict) -> List[Dict]:
             yogas.append({
                 "name": "Neecha Bhanga Raja Yoga", "type": "Cancellation Yoga", "strength": "Moderate",
                 "planets": [planet],
-                "description": f"{planet} debilitated in {deb_s} but cancellation conditions are met.",
-                "business_impact": f"Initial struggle in {planet}'s domains transforms into exceptional strength."
+                "framework": {
+                    "meaning": f"{planet} debilitation cancelled by angular lords. Transformation-logic.",
+                    "effect": "Initial operational friction transforms into exceptional strength. Resilience-led success.",
+                    "resolution": "Embrace early-cycle struggles as data-points for later mastery. Prioritize grit."
+                }
             })
 
     return yogas
@@ -190,11 +208,17 @@ def check_sade_sati(natal_moon_sign: str, current_saturn_sign: str) -> Dict:
 
     PHASES = {
         11: ("Rising (Approaching)", "Moderate",
-             "Saturn approaching your Moon sign. External pressures begin — relationships, home life, mindset being restructured."),
+             {"meaning": "Saturn approaching lunar-matrix. Primary restructuring begins.",
+              "effect": "High friction in domestic and relationship vectors. Onset of mental rigor testing.",
+              "resolution": "Initialize structural audits. Prioritize endurance over speed. Support elderly demographics."}),
         0:  ("Peak (Direct)",        "High",
-             "Saturn transiting your natal Moon sign. The peak phase — deep transformation, mental discipline tested, karmic clearing at maximum intensity."),
+             {"meaning": "Saturn-Moon conjunction. Maximum karmic clearing phase.",
+              "effect": "High-intensity discipline testing. Significant data-stripping of non-essential commitments.",
+              "resolution": "Implement rigorous daily discipline. Practice total detachment ROI. Saturday execution-fast."}),
         1:  ("Setting (Departing)",  "Moderate",
-             "Saturn past your Moon sign — Sade Sati completing. Gradual relief, lessons integrating, foundation stabilising."),
+             {"meaning": "Saturn-Moon separation. Foundation stabilization window.",
+              "effect": "Gradual friction-relief. Integration of endurance-lessons into permanent systems.",
+              "resolution": "Stabilize new foundations. Leverage integrated wisdom for long-range builds."}),
     }
 
     if diff in PHASES:
@@ -258,6 +282,11 @@ def check_mangal_dosha(planets: Dict, lagna: Dict) -> Dict:
         "mars_house_from_lagna": from_lagna.get("house") if from_lagna else None,
         "from_lagna": from_lagna, "from_moon": from_moon, "from_venus": from_venus,
         "severity": effective_sev, "cancellations": cancellations,
+        "framework": {
+            "meaning": "Martian-heat friction in relationship/identity houses.",
+            "effect": "Execution-leakage via impulsivity. Friction in collaborative interpersonal dynamics.",
+            "resolution": "Practice Martian-rigor (discipline). Utilize red-element spectrum therapy. Delay immediate reactive responses."
+        } if primary_active else None,
         "description": (
             f"Mars in {mars_sign} (house {from_lagna.get('house','?')} from Lagna) — "
             + ("Mangal Dosha present" + (f" · {len(cancellations)} cancellation(s) apply" if cancellations else "")

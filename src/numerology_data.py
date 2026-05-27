@@ -106,57 +106,93 @@ DRIVER_CONDUCTOR_PROFILES = {
 MISSING_NUMBER_REMEDIES = {
     1: {
         "planet": "Sun", "color": "Black", "element": "Water",
-        "name": "Independence & Direction",
-        "impact": "You might feel directionless or find it hard to express your true self. Decisions might feel heavy.",
-        "remedies": ["Offer water to Sun daily", "Place a small water fountain at home", "Morganite + Yellow Opal bracelet", "Red tika / red dhaga"],
+        "name": "Directional Alignment",
+        "framework": {
+            "meaning": "Identity-matrix friction. Decisional inertia.",
+            "effect": "Reduced torque in personal authority. Latency in first-mover execution.",
+            "resolution": "Solar-alignment (Morning Sun). Red-element wrist alignment. Prioritize decisional closure."
+        },
+        "remedies": ["Offer water to Sun daily", "Water fountain in North", "Red dhaga on wrist"],
     },
     2: {
         "planet": "Moon", "color": "Pink", "element": "Earth",
-        "name": "Balance & Connection",
-        "impact": "Relationships might feel like a roller-coaster. You might struggle to trust your gut feeling.",
-        "remedies": ["Picture of a mountain in the house", "Flower Agate + Red Jasper bracelet", "Drink water stored in matka", "Shiv aradhana", "Drink water from a silver glass"],
+        "name": "Equilibrium & Feedback",
+        "framework": {
+            "meaning": "Atmospheric volatility. Unstable internal radar.",
+            "effect": "High-friction interpersonal feedback. Emotional processing latency.",
+            "resolution": "Mountain-visual environment design. Silver-vessel hydration. Lunar rigor (Shiv Aradhana)."
+        },
+        "remedies": ["Mountain picture in house", "Flower Agate bracelet", "Silver glass hydration"],
     },
     3: {
         "planet": "Jupiter", "color": "Green", "element": "Wood",
-        "name": "Growth & Knowledge",
-        "impact": "Opportunities might seem to slip away. You might feel a 'scarcity' mindset even when you have enough.",
-        "remedies": ["Peridot + Chrysoprase bracelet", "Use wooden furniture", "Apply tilak tika daily"],
+        "name": "Expansion & Arbitrage",
+        "framework": {
+            "meaning": "Information-gap. Scarcity-logic bias.",
+            "effect": "Yield-leakage in growth opportunities. Mentorship-insulation.",
+            "resolution": "Daily Saffron-tilak alignment. Wood-element environment design. Active mentorship networking."
+        },
+        "remedies": ["Peridot grounding", "Use wooden furniture", "Apply kesar tilak"],
     },
     4: {
         "planet": "Rahu", "color": "Purple / Gold", "element": "Wood",
-        "name": "Wealth & Discipline",
-        "impact": "Financial stability might feel elusive. Plans often get delayed or face unexpected hurdles.",
-        "remedies": ["Water plants daily / stay connected with nature", "Wear Rudraksh mala", "Green Aventurine bracelet", "Feed stray dogs"],
+        "name": "Systemic Discipline",
+        "framework": {
+            "meaning": "Execution instability. Non-linear scaling friction.",
+            "effect": "Revenue volatility. Delays in system-build closures.",
+            "resolution": "Botanical environment design. Green Aventurine grounding. Service-animal (stray dog) support."
+        },
+        "remedies": ["Water plants daily", "Green Aventurine bracelet", "Feed stray dogs"],
     },
     5: {
         "planet": "Mercury", "color": "Yellow", "element": "Earth",
-        "name": "Communication & Stability",
-        "impact": "You might feel restless or struggle to stay grounded. Communication gaps could lead to misunderstandings.",
-        "remedies": ["Wear more green (clothes, food, accessories)", "Carry a crystal", "Walk in nature barefoot", "Green smoothie on Wednesdays", "Kiwi Jasper + Smoky Quartz bracelet"],
+        "name": "Stability & Transmission",
+        "framework": {
+            "meaning": "Data-processing restlessness. Logic-friction.",
+            "effect": "Communication-leakage. Reduced grounding in high-bandwidth environments.",
+            "resolution": "Botanical immersion. Green-element color therapy. Crystalline data-grounding."
+        },
+        "remedies": ["Walk barefoot in nature", "Green nutrient-alignment", "Smoky Quartz grounding"],
     },
     6: {
         "planet": "Venus", "color": "White", "element": "Hard Metal",
-        "name": "Luxury & Support",
-        "impact": "You might lack support from family or struggle to enjoy the luxuries you work so hard for.",
-        "remedies": ["Missing #6 Lo Shu bracelet", "Place golden metal wind chimes (11') in Northwest", "Wear a golden wrist watch", "Donate white items to those in need"],
+        "name": "Support & Capital",
+        "framework": {
+            "meaning": "Alliance-gap. Resource-entropy.",
+            "effect": "Low support-coefficient from circles. ROI friction in aesthetics and luxury.",
+            "resolution": "Metal-element system (Wind Chimes in NW). Golden-metal wrist alignment. White-element resource scaling."
+        },
+        "remedies": ["Metal wind chimes in NW", "Golden wrist watch", "Donate white items"],
     },
     7: {
         "planet": "Ketu", "color": "Grey", "element": "Soft Metal",
-        "name": "Children & Spirituality",
-        "impact": "You might feel disconnected from your family or struggle to find peace in your spiritual journey.",
+        "name": "Insight & Introspection",
+        "framework": {
+            "meaning": "Spiritual-logic friction. Data-insulation.",
+            "effect": "Connectivity-gap with legacy. Latency in internal-signal detection.",
+            "resolution": "7-Mukhi Rudraksh alignment. Service-animal support. Process-audit retreat."
+        },
         "remedies": ["Stray dog seva", "Wear 7 Mukhi Rudraksh"],
     },
     8: {
         "planet": "Saturn", "color": "Blue", "element": "Earth",
-        "name": "Discipline & Property",
-        "impact": "Success might come with a lot of delays. You might doubt your own abilities more than you should.",
-        "remedies": ["Smoky Quartz crystal", "Place a water pot in the Northeast corner", "Avoid non-vegetarian food", "Fast on Saturdays", "Donate a coin + note to the less fortunate"],
+        "name": "Execution & Assets",
+        "framework": {
+            "meaning": "Institutional friction. Duration-gap.",
+            "effect": "Success-latency. High-friction in long-range property or structural scaling.",
+            "resolution": "Saturday execution-fast. NE-quadrant water alignment. Strategic currency donations."
+        },
+        "remedies": ["Water pot in NE corner", "Saturday fast", "Strategic donations"],
     },
     9: {
         "planet": "Mars", "color": "Red", "element": "Fire",
-        "name": "Energy & Recognition",
-        "impact": "Your hard work might go unnoticed. You might feel a lack of fire or passion in your daily life.",
-        "remedies": ["Red bulb in South direction", "Rhodonite / Fire Agate bracelet", "Wear 9 Mukhi Rudraksh", "Hanuman puja"],
+        "name": "Torque & Visibility",
+        "framework": {
+            "meaning": "Velocity-gap. Energy-leakage.",
+            "effect": "Recognition-lag. Low-torque execution in competitive domains.",
+            "resolution": "Red-spectrum light alignment (South). Martian-rigor (Hanuman Puja). Fire Agate grounding."
+        },
+        "remedies": ["Red light in South", "9 Mukhi Rudraksh", "Martian puja rigor"],
     },
 }
 
@@ -164,38 +200,38 @@ MISSING_NUMBER_REMEDIES = {
 # Namank (Name Number) Definitions
 # ---------------------------------------------------------------------------
 NAMANK_INTERPRETATIONS = {
-    1: "The Leader — Your name carries the vibration of authority and new beginnings. You are seen as someone who can take charge and innovate.",
-    2: "The Diplomat — Your name vibrates with harmony and cooperation. You excel in partnerships and bringing people together.",
-    3: "The Creator — Your name carries the energy of expression and optimism. You are seen as a natural communicator and creative spirit.",
-    4: "The Builder — Your name vibrates with stability and hard work. You are seen as practical, reliable, and the foundation of any project.",
-    5: "The Catalyst — Your name carries the energy of change and freedom. You are seen as adaptable, adventurous, and quick-witted.",
-    6: "The Guardian — Your name vibrates with nurturing and responsibility. You are seen as caring, compassionate, and family-oriented.",
-    7: "The Seeker — Your name carries the energy of analysis and spirituality. You are seen as introspective, wise, and deeply intuitive.",
-    8: "The Executive — Your name vibrates with power and material success. You are seen as ambitious, authoritative, and capable of big results.",
-    9: "The Humanitarian — Your name carries the energy of compassion and completion. You are seen as generous, idealistic, and worldly.",
+    1: "Leader Vibration — Authority-led identity. Optimized for first-mover innovation and decisional command.",
+    2: "Diplomat Vibration — Equilibrium-led identity. Optimized for alliance-building and harmonious connectivity.",
+    3: "Creator Vibration — Expression-led identity. Optimized for high-bandwidth communication and optimistic scaling.",
+    4: "Builder Vibration — Structure-led identity. Optimized for system-permanence and rigorous practical builds.",
+    5: "Catalyst Vibration — Change-led identity. Optimized for high-volatility adaptation and rapid mental agility.",
+    6: "Guardian Vibration — Responsibility-led identity. Optimized for resource-nurturing and domestic/family scaling.",
+    7: "Seeker Vibration — Analysis-led identity. Optimized for deep-niche research and spiritual-logic sensing.",
+    8: "Executive Vibration — Power-led identity. Optimized for material scaling and authoritative asset command.",
+    9: "Humanitarian Vibration — Scale-led identity. Optimized for global-impact and systemic completion logic.",
 }
 
 # ---------------------------------------------------------------------------
 # Lottery / Lucky Number Logic (Based on KUA & Mulank)
 # ---------------------------------------------------------------------------
 LOTTERY_NUMBER_MEANINGS = {
-    "primary": "This is your 'Universal Luck' digit. When this number appears in your life (dates, addresses, tokens), the cosmic resistance is at its lowest.",
-    "secondary": "This is your 'Financial Flow' digit. It helps in removing blocks specifically related to money and material growth.",
+    "primary": "Universal Luck digit. Low-resistance window for dates, tokens, and numerical data-points.",
+    "secondary": "Financial Flow digit. Optimized for removing blocks in material growth and revenue-flow.",
 }
 
 # ---------------------------------------------------------------------------
 # Per-number meanings (planet, color, element, characteristics)
 # ---------------------------------------------------------------------------
 NUMBER_MEANINGS = {
-    1: {"planet": "Sun",     "color": "Black",        "element": "Water",      "characteristics": "Independence, leadership, innovation, and self-confidence."},
-    2: {"planet": "Moon",    "color": "Pink",         "element": "Earth",      "characteristics": "Harmony, balance, cooperation, strong intuition, and diplomacy."},
-    3: {"planet": "Jupiter", "color": "Green",        "element": "Wood",       "characteristics": "Creativity, self-expression, optimism, imagination, and sociability."},
-    4: {"planet": "Rahu",    "color": "Purple/Gold",  "element": "Wood",       "characteristics": "Stability, practicality, hard work, rebellious streak, organized and disciplined."},
-    5: {"planet": "Mercury", "color": "Yellow",       "element": "Earth",      "characteristics": "Freedom, adventure, adaptability, and curiosity."},
-    6: {"planet": "Venus",   "color": "White",        "element": "Hard Metal", "characteristics": "Responsibility, nurturing, compassion, and love."},
-    7: {"planet": "Ketu",    "color": "Grey",         "element": "Soft Metal", "characteristics": "Analysis, introspection, spirituality, occult, and intuition."},
-    8: {"planet": "Saturn",  "color": "Blue",         "element": "Earth",      "characteristics": "Ambition, material success, authority, and power."},
-    9: {"planet": "Mars",    "color": "Red",          "element": "Fire",       "characteristics": "Humanitarianism, compassion, generosity, and idealism."},
+    1: {"planet": "Sun",     "color": "Black",        "element": "Water",      "characteristics": "Independence, Command, Innovation."},
+    2: {"planet": "Moon",    "color": "Pink",         "element": "Earth",      "characteristics": "Equilibrium, Intuition, Diplomacy."},
+    3: {"planet": "Jupiter", "color": "Green",        "element": "Wood",       "characteristics": "Expansion, Expression, Optimization."},
+    4: {"planet": "Rahu",    "color": "Purple/Gold",  "element": "Wood",       "characteristics": "Stability, Disruption, Structure."},
+    5: {"planet": "Mercury", "color": "Yellow",       "element": "Earth",      "characteristics": "Adaptation, Transmission, Agility."},
+    6: {"planet": "Venus",   "color": "White",        "element": "Hard Metal", "characteristics": "Value, Nurturing, Harmony."},
+    7: {"planet": "Ketu",    "color": "Grey",         "element": "Soft Metal", "characteristics": "Audit, Introspection, Insight."},
+    8: {"planet": "Saturn",  "color": "Blue",         "element": "Earth",      "characteristics": "Authority, Duration, Success."},
+    9: {"planet": "Mars",    "color": "Red",          "element": "Fire",       "characteristics": "Velocity, Energy, Completion."},
 }
 
 # Lo Shu grid layout: number → (row, col) zero-indexed

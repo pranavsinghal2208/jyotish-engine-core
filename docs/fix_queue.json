@@ -1,0 +1,98 @@
+[
+  {
+    "failure": "\u26a0\ufe0f  [RES-01] No-name test skipped: Page.wait_for_selector: Timeout 15000ms exceeded.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137590"
+  },
+  {
+    "failure": "\u26a0\ufe0f  Feature pills present: 'What today feels like",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137631"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: Morning Brief is the strongest daily-refresh signal but is buried. Consider a 'Today' summary card above the fold on return visits.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137637"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: No push notification or email reminder system yet (planned in Round 6)",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137641"
+  },
+  {
+    "failure": "\u26a0\ufe0f  Feature pills present: 'What today feels like",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137644"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: Morning Brief is the strongest daily-refresh signal but is buried. Consider a 'Today' summary card above the fold on return visits.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137649"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: No push notification or email reminder system yet (planned in Round 6)",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137653"
+  },
+  {
+    "failure": "\u26a0\ufe0f  ATTENTION (next round improvements):",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:28:56.137656"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [RES-01] No-name test skipped: Page.wait_for_selector: Timeout 15000ms exceeded.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152323"
+  },
+  {
+    "failure": "\u26a0\ufe0f  Feature pills present: 'What today feels like",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152353"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: Morning Brief is the strongest daily-refresh signal but is buried. Consider a 'Today' summary card above the fold on return visits.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152359"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: No push notification or email reminder system yet (planned in Round 6)",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152363"
+  },
+  {
+    "failure": "\u26a0\ufe0f  Feature pills present: 'What today feels like",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152366"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: Morning Brief is the strongest daily-refresh signal but is buried. Consider a 'Today' summary card above the fold on return visits.",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152371"
+  },
+  {
+    "failure": "\u26a0\ufe0f  RETURN HOOK: No push notification or email reminder system yet (planned in Round 6)",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152375"
+  },
+  {
+    "failure": "\u26a0\ufe0f  ATTENTION (next round improvements):",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-05-25T23:32:32.152378"
+  }
+]

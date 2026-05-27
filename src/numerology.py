@@ -376,15 +376,15 @@ class NumerologyEngine:
 
     # ── Personal Cycle interpretations ────────────────────────────────────────
     _CYCLE_THEMES = {
-        1: {"theme": "New Beginnings",     "energy": "Pioneer",     "focus": "Start new ventures, assert independence, plant seeds for the 9-year cycle."},
-        2: {"theme": "Partnership",        "energy": "Diplomat",    "focus": "Nurture relationships, collaborate, be patient — this is a year of waiting and supporting."},
-        3: {"theme": "Expression",         "energy": "Creator",     "focus": "Create, communicate, network. Social energy is high; growth through visibility."},
-        4: {"theme": "Foundation",         "energy": "Builder",     "focus": "Build systems, work hard, lay structure. Boring but necessary — results come later."},
-        5: {"theme": "Change",             "energy": "Adventurer",  "focus": "Expect the unexpected. Travel, pivot, adapt. Freedom is the lesson."},
-        6: {"theme": "Responsibility",     "energy": "Caretaker",   "focus": "Family, home, service. Commitments deepen. Harmony comes from giving."},
-        7: {"theme": "Reflection",         "energy": "Seeker",      "focus": "Retreat, study, introspect. Spiritual and analytical year — not the time to push commercially."},
-        8: {"theme": "Achievement",        "energy": "Executive",   "focus": "Power, ambition, and material success. Execute with authority. Karma delivers."},
-        9: {"theme": "Completion",         "energy": "Humanitarian","focus": "Release what no longer serves. Endings clear space for the 1-year ahead."},
+        1: {"theme": "New Beginnings",     "energy": "Pioneer",     "focus": "Launch new ventures, assert independence, and initialize 9-year cycle seeds."},
+        2: {"theme": "Partnership",        "energy": "Diplomat",    "focus": "Nurture relationships and collaborate. Optimized for support and alignment."},
+        3: {"theme": "Expression",         "energy": "Creator",     "focus": "High social ROI. Prioritize communication, networking, and creative visibility."},
+        4: {"theme": "Foundation",         "energy": "Builder",     "focus": "Systems-build window. Prioritize structure and rigorous execution. ROI is lagging."},
+        5: {"theme": "Change",             "energy": "Adventurer",  "focus": "High volatility window. Pivot-ready mindset required. Freedom and adaptation ROI."},
+        6: {"theme": "Responsibility",     "energy": "Caretaker",   "focus": "Domestic scaling and service. Deepen commitments and optimize home-infrastructure."},
+        7: {"theme": "Reflection",         "energy": "Seeker",      "focus": "Process-audit window. Retreat and introspect. Focus on analytical or spiritual rigor."},
+        8: {"theme": "Achievement",        "energy": "Executive",   "focus": "High-stakes execution. Leverage power and ambition for material scaling. Execute now."},
+        9: {"theme": "Completion",         "energy": "Humanitarian","focus": "Cycle-closure. Release non-essential commitments to clear bandwidth for Year 1."},
     }
 
     def get_personal_cycles(self, dob: str, current_date: Optional[datetime] = None) -> Dict[str, Any]:
@@ -469,8 +469,8 @@ class NumerologyEngine:
                 "same_planet": same_planet_driver,
             },
             "summary": (
-                f"Driver {ma} ({NUMBER_MEANINGS.get(ma,{}).get('planet','')}) meets Driver {mb} ({NUMBER_MEANINGS.get(mb,{}).get('planet','')}). "
-                f"Conductor pairing scores {avg_score}/100 — {verdict}."
+                f"Driver {ma} ({NUMBER_MEANINGS.get(ma,{}).get('planet','')}) interaction with Driver {mb} ({NUMBER_MEANINGS.get(mb,{}).get('planet','')}). "
+                f"Pairing efficiency: {avg_score}/100 — {verdict}."
             )
         }
 

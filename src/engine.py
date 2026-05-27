@@ -68,20 +68,19 @@ class JyotishEngine:
         return results
 
     def get_houses(self, jd_ut: float, lat: float, lon: float) -> Dict[str, Any]:
-        """Calculate houses and Ascendant (Lagna)."""
-        # We use 'P' for Placidus or 'W' for Whole Sign. Jyotish usually uses Whole Sign or Sripati.
-        # For simple Vedic, Whole Sign is common. 'W' is Whole Sign.
-        # However, swe.houses() calculates tropical houses by default. 
-        # For sidereal lagna, we need to subtract Ayanamsa or use a sidereal flag if supported.
+        """Calculate houses and Ascendant (Lagna) using explicitly Whole Sign system."""
+        # Jyotish Mandate: Use Whole Sign ('W'). 
+        # Placidus or Koch (the defaults) will result in incorrect House-Lord interpretations.
         
-        # Calculate Ayanamsa for the given JD
+        # 1. Calculate Ayanamsa for the given JD
         ayanamsa = swe.get_ayanamsa_ex(jd_ut, swe.FLG_SIDEREAL)[1]
         
-        # Calculate houses (using Whole Sign 'W')
+        # 2. Calculate houses (using Whole Sign 'W' explicitly)
         # swe.houses returns (cusps, ascmc)
+        # For Whole Sign, the Ascendant defines the start of the 1st House.
         cusps, ascmc = swe.houses(jd_ut, lat, lon, b'W')
         
-        # Lagna is the first element of ascmc (Ascendant)
+        # 3. Lagna is the first element of ascmc (Ascendant)
         # Convert to Sidereal
         lagna_tropical = ascmc[0]
         lagna_sidereal = (lagna_tropical - ayanamsa) % 360
@@ -92,7 +91,8 @@ class JyotishEngine:
                 "sign": self.get_sign(lagna_sidereal),
                 "degree_in_sign": lagna_sidereal % 30
             },
-            "ayanamsa": ayanamsa
+            "ayanamsa": ayanamsa,
+            "cusps": cusps # Preserving raw cusps if needed for advanced vargas
         }
 
     def get_sign(self, longitude: float) -> str:

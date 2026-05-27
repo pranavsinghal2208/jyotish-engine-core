@@ -2,175 +2,316 @@ from typing import Dict, Any, List
 from datetime import datetime
 
 # ---------------------------------------------------------------------------
+# Chart-Specific Content Layer — planet × sign × house combinations
+# ---------------------------------------------------------------------------
+
+SIGN_ORDER = [
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+]
+
+HOUSE_SHORT = {
+    1: "identity & body", 2: "wealth & speech", 3: "effort & siblings",
+    4: "home & heart", 5: "intellect & children", 6: "work & obstacles",
+    7: "partnerships", 8: "hidden depth & transformation", 9: "luck & dharma",
+    10: "career & status", 11: "gains & networks", 12: "loss & liberation"
+}
+
+def get_house(planet_sign: str, lagna_sign: str) -> int:
+    return (SIGN_ORDER.index(planet_sign) - SIGN_ORDER.index(lagna_sign)) % 12 + 1
+
+
+PLANET_SIGN_INTERP = {
+    "Sun": {
+        "Aries":       "High-velocity identity. Lead through direct action and first-mover execution.",
+        "Taurus":      "Asset-backed identity. Prioritize durable builds and material compounding. Resist trend-chasing.",
+        "Gemini":      "Networked identity. Bridge disparate ideas. Value connectivity over specialization.",
+        "Cancer":      "Intuition-led identity. Scale through emotional intelligence and high-trust environments.",
+        "Leo":         "Authority-led identity. Command visibility. Lead from the center, not the front.",
+        "Virgo":       "Precision-led identity. Excellence through audit and process optimization.",
+        "Libra":       "Equilibrium identity. Scale through strategic partnership and diplomatic leverage.",
+        "Scorpio":     "High-stakes identity. Resilient in crisis. Value depth and hidden data.",
+        "Sagittarius": "Vision-led identity. Drive growth through big-picture systems and global perspective.",
+        "Capricorn":   "Structure-led identity. Master of endurance and long-range institutional builds.",
+        "Aquarius":    "Disruptive identity. Focus on systems-thinking and unconventional logic.",
+        "Pisces":      "Sensing identity. Perceive non-linear signals and creative breakthroughs."
+    },
+    "Moon": {
+        "Aries":       "Fast emotional response. High-friction processing. Needs immediate closure.",
+        "Taurus":      "Fixed emotional anchor. Values continuity. High resistance to volatility.",
+        "Gemini":      "Communication-led mindset. Processes logic through dialogue and varied data streams.",
+        "Cancer":      "High-bandwidth empathy. Senses sub-text and atmospheric shifts instantly.",
+        "Leo":         "Loyalty-led mindset. Thrives on recognition and central team importance.",
+        "Virgo":       "Analytical mindset. Processes emotions through categorization and audit.",
+        "Libra":       "Harmony-led mindset. Optimized for collaboration. Instinctive win-win negotiator.",
+        "Scorpio":     "Strategic mindset. High-intensity focus. Senses what others conceal.",
+        "Sagittarius": "Expansive mindset. High recovery speed. Finds opportunity in difficulty.",
+        "Capricorn":   "Disciplined mindset. Channels feeling into utility and long-term targets.",
+        "Aquarius":    "Detached mindset. Objective observer. Optimized for humanitarian or large-scale logic.",
+        "Pisces":      "Fluid mindset. Creative and non-linear. Absorbs and transmutes external data."
+    },
+    "Mars": {
+        "Aries":       "Direct execute-mode. High initiative. Best as a strike-team lead.",
+        "Taurus":      "Persistence execute-mode. High torque. Slow start, unstoppable finish.",
+        "Gemini":      "Iterative execute-mode. High mental agility. Rapid prototyping specialist.",
+        "Cancer":      "Defensive execute-mode. Driven by security and loyalty-backed targets.",
+        "Leo":         "Visibility execute-mode. High performance. Driven by stakes and recognition.",
+        "Virgo":       "Audit execute-mode. Driven by precision and error-reduction.",
+        "Libra":       "Collaboration execute-mode. Driven by strategic alliances and team morale.",
+        "Scorpio":     "Stealth execute-mode. High leverage. Operates best under pressure.",
+        "Sagittarius": "Purpose-led execute-mode. Driven by vision and scale. Unstoppable when aligned.",
+        "Capricorn":   "Institutional execute-mode. Driven by status and long-range structural wins.",
+        "Aquarius":    "System execute-mode. Driven by logic and collective impact.",
+        "Pisces":      "Intuitive execute-mode. Driven by flow and creative timing."
+    },
+    "Jupiter": {
+        "Aries":       "Scale through initiative. Every new launch is a high-yield teacher.",
+        "Taurus":      "Scale through assets. Wealth and knowledge accumulation is steady and tangible.",
+        "Gemini":      "Scale through networks. Information arbitrage and dialogue drive expansion.",
+        "Cancer":      "Scale through foundations. Growth is rooted in family and high-trust circles.",
+        "Leo":         "Scale through platforms. Leadership and visibility are your primary expanders.",
+        "Virgo":       "Scale through mastery. Excellence in service and process drive ROI.",
+        "Libra":       "Scale through alliances. Your highest ROI opportunities arrive through partners.",
+        "Scorpio":     "Scale through depth. Transformation and crisis-management reveal new wisdom.",
+        "Sagittarius": "Scale through systems. Global reach and philosophical reach drive growth.",
+        "Capricorn":   "Scale through structure. Recognition and seniority come through duration.",
+        "Aquarius":    "Scale through impact. Collective progress and visionary logic drive expansion.",
+        "Pisces":      "Scale through vision. Imagination and sensing are your greatest growth-engines."
+    },
+    "Saturn": {
+        "Aries":       "Discipline in strategy. Learning to slow down is the primary life-lesson.",
+        "Taurus":      "Discipline in security. Master wealth and stability through sustained effort.",
+        "Gemini":      "Discipline in depth. Focus your mental agility into specialized mastery.",
+        "Cancer":      "Discipline in boundaries. Build resilience by protecting your internal bandwidth.",
+        "Leo":         "Discipline in authority. Lead without needing validation or applause.",
+        "Virgo":       "Discipline in audit. Precision and service yield permanent results.",
+        "Libra":       "Discipline in equity. Build lasting partnerships through strict fairness.",
+        "Scorpio":     "Discipline in surrender. Acceptance of change is your ultimate power.",
+        "Sagittarius": "Discipline in truth. Wisdom through testing and questioning belief-systems.",
+        "Capricorn":   "Discipline in legacy. Consistent effort yields institutional authority.",
+        "Aquarius":    "Discipline in systems. Build impact within and across organizational structures.",
+        "Pisces":      "Discipline in grounding. Fix non-linear vision into durable output."
+    }
+}
+
+# ---------------------------------------------------------------------------
 # "Normal" Language Interpretation Layer
 # ---------------------------------------------------------------------------
 
 HOUSE_MEANINGS = {
     1: {
         "name": "Self & Health", 
-        "impact": "Your personality and physical energy.",
-        "if_strong": "You have a natural 'presence.' People trust you easily. Use this to lead projects and take physical risks. You bounce back from illness fast.",
-        "if_weak": "You might feel easily drained by others. Focus on strict 'Energy Hygiene' — sleep more, avoid energy-vampires, and don't take on too much at once.",
-        "remedy": "Offer water to the Sun in the morning. Wear a ruby or red thread on your wrist."
+        "impact": "Core presence and physical battery.",
+        "if_strong": "Natural authority. High trust-coefficient. Leverage for leadership and physical risks.",
+        "if_weak": {
+            "meaning": "Operational battery-leakage. Identity-matrix friction.",
+            "effect": "Low decisional torque. Increased susceptibility to external energy-drain.",
+            "resolution": "Implement strict Energy Hygiene. Solar-alignment (Morning Sun). Prioritize vital posture and decisional boundaries."
+        },
+        "remedy": "Solar alignment. Early morning light exposure. Focus on vital posture."
     },
     2: {
         "name": "Wealth & Family", 
-        "impact": "Your savings and early family life.",
-        "if_strong": "Money tends to stick to you. You have a 'Wealth Container' that doesn't leak. Great for long-term investments and building a family legacy.",
-        "if_weak": "Money might come in, but it leaves just as fast. You might feel 'speech-blocked' or disconnected from family. Focus on automated savings — don't trust your impulse.",
-        "remedy": "Keep a small silver coin in your wallet. Avoid lying or harsh speech. Chant 'Om Mahalakshmyai Namah'."
+        "impact": "Asset accumulation and early programming.",
+        "if_strong": "High wealth-retention. Optimized for long-term compounding and family legacy.",
+        "if_weak": {
+            "meaning": "Capital-retention friction. Speech-transmission leakage.",
+            "effect": "Revenue-leakage via impulse. Domestic-resource instability.",
+            "resolution": "Automate savings to bypass impulse. Practice precise, honest speech. Keep silver in contact with wealth-zones."
+        },
+        "remedy": "Keep silver in contact with wealth. Practice precise, honest speech."
     },
     3: {
-        "name": "Effort & Hobbies", 
-        "impact": "Your courage and self-effort.",
-        "if_strong": "You are a 'Doer.' You don't wait for luck; you make it. You excel in short-term projects, writing, and hands-on skills. Your siblings or peers support you.",
-        "if_weak": "You might start things with fire but lose steam halfway. You might feel 'courage-poor' when facing big tasks. Partner with high-energy people who can push you.",
-        "remedy": "Physical exercise is your best remedy. Donate green items on Wednesdays."
+        "name": "Effort & Communication", 
+        "impact": "Courage, initiative, and peer-networks.",
+        "if_strong": "High-execution bias. Excels in short-range projects, writing, and hands-on builds.",
+        "if_weak": {
+            "meaning": "Initiative inertia. Connectivity-friction in short-range projects.",
+            "effect": "Start-stop execution cycle. Peer-network entropy.",
+            "resolution": "Initialize high-torque physical training. Partner with high-velocity peer groups. Execute on Wednesdays."
+        },
+        "remedy": "Intense physical training. Action-oriented output on Wednesdays."
     },
     4: {
         "name": "Home & Peace", 
-        "impact": "Your inner peace and home life.",
-        "if_strong": "Your home is your sanctuary. You have deep emotional stability and likely own property or vehicles easily. You have a 'Happy Heart' by default.",
-        "if_weak": "You might feel restless even in a beautiful house. Inner peace feels like a struggle. Focus on 'Inner Landscaping' — meditation and making your bedroom a tech-free zone.",
-        "remedy": "Keep a pot of water in the Northeast of your house. Respect your mother and mother-figures."
+        "impact": "Emotional infrastructure and fixed assets.",
+        "if_strong": "Deep stability. High property-coefficient. Secure inner-foundation by default.",
+        "if_weak": {
+            "meaning": "Infrastructure volatility. Foundation-entropy.",
+            "effect": "Restless internal state. High-friction in domestic or fixed-asset acquisition.",
+            "resolution": "Environment Design optimization. Create tech-free zones. North-quadrant water-element alignment."
+        },
+        "remedy": "Water-element alignment in the North. Support maternal figures."
     },
     5: {
-        "name": "Intellect & Kids", 
-        "impact": "Creativity and education.",
-        "if_strong": "You have 'Cosmic Luck.' Your gut feelings are 90% right. You excel in speculation, creative arts, and parenting. Solutions come to you in dreams.",
-        "if_white": "You might feel 'brain-fog' during big decisions. Education or creative projects might face delays. Use systems and checklists rather than relying on 'luck' or intuition.",
-        "remedy": "Apply a saffron (kesar) tilak on your forehead. Help students with their books or fees."
+        "name": "Intellect & Creativity", 
+        "impact": "Speculative logic and legacy-creation.",
+        "if_strong": "High-precision intuition. Excels in speculation and complex creative solutions.",
+        "if_weak": {
+            "meaning": "Logic-fog. Speculative-entropy.",
+            "effect": "Decision-delays. Misalignment in complex creative or educational cycles.",
+            "resolution": "Implement rigorous checklist-systems. Support educational initiatives. Saffron-tilak alignment."
+        },
+        "remedy": "Saffron-tilak alignment. Support educational initiatives."
     },
     6: {
-        "name": "Daily Work & Health", 
-        "impact": "Daily routine and obstacles.",
-        "if_strong": "You are a 'Warrior.' Obstacles don't stop you — they train you. You excel at managing debts, winning competitions, and handling high-pressure daily work.",
-        "if_weak": "Small problems feel like mountains. You might get sick often from stress. Simplify your life. Don't take loans unless absolutely necessary. Focus on gut health.",
-        "remedy": "Feed a black dog on Saturdays. Keep your workplace clutter-free."
+        "name": "Daily Work & Adversity", 
+        "impact": "Operations, debt, and competition.",
+        "if_strong": "High resilience. Thrives on competition. Optimized for managing complex operations.",
+        "if_weak": {
+            "meaning": "Operational friction. Resistance-gap.",
+            "effect": "Low friction-tolerance. Debt-leakage risk. Systemic clutter in daily workflow.",
+            "resolution": "Zero-clutter workspace audit. Prioritize gut-health. Maintain strict debt-hygiene."
+        },
+        "remedy": "Support service animals. Maintain a zero-clutter workspace."
     },
     7: {
-        "name": "Partnerships & Marriage", 
-        "impact": "Your spouse and business partners.",
-        "if_strong": "You gain through others. Your partners (life or business) act as your 'Mirror of Growth.' You excel in public-facing roles and negotiations.",
-        "if_weak": "Relationships might feel draining or confusing. You might lose your identity in others. Learn to set clear boundaries and don't rush into legal partnerships.",
-        "remedy": "Donate white clothes or sweets on Fridays. Use a pleasant fragrance daily."
+        "name": "Partnerships & Public", 
+        "impact": "Strategic alliances and public-facing ROI.",
+        "if_strong": "Leverage through others. High partnership-coefficient. Excels in public negotiation.",
+        "if_weak": {
+            "meaning": "Alliance-gap. Boundary-leakage.",
+            "effect": "Yield-leakage in public negotiation. Energy-drain through unoptimized partnerships.",
+            "resolution": "Strict legal and emotional contract-audits. Daily premium fragrance alignment. White-element donations."
+        },
+        "remedy": "White-element donations. Daily use of premium fragrances."
     },
     8: {
-        "name": "Changes & Secrets", 
-        "impact": "Sudden ups and downs.",
-        "if_strong": "You are 'Unstoppable.' You can handle crises that would break others. You have a gift for research, occult, and managing other people's money.",
-        "if_weak": "You might fear change or feel hit by 'sudden bad luck.' Your energy might feel low. Focus on 'Deep Roots' — spiritual practices that keep you grounded during storms.",
-        "remedy": "Chant 'Om Namah Shivaya'. Donate oil or black til on Saturdays."
+        "name": "Transformation & Secrets", 
+        "impact": "Crisis management and hidden resources.",
+        "if_strong": "High-volatility tolerance. Excels in research, depth, and managing external assets.",
+        "if_weak": {
+            "meaning": "Change-inertia. Volatility-friction.",
+            "effect": "Low resilience to sudden data-shifts. Crisis-management latency.",
+            "resolution": "Initialize intense focused meditation. Align with transformation-cycles. Build deep-roots through spiritual rigor."
+        },
+        "remedy": "Intense focused meditation. Align with transformation-cycles."
     },
     9: {
         "name": "Fortune & Wisdom", 
-        "impact": "Higher learning and good luck.",
-        "if_strong": "The 'Divine Hand' is on your shoulder. You find the right teacher at the right time. Travel and higher education bring you massive gains.",
-        "if_weak": "Luck might feel like it's 'always next door' but never in your house. You might struggle with traditional beliefs. Focus on 'Self-Study' and practical wisdom over blind faith.",
-        "remedy": "Visit a place of worship regularly. Respect your elders and mentors."
+        "impact": "Systemic luck and higher-order logic.",
+        "if_strong": "High-order networking. Access to elite mentorship and global opportunities.",
+        "if_weak": {
+            "meaning": "Luck-friction. Mentorship-gap.",
+            "effect": "Information-insulation. High systemic resistance in expansion-ventures.",
+            "resolution": "Self-driven technical study. Active respect for mentors. Regular knowledge-center immersion."
+        },
+        "remedy": "Regular visit to knowledge-centers. Active respect for mentors."
     },
     10: {
         "name": "Career & Status", 
-        "impact": "Your professional life and status.",
-        "if_strong": "You are built for the top. Career growth comes naturally. The world sees you as an authority. Use this power to build institutions, not just jobs.",
-        "if_weak": "You might feel 'invisible' at work or struggle to find your true calling. Career paths might be unstable. Focus on 'Niche Mastery' — be so good they can't ignore you.",
-        "remedy": "Help people find jobs. Keep a clean, well-lit office space."
+        "impact": "Professional authority and public output.",
+        "if_strong": "Built for scale. Natural rise to seniority. High institutional-impact coefficient.",
+        "if_weak": {
+            "meaning": "Visibility-gap. Authority-entropy.",
+            "effect": "Unstable professional path. Latency in institutional recognition.",
+            "resolution": "Pivot to Niche-Mastery. Focus on specialized skill-stacks. Career-networking for others to build goodwill."
+        },
+        "remedy": "Employment-networking for others. Clean, high-light work environment."
     },
     11: {
-        "name": "Gains & Social Circle", 
-        "impact": "Fulfillment of desires.",
-        "if_strong": "You are a 'Wish-Fulfiller.' Your social circle is your net worth. Money and friends come easily. You have the 'Midas Touch' for business networking.",
-        "if_weak": "You might work hard but feel the 'Gains' are low. Your social circle might be small or unsupportive. Focus on 'Quality over Quantity' — nurture 2-3 key influencers.",
-        "remedy": "Donate to a charity of your choice on Saturdays. Be kind to your elder siblings."
+        "name": "Gains & Network", 
+        "impact": "Revenue-flow and social net-worth.",
+        "if_strong": "High-yield networking. Financial compounding through social circle. 'Midas' ROI.",
+        "if_weak": {
+            "meaning": "Yield-gap. Network-friction.",
+            "effect": "Unsupportive social circle. Revenue-leakage via social commitments.",
+            "resolution": "Quality-over-quantity pivot. Nurture top 3 strategic influencers. Strategic charitable giving on Saturdays."
+        },
+        "remedy": "Strategic charitable giving on Saturdays. Support siblings."
     },
     12: {
-        "name": "Expenses & Solitude", 
-        "impact": "Spending and inner growth.",
-        "if_strong": "You have 'Global Energy.' You excel in foreign lands, hospitals, or spiritual retreats. You know how to 'let go' and move on without baggage.",
-        "if_weak": "Money might leak through 'hidden' expenses (medical, legal, or waste). Sleep might be disturbed. Focus on 'Charity as a Shield' — give voluntarily so the universe doesn't take.",
-        "remedy": "Sleep with your head toward the South. Donate to hospitals or blind schools."
+        "name": "Expenses & Growth", 
+        "impact": "Revenue leakage and inner-scaling.",
+        "if_strong": "Global-scale energy. High-efficiency 'letting go'. Optimized for foreign/remote ROI.",
+        "if_weak": {
+            "meaning": "Hidden-leakage. Resource-entropy.",
+            "effect": "Disturbed rest-cycles. Financial/Legal leakage via unmonitored vectors.",
+            "resolution": "Voluntary charity as a strategic shield. South-facing rest alignment. Support hospital/blind-care."
+        },
+        "remedy": "South-facing rest alignment. Support hospital/blind-care."
     }
 }
 
 SIGN_THEMES = {
-    "Aries":       {"theme": "New Starts",           "energy": "Bold & Ready",        "daily": "You're feeling ready to leap today. Don't wait for permission — that small bold move you've been thinking about is the right one."},
-    "Taurus":      {"theme": "Building Value",       "energy": "Slow & Steady",       "daily": "Take your time today. What you build slowly and carefully will last much longer than anything rushed. Stick to your routine."},
-    "Gemini":      {"theme": "Quick Ideas",          "energy": "Active Mind",         "daily": "Your mind is racing with signals. Follow that one interesting conversation — it might lead to a big change next month."},
-    "Cancer":      {"theme": "Home & Gut Feeling",   "energy": "Strong Intuition",    "daily": "Trust that quiet feeling in your stomach today. You don't need an explanation yet. Spend time in spaces where you feel safe."},
-    "Leo":         {"theme": "Warm Leadership",      "energy": "Confident Heart",     "daily": "It's okay to be seen today. Your warmth and generosity are your superpowers right now. Show the world what you're really capable of."},
-    "Virgo":       {"theme": "Focus & Care",         "energy": "Quiet Precision",     "daily": "Don't skip the small details today. Giving something your full attention is how you'll win. One small, deliberate act is enough."},
-    "Libra":       {"theme": "Fairness & Balance",   "energy": "Graceful Clarity",    "daily": "That situation you've been balancing is ready for a decision. You don't have to pick a side, just pick what's true. Be honest but gentle."},
-    "Scorpio":     {"theme": "Deep Truths",          "energy": "Inner Knowing",       "daily": "You can sense what others aren't saying. You're probably right. Go deeper today — the real answer isn't on the surface."},
-    "Sagittarius": {"theme": "Big Picture",          "energy": "Optimistic Spirit",   "daily": "Something bigger is trying to reach you. Say yes to the thing that feels slightly too big or too far. That's where your growth is."},
-    "Capricorn":   {"theme": "Patient Progress",     "energy": "Calm Endurance",      "daily": "The hard work is paying off, even if you can't see it yet. Stay on your path. Just showing up today is a massive win."},
-    "Aquarius":    {"theme": "New Thinking",         "energy": "Original Ideas",      "daily": "That 'weird' idea you have? It's actually ahead of its time. Share it. You don't need someone else to tell you it's okay."},
-    "Pisces":      {"theme": "Dreaming & Sensing",   "energy": "Gentle Flow",         "daily": "Logic matters less than how you feel today. Let your imagination run. The answer you're looking for will come in the quiet moments."}
+    "Aries":       {"theme": "Direct Execution",     "energy": "High Torque",         "daily": "Immediate-action window. Skip the permission-phase. Execute the boldest item on your stack now."},
+    "Taurus":      {"theme": "Value Compounding",    "energy": "Steady torque",        "daily": "Low-velocity, high-impact day. Build for next year, not next week. Stick to the proven routine."},
+    "Gemini":      {"theme": "Data Processing",      "energy": "High Bandwidth",      "daily": "Signal-capture day. Follow high-interest conversations. One interaction may trigger a Q3 pivot."},
+    "Cancer":      {"theme": "Intuition-Led Ops",    "energy": "Sub-text Radar",      "daily": "Trust non-linear signals. Logical proof is lagging; move based on gut-security. Optimize home-base."},
+    "Leo":         {"theme": "Strategic Visibility", "energy": "Central Authority",   "daily": "Visibility-window. Your authority is the primary leverage today. Direct the room; don't hide."},
+    "Virgo":       {"theme": "Process Audit",        "energy": "Precision Logic",     "daily": "Zero-error window. Victory through micro-details. One deliberate, optimized act outweighs 10 fast ones."},
+    "Libra":       {"theme": "Strategic Alignment",  "energy": "Diplomatic Leverage", "daily": "Decision-point in a complex balance. Opt for the truthful move, not the popular one. Renegotiate terms."},
+    "Scorpio":     {"theme": "Deep Data",            "energy": "Hidden Leverage",     "daily": "Senses sub-surface agendas. You are likely correct. Go deeper; the real ROI isn't visible yet."},
+    "Sagittarius": {"theme": "Global Scale",         "energy": "Expansion Logic",     "daily": "Big-picture window. Say yes to the 'too big' opportunity. Growth is found in the furthest reach."},
+    "Capricorn":   {"theme": "Execution Endurance",  "energy": "Structural Torque",   "daily": "Compounding-day. Results are lagging but the work is landing. Showing up is 90% of the win today."},
+    "Aquarius":    {"theme": "Systems Innovation",   "energy": "Original Logic",      "daily": "Share the disruptive idea. Convention is the bottleneck. You don't need a consensus to proceed."},
+    "Pisces":      {"theme": "Non-linear Signal",    "energy": "Fluid Flow",          "daily": "Logic is the secondary tool today. Allow imagination to run. Breakthroughs arrive in the quiet gaps."}
 }
 
 SIGN_NATAL = {
-    "Aries":       "You're a natural-born leader who likes to move first. You have a fire in you that wants to break new ground and get things moving.",
-    "Taurus":      "You have the rare gift of patience. You know how to build things that actually last, and you're incredibly loyal to the people you care about.",
-    "Gemini":      "Your mind is a bridge between different worlds. You can connect people and ideas that others wouldn't even think to put together.",
-    "Cancer":      "You're the protector. You can feel the 'vibe' of any room instantly, and your deep instinct is to make everyone feel safe and cared for.",
-    "Leo":         "You lead with your heart. Your warmth and generosity aren't just personality traits — they're the way you make the world a better place.",
-    "Virgo":       "You're the one who makes things perfect. You see the gaps that others miss and you close them with care and quiet precision.",
-    "Libra":       "You have a natural sense of fairness. You're the one who can make a messy situation feel balanced and a broken team feel whole again.",
-    "Scorpio":     "You're unafraid of the deep stuff. You can handle the truth, no matter how hard it is, and you have the power to transform any situation.",
-    "Sagittarius": "You're a seeker of truth. You have a hunger for meaning and adventure that keeps you moving toward the big, important things in life.",
-    "Capricorn":   "You have incredible endurance. You're building something for the long term, and you have the patience to see it through to the end.",
-    "Aquarius":    "You see the future. You know that the world can be different, and your original thinking is what makes real change possible.",
-    "Pisces":      "You feel what others can't. Your sensitivity is your greatest strength — it lets you see things that logic alone will always miss."
+    "Aries":       "Natural first-mover. High initiative, high velocity. You initiate ground-breaks where others hesitate.",
+    "Taurus":      "Durable builder. Master of material compounding and loyalty-backed builds. You prioritize longevity.",
+    "Gemini":      "Bridge-builder. High-bandwidth mind. You connect disparate concepts and networks effortlessly.",
+    "Cancer":      "Protective-anchor. High atmospheric sensing. Your instinct is the ultimate security-radar for the team.",
+    "Leo":         "Heart-led authority. Warmth-driven leadership. You contribute through presence and creative courage.",
+    "Virgo":       "Precision-expert. Gap-closer. You detect and fix the systemic leaks that everyone else ignores.",
+    "Libra":       "Equilibrium-expert. Natural diplomat. You harmonize complex friction and restore team balance.",
+    "Scorpio":     "Truth-seeker. Unafraid of depth. You transform situations by facing the data that others avoid.",
+    "Sagittarius": "Meaning-seeker. Scale-driven mind. You hunt for truth and adventure in the big-picture quest.",
+    "Capricorn":   "Endurance-master. Long-range builder. You play the 10-year game with structural patience.",
+    "Aquarius":    "Future-seer. Systems-innovator. Your original logic makes radical progress possible.",
+    "Pisces":      "Non-linear sensor. High empathy. You perceive the subtle shifts that logic alone will miss."
 }
 
 PLANET_ARCHETYPES = {
-    "Sun":     {"label": "The Real You",               "focus": "Who you are"},
-    "Moon":    {"label": "Your Mindset",               "focus": "How you feel"},
-    "Mars":    {"label": "Your Drive",                 "focus": "How you act"},
-    "Mercury": {"label": "Mind & Logic",               "focus": "How you think"},
-    "Jupiter": {"label": "Your Growth",                "focus": "How you expand"},
-    "Venus":   {"label": "Love & Money",               "focus": "What you value"},
-    "Saturn":  {"label": "Your Discipline",            "focus": "Your legacy"},
-    "Rahu":    {"label": "Your Ambition",              "focus": "New goals"},
-    "Ketu":    {"label": "Your Mastery",               "focus": "Deep wisdom"}
+    "Sun":     {"label": "Core Identity",              "focus": "Authority"},
+    "Moon":    {"label": "Mindset",                    "focus": "Processing"},
+    "Mars":    {"label": "Drive",                      "focus": "Execution"},
+    "Mercury": {"label": "Logic",                      "focus": "Communication"},
+    "Jupiter": {"label": "Growth",                     "focus": "Expansion"},
+    "Venus":   {"label": "Value",                      "focus": "Relationships"},
+    "Saturn":  {"label": "Discipline",                 "focus": "Legacy"},
+    "Rahu":    {"label": "Ambition",                   "focus": "Innovation"},
+    "Ketu":    {"label": "Mastery",                    "focus": "Insight"}
 }
 
 DASHA_THEMES = {
-    "Sun":     {"life": "This chapter is all about you — who you are, what you want to be known for, and stepping into your own light.", "focus": "Purpose & Identity"},
-    "Moon":    {"life": "This is a quiet, internal time. Your home and how you feel inside matter more right now than what the world thinks of you.", "focus": "Feelings & Home"},
-    "Mars":    {"life": "This is a high-energy chapter. You'll feel the urge to act fast and build big. It's a great time to move before you're 'ready'.", "focus": "Action & Momentum"},
-    "Mercury": {"life": "Your brain is in high gear. This is a time for learning, talking, and connecting your ideas with the world.", "focus": "Learning & Connection"},
-    "Jupiter": {"life": "Doors are opening for you. This is a lucky chapter where things seem to fall into place. Say 'yes' to big opportunities.", "focus": "Growth & Luck"},
-    "Venus":   {"life": "This chapter is about love, comfort, and the good things in life. Your relationships and creative projects take center stage.", "focus": "Love & Creativity"},
-    "Saturn":  {"life": "This is the time for hard, patient work. What you build now will last forever. Just keep showing up every single day.", "focus": "Discipline & Hard Work"},
-    "Rahu":    {"life": "You'll feel a huge hunger for change and new goals. You might move to a new place or start a totally different career. Follow the hunger.", "focus": "Ambition & Change"},
-    "Ketu":    {"life": "This is a time to look inward and master what you already know. Let go of what you don't need anymore and focus on your inner peace.", "focus": "Inner Peace & Mastery"}
+    "Sun":     {"life": "Visibility chapter. High personal authority. Time to step into central leadership and define your brand.", "focus": "Authority & Identity"},
+    "Moon":    {"life": "Internal chapter. Foundation-building time. Prioritize emotional security and domestic stability over public growth.", "focus": "Internal Foundation"},
+    "Mars":    {"life": "High-torque chapter. Immediate execution bias. Great time for launches, competition, and rapid movement.", "focus": "Action & Momentum"},
+    "Mercury": {"life": "Intellectual chapter. Data-heavy and networked. Time for deep learning, deals, and high-bandwidth communication.", "focus": "Learning & Data"},
+    "Jupiter": {"life": "Expansion chapter. High opportunity-coefficient. Say 'yes' to scale and mentorship. Luck is a tailwind here.", "focus": "Growth & Scale"},
+    "Venus":   {"life": "Value-creation chapter. Focus on relationships, aesthetics, and revenue-flow. Creative projects have high ROI.", "focus": "Relationships & Value"},
+    "Saturn":  {"life": "Structural chapter. Hard, patient builds. Results are delayed but permanent. Master the mundane daily win.", "focus": "Structure & Legacy"},
+    "Rahu":    {"life": "Innovation chapter. High hunger for change. Pivot-ready energy. Follow the 'unfamiliar' path for massive upside.", "focus": "Innovation & Change"},
+    "Ketu":    {"life": "Mastery chapter. Inward scaling. Time to let go of expired commitments and focus on deep-niche expertise.", "focus": "Insight & Mastery"}
 }
 
 AD_STRATEGIES = {
-    "Sun":     "Step into a leadership role you've been thinking about. People can see you clearly right now — use that attention.",
-    "Moon":    "Trust that gut feeling you keep having. Your intuition is your best guide in this window.",
-    "Mars":    "Stop planning and start doing. Moving fast is more important than being perfect right now.",
-    "Mercury": "Write that email, send that text, or sign that deal. Communication is crystal clear for you right now.",
-    "Jupiter": "Say yes to that one big opportunity. This window opens doors that might not stay open forever.",
-    "Venus":   "Spend time with someone you care about — just to connect. Your relationships are your biggest asset today.",
-    "Saturn":  "Finish that one boring task you've been putting off. Doing the small things right will lead to a massive win later.",
-    "Rahu":    "Try something totally new, even if it feels a bit scary. The 'unfamiliar' path is where your luck is right now.",
-    "Ketu":    "Drop one commitment that's draining your energy. Focus only on what's truly essential to you."
+    "Sun":     "Assert leadership. Visibility is your primary leverage right now.",
+    "Moon":    "Trust intuitive signals. Your internal radar is the most reliable data today.",
+    "Mars":    "Move fast. Execution speed beats perfection in this window.",
+    "Mercury": "Execute the deal. Communication lines are clear and optimized.",
+    "Jupiter": "Scale up. This window allows for expansion that won't be available later.",
+    "Venus":   "Optimize the alliance. Your social capital is your highest ROI asset today.",
+    "Saturn":  "Master the boring. Excellence in small tasks leads to a systemic win.",
+    "Rahu":    "Test the unconventional. The high-risk, high-reward path has current support.",
+    "Ketu":    "Prune the stack. Drop one draining commitment to reclaim bandwidth."
 }
 
 DAILY_ACTIONS = {
-    "Aries":       ["Do that one bold thing you've been putting off", "Be the first one to start a conversation today", "Stop overthinking and just move"],
-    "Taurus":      ["Take care of one task slowly and perfectly", "Invest time in something that will still matter next year", "Enjoy a real moment of comfort — you've earned it"],
-    "Gemini":      ["Talk to someone who thinks differently than you", "Write down that one recurring idea", "Learn one new thing today"],
-    "Cancer":      ["Check in on a friend you've been thinking about", "Spend time in a place where you feel totally safe", "Trust your gut feeling today"],
-    "Leo":         ["Say exactly what you mean, don't soften it", "Be proud of how much you've been carrying lately", "Show someone what you're working on"],
-    "Virgo":       ["Focus on just one task and do it with full care", "Let go of a standard that's just exhausting you", "Notice what's working well in your life"],
-    "Libra":       ["Make that decision you've been balancing", "Fix a relationship that really matters to you", "Ask for exactly what you need today"],
-    "Scorpio":     ["Look into that one thing everyone else is ignoring", "Let go of an old grudge — it's costing you too much", "Do the deep work today"],
-    "Sagittarius": ["Say yes to a big, slightly scary opportunity", "Spend time with someone who inspires you to grow", "Don't try to solve everything today — just let it breathe"],
-    "Capricorn":   ["Spend 90 minutes on your most important work", "Keep a promise you made to yourself", "Notice the small progress you've made"],
-    "Aquarius":    ["Share your 'weird' idea with someone", "Connect with an original thinker", "Give yourself some space to just think"],
-    "Pisces":      ["Create something small just for fun", "Spend 20 minutes in total silence", "Trust the intuition you've been having lately"]
+    "Aries":       ["Execute one bold move today", "Initiate a high-stakes conversation", "Prioritize speed over consensus"],
+    "Taurus":      ["Audit one process for durability", "Invest time in long-range builds", "Optimize for physical comfort"],
+    "Gemini":      ["Dialogue with an outlier thinker", "Document a recurring high-value idea", "Capture one new data point"],
+    "Cancer":      ["Secure one key relationship", "Optimize your work-from-home environment", "Move based on gut-security"],
+    "Leo":         ["Speak with absolute directness", "Take credit for a recent team win", "Display your current WIP publicly"],
+    "Virgo":       ["Perform a micro-audit of one task", "Let go of an inefficient standard", "Focus on process optimization"],
+    "Libra":       ["Close a pending negotiation", "Balance a friction-heavy alliance", "State your needs without softening"],
+    "Scorpio":     ["Investigate a hidden bottleneck", "Release a legacy grudge for bandwidth", "Perform deep, focused data-work"],
+    "Sagittarius": ["Greenlight a high-scale opportunity", "Consult an expert who inspires growth", "Let a complex problem breathe"],
+    "Capricorn":   ["Focus on 90m of deep work", "Deliver on a personal commitment", "Track systemic progress"],
+    "Aquarius":    ["Pitch a disruptive concept", "Connect with a systems-thinker", "Carve out space for objective thought"],
+    "Pisces":      ["Build a small low-stakes prototype", "Schedule 20m of total silence", "Move based on recent intuitive signal"]
 }
 
 # ---------------------------------------------------------------------------
@@ -179,100 +320,148 @@ DAILY_ACTIONS = {
 
 _VARSHA_DATA = {
     "Aries": {
-        "theme": "The Pioneer Year — Bold Action & Fresh Starts",
-        "what_it_means": "Aries rises with Mars energy — this is a year of movement, initiative, and personal courage. The solar return activates your drive to start things. If you have been waiting, this is the year to stop waiting.",
-        "opportunity": "Launch new ventures, take on visible leadership roles, and make bold physical changes — relocating, restructuring, reinventing.",
-        "risk": "Impatience and aggression. Moving so fast that you miss important details or damage relationships. Slow down at least 20% before deciding.",
-        "focus_areas": ["Career visibility", "Physical health and energy", "Starting the project you've been postponing"],
-        "remedies": ["Offer water to the Sun every morning", "Wear red or coral on Tuesdays", "Avoid confrontations on Tuesdays — the energy amplifies them"]
+        "theme": "Direct Execution & Fresh Starts",
+        "what_it_means": "Aries solar-return rises with Mars energy. High-initiative year. Move from planning to launch-mode immediately.",
+        "opportunity": "Launch new ventures. Visible leadership. Physical restructuring or relocation.",
+        "risk_framework": {
+            "meaning": "High-velocity friction. Impatience-leakage.",
+            "effect": "Detail-audit failure. Relationship entropy due to excessive force.",
+            "resolution": "Implement a 20% deceleration-buffer. Perform redundant audits on all launch-details."
+        },
+        "focus_areas": ["Career visibility", "Physical energy", "First-mover projects"],
+        "remedies": ["Solar alignment", "Red-element focus on Tuesdays", "Audit confrontations for high-torque energy"]
     },
     "Taurus": {
-        "theme": "The Consolidation Year — Wealth & Roots",
-        "what_it_means": "Venus rules this solar return. The year's energy flows toward building, accumulating, and stabilising. What you plant this year takes root for years to come — make sure it's worth tending.",
-        "opportunity": "Long-term financial decisions, property, family investments, creative projects that compound over time.",
-        "risk": "Stubbornness and comfort-seeking. Avoiding necessary change because the status quo feels safe. Watch for stagnation.",
-        "focus_areas": ["Savings and investments", "Home environment", "Creative work with commercial value"],
-        "remedies": ["Keep fresh flowers at home — white or pink", "Chant 'Om Shukraya Namah' on Fridays", "Donate sweets or food on Fridays"]
+        "theme": "Value Consolidation & Assets",
+        "what_it_means": "Venus rules this return. Focus on building durable assets and material compounding.",
+        "opportunity": "Long-term financial scaling. Fixed-asset acquisition. Creative projects with high commercial value.",
+        "risk_framework": {
+            "meaning": "Stagnation-friction. Change-aversion.",
+            "effect": "Opportunity-loss through excessive security-seeking. Yield-leakage in stagnant routines.",
+            "resolution": "Initialize small controlled volatility tests. Pivot one legacy system to modern tech."
+        },
+        "focus_areas": ["Savings & Compounding", "Home infrastructure", "Revenue-flow"],
+        "remedies": ["Floral environment design", "Venus-alignment on Fridays", "Strategic resource donations"]
     },
     "Gemini": {
-        "theme": "The Communicator Year — Ideas & Networks",
-        "what_it_means": "Mercury rules this return. Your mind is sharper than usual and your network is the engine. Information, communication, and short-distance movement define the year's rhythm.",
-        "opportunity": "Writing, speaking, launching content, making deals, building connections across industries.",
-        "risk": "Scattered focus. Gemini energy can spread thin — trying to do too many things and finishing none of them.",
-        "focus_areas": ["Communication and writing", "Short-term projects and deals", "Building knowledge deliberately"],
-        "remedies": ["Carry a green aventurine stone", "Read something challenging every day", "Donate green items on Wednesdays"]
+        "theme": "Data Networking & Iteration",
+        "what_it_means": "Mercury rules this return. High mental bandwidth. Network is the primary engine.",
+        "opportunity": "Writing, content-launch, deal-making. Building industry-wide connectivity.",
+        "risk_framework": {
+            "meaning": "Scattered-focus entropy. High-bandwidth noise.",
+            "effect": "Zero closure on projects. Information-overload leading to decisional paralysis.",
+            "resolution": "Enforce strict prioritization-rigor. Daily knowledge-capture audit. Delay non-core networking."
+        },
+        "focus_areas": ["Communication output", "Short-range deals", "Knowledge capture"],
+        "remedies": ["Green-element grounding", "Daily rigorous reading", "Wednesday data-donations"]
     },
     "Cancer": {
-        "theme": "The Roots Year — Home, Family & Inner Nourishment",
-        "what_it_means": "The Moon governs this return. The year turns inward — to home, family, and emotional foundations. External achievements feel hollow unless the inner world is stable. Build the home base first.",
-        "opportunity": "Strengthening family bonds, resolving old emotional patterns, real estate decisions, and inner healing work.",
-        "risk": "Over-sensitivity and retreat. Withdrawing too far from the world can leave opportunities untouched.",
-        "focus_areas": ["Home and family", "Emotional health", "Property or living situation"],
-        "remedies": ["Place a pot of water in the northeast corner of your home", "Respect your mother — call her more often", "Eat lighter foods, especially in the evening"]
+        "theme": "Inner Infrastructure & Nourishment",
+        "what_it_means": "Moon rules this return. Year of inward scaling. Build the secure base first.",
+        "opportunity": "Strengthening high-trust bonds. Home-base optimization. Internal healing ROI.",
+        "risk_framework": {
+            "meaning": "Hyper-sensitivity retreat. Boundary-leakage.",
+            "effect": "Inward-looping logic. Reduced visibility in professional domains.",
+            "resolution": "Optimize home-office efficiency. Support maternal figures to stabilize foundation. Maintain external-signal logs."
+        },
+        "focus_areas": ["Emotional security", "Home foundation", "Internal foundation"],
+        "remedies": ["Water-element alignment", "Support maternal figures", "Dietary optimization"]
     },
     "Leo": {
-        "theme": "The Spotlight Year — Visibility & Authority",
-        "what_it_means": "The Sun in its own sign at the solar return is a powerful signal — this year, you are meant to be seen. The world is paying attention. Use it.",
-        "opportunity": "Public launches, leadership roles, brand-building, stepping into any role where you represent something bigger than yourself.",
-        "risk": "Ego. Leo energy can tip into arrogance or a need for recognition that alienates the very people whose support you need.",
-        "focus_areas": ["Career and public reputation", "Creative expression", "Any project requiring confidence and presence"],
-        "remedies": ["Wear gold on Sundays", "Donate wheat or jaggery on Sundays", "Spend time daily on something purely creative"]
+        "theme": "Visibility & Authority",
+        "what_it_means": "Sun-led return. Visibility-window. The world is auditing your brand; perform.",
+        "opportunity": "Public launches. Central leadership. High-confidence brand-building.",
+        "risk_framework": {
+            "meaning": "Ego-matrix leakage. Recognition-obsession.",
+            "effect": "Alienation of support-layers. Brand-friction through over-extension.",
+            "resolution": "Lead through service-first logic. Share credit with the support-team. Sunday solar-donations."
+        },
+        "focus_areas": ["Public reputation", "Creative output", "Executive presence"],
+        "remedies": ["Gold-element alignment", "Solar-donations on Sundays", "High-ROI creative work"]
     },
     "Virgo": {
-        "theme": "The Precision Year — Health, Craft & Systems",
-        "what_it_means": "Mercury governs this return with Virgo's analytical lens. The year rewards mastery, attention to detail, and systematic improvement. This is the year to fix what is broken in your daily routine.",
-        "opportunity": "Health improvements, skill upgrades, process optimisation, and any work requiring sustained precision.",
-        "risk": "Perfectionism and worry. Virgo energy can become paralysis — analysing until the window closes.",
-        "focus_areas": ["Physical health and daily habits", "Work systems and efficiency", "Learning a specific skill deeply"],
-        "remedies": ["Maintain a clean and organised workspace", "Donate green vegetables on Wednesdays", "Practice a brief daily meditation before starting work"]
+        "theme": "Process Audit & Systems",
+        "what_it_means": "Mercury rules this return. Analytical focus. Fix systemic leaks in daily operations.",
+        "opportunity": "Health optimization. Skill-upgrades. Process-leveraged efficiency.",
+        "risk_framework": {
+            "meaning": "Analysis-paralysis. Perfectionism-entropy.",
+            "effect": "Missed market-windows. High operational friction in closing projects.",
+            "resolution": "Ship the 'good enough' version to capture data. Enforce time-boxes for audit. Vegetable-element donations."
+        },
+        "focus_areas": ["Operations & Habits", "Work systems", "Deep-skill mastery"],
+        "remedies": ["Zero-clutter workspace design", "Vegetable-element donations", "Pre-work logic alignment"]
     },
     "Libra": {
-        "theme": "The Partnership Year — Relationships & Balance",
-        "what_it_means": "Venus rules this return through Libra. The year's biggest gains come through other people — business partners, life partners, collaborators. Do not try to do this year alone.",
-        "opportunity": "New partnerships, contracts, negotiations, and any situation that requires diplomacy and win-win thinking.",
-        "risk": "Indecision and people-pleasing. The drive for harmony can prevent you from making necessary hard choices.",
-        "focus_areas": ["Business and personal partnerships", "Legal agreements", "Social and professional reputation"],
-        "remedies": ["Wear white or pastel on Fridays", "Keep your relationships balanced — address small grievances before they compound", "Donate white items or sugar on Fridays"]
+        "theme": "Strategic Alliance & Balance",
+        "what_it_means": "Venus rules this return. Growth through others. No solo-projects this year.",
+        "opportunity": "New contracts. High-stakes negotiation. Strategic diplomatic leverage.",
+        "risk_framework": {
+            "meaning": "Decision-indecision. People-pleasing entropy.",
+            "effect": "Contractual boundary-leakage. Yield-loss through unoptimized compromise.",
+            "resolution": "Audit all legal contracts for absolute clarity. State requirements without softening. Friday revenue-donations."
+        },
+        "focus_areas": ["Business partnerships", "Legal contracts", "Social net-worth"],
+        "remedies": ["White-element focus on Fridays", "Small friction audits", "Friday revenue-donations"]
     },
     "Scorpio": {
-        "theme": "The Transformation Year — Depth & Rebirth",
-        "what_it_means": "Mars and Ketu govern this intense return. What no longer serves you will be stripped away — often suddenly. This is not a punishment; it is a clearing. What remains after this year is what is actually real.",
-        "opportunity": "Deep research, financial restructuring, clearing old patterns, inheritance matters, and any work involving investigation or hidden systems.",
-        "risk": "Obsession and power struggles. Scorpio energy can become controlling or paranoid — trust needs to be extended consciously.",
-        "focus_areas": ["Financial restructuring (debts, investments, joint assets)", "Letting go of what has expired", "Research and depth work"],
-        "remedies": ["Chant 'Om Namah Shivaya' — especially on Mondays", "Donate oil on Saturdays", "Avoid revenge-driven decisions — they cost more than they recover"]
+        "theme": "Rebirth & Deep Transformation",
+        "what_it_means": "Mars/Ketu led return. Stripping of expired commitments. Clearing for the new stack.",
+        "opportunity": "Deep research. Financial restructuring. Managing external assets.",
+        "risk_framework": {
+            "meaning": "Control-obsession friction. Power-struggle noise.",
+            "effect": "High interpersonal trust-friction. Crisis-management latency.",
+            "resolution": "Initialize total-surrender ROI. Release legacy debt for bandwidth. Saturday oil-donations."
+        },
+        "focus_areas": ["Joint assets & Debt", "Stack-pruning", "Investigation"],
+        "remedies": ["Intense focused meditation", "Saturday oil-donations", "Avoid revenge-driven ROI"]
     },
     "Sagittarius": {
-        "theme": "The Expansion Year — Vision & Higher Learning",
-        "what_it_means": "Jupiter rules this return. The year wants to stretch you — geographically, intellectually, and philosophically. The opportunities this year will come from directions you haven't looked before.",
-        "opportunity": "Travel, education, publishing, international connections, and any work that requires a long-range view.",
-        "risk": "Over-commitment and overconfidence. Jupiter expands everything — including mistakes. Do not over-promise.",
-        "focus_areas": ["Education and learning", "Long-distance travel or connections", "Philosophical and spiritual work"],
-        "remedies": ["Visit a place of worship or nature regularly", "Respect your teachers and mentors actively", "Donate yellow items or turmeric on Thursdays"]
+        "theme": "Global Scale & expansion",
+        "what_it_means": "Jupiter rules this return. Stretching the range. Opportunities from non-obvious vectors.",
+        "opportunity": "Global travel. Education. Publishing. High-range perspective projects.",
+        "risk_framework": {
+            "meaning": "Expansion-friction. Over-commitment noise.",
+            "effect": "Yield-leakage in unmanageable targets. Strategic dilution.",
+            "resolution": "Limit expansion-targets to top 3 vectors. Enforce strict resource-allocation audit. Yellow-element donations."
+        },
+        "focus_areas": ["Learning systems", "International reach", "Higher-order logic"],
+        "remedies": ["Visit knowledge-centers", "Active mentor-support", "Yellow-element donations"]
     },
     "Capricorn": {
-        "theme": "The Achievement Year — Career & Long-term Structure",
-        "what_it_means": "Saturn governs this return. The year rewards those who show up, do the work, and do not cut corners. The gains are real, lasting, and proportional to the effort put in — nothing more, nothing less.",
-        "opportunity": "Career advancement, building lasting systems and institutions, and taking on responsibilities that others avoid.",
-        "risk": "Rigidity and isolation. The Capricorn drive for achievement can crowd out relationships and joy. Schedule rest deliberately.",
-        "focus_areas": ["Career and professional standing", "Long-term structural goals", "Financial discipline"],
-        "remedies": ["Work on Saturday mornings — Saturn rewards consistent early effort", "Donate black sesame seeds (til) on Saturdays", "Avoid shortcuts — this year, they backfire more than usual"]
+        "theme": "Institutional Achievement & Legacy",
+        "what_it_means": "Saturn rules this return. High-stakes endurance. Gains are proportional to effort.",
+        "opportunity": "Career advancement. Building permanent institutions. High-responsibility roles.",
+        "risk_framework": {
+            "meaning": "Achievement-rigidity friction. Isolation-leakage.",
+            "effect": "Burnout-cycle onset. Crowding out of necessary recovery-data.",
+            "resolution": "Schedule mandatory recovery-blocks. Delegate non-institutional tasks. Black-element donations."
+        },
+        "focus_areas": ["Professional standing", "Structural builds", "Discipline"],
+        "remedies": ["Saturday morning execution-blocks", "Black-element donations", "Audit shortcuts"]
     },
     "Aquarius": {
-        "theme": "The Innovation Year — Original Thinking & Community",
-        "what_it_means": "Saturn and Rahu govern this return. The year rewards unconventional thinking and collective action. Your most powerful moves this year will be the ones that break with tradition.",
-        "opportunity": "Technology, social causes, innovation, and working with communities or networks toward a shared goal.",
-        "risk": "Detachment and rebellion for its own sake. Aquarius energy can push away support structures that are still needed.",
-        "focus_areas": ["Community and group work", "Technology and innovation", "Social impact"],
-        "remedies": ["Engage with a community cause — volunteer or contribute", "Wear blue on Saturdays", "Stay grounded — schedule regular in-person connection"]
+        "theme": "Innovation & Systemic Change",
+        "what_it_means": "Saturn/Rahu led return. Breaking tradition. Leverage disruptive logic for progress.",
+        "opportunity": "Tech innovation. Social-impact scaling. Collective networking.",
+        "risk_framework": {
+            "meaning": "Rebellion-friction. Support-infrastructure noise.",
+            "effect": "Alienation of necessary allies. Fragmented system-builds.",
+            "resolution": "Align disruptive logic with collective ROI. Maintain standard communication protocols. Blue-element focus."
+        },
+        "focus_areas": ["Collective systems", "Innovation", "Impact ROI"],
+        "remedies": ["Engage with community ROI", "Blue-element focus on Saturdays", "In-person data-alignment"]
     },
     "Pisces": {
-        "theme": "The Surrender Year — Intuition, Spirituality & Inner Depth",
-        "what_it_means": "Jupiter and Ketu govern this gentle but powerful return. The year calls you inward. The insights you gather in solitude and reflection will fuel the next major cycle of your outer life.",
-        "opportunity": "Creative work, spiritual practice, healing, and any field that benefits from deep intuitive access.",
-        "risk": "Escapism and lack of boundaries. Pisces energy can dissolve necessary structure — watch for excessive withdrawal or avoidance.",
-        "focus_areas": ["Spiritual and inner work", "Creative and artistic projects", "Healing and releasing old patterns"],
-        "remedies": ["Spend time near water regularly", "Practice gratitude journaling each evening", "Donate at a place of worship on Thursdays"]
+        "theme": "Intuitive Insight & Surrender",
+        "what_it_means": "Jupiter/Ketu led return. Inner scaling. Quiet gathering of next-cycle fuel.",
+        "opportunity": "Creative prototypes. Spiritual practice ROI. Healing-layer work.",
+        "risk_framework": {
+            "meaning": "Boundary-leakage entropy. Escapism noise.",
+            "effect": "Operational structure dissolution. Data-insulation from external reality.",
+            "resolution": "Enforce strict operational time-boxes. Schedule regular external-reality checks. Gratitude-audit nightly."
+        },
+        "focus_areas": ["Insight gathering", "Creative vision", "Releasing legacy debt"],
+        "remedies": ["Time near water", "Gratitude-audit each evening", "Thursday center-donations"]
     }
 }
 
@@ -292,33 +481,33 @@ def get_varshaphal_impact(varshaphal: Dict[str, Any]) -> Dict[str, Any]:
     return data
 
 _D9_MEANINGS = {
-    "Aries":       "You are a warrior at the soul level. Your inner fire keeps you moving toward your purpose, no matter the obstacles. Relationships need a partner who matches your independence.",
-    "Taurus":      "Your soul craves security, beauty, and permanence. You give deeply in relationships — and need the same in return. Your spiritual progress accelerates through stillness.",
-    "Gemini":      "Your soul is curious, adaptable, and never fully settled. Your dharma involves communication and intellectual exchange. Relationships thrive when there is constant mental stimulation.",
-    "Cancer":      "Your soul thrives on emotional connection and safety. Your relationships will feel like a sanctuary after your 30s. Intuition is your greatest spiritual instrument.",
-    "Leo":         "Your soul is built for creative expression and leadership. At the core, you need to be seen and to inspire. Relationships flourish when your partner recognises your light.",
-    "Virgo":       "Your soul seeks precision, service, and meaning in the details. You find spiritual fulfillment through solving real problems for real people. Partnerships need reliability above romance.",
-    "Libra":       "Your soul longs for harmony, fairness, and beauty in all forms. You are drawn to partnerships as a mirror for self-growth. Balance in relationships is your deepest spiritual lesson.",
-    "Scorpio":     "Your soul is built for transformation and depth. You will go through intense reinventions — each one making you stronger. Relationships must have complete honesty or they won't survive.",
-    "Sagittarius": "Your soul is oriented toward wisdom, travel, and expansion of beliefs. You need a partner who supports your freedom. Your dharma involves teaching or guiding others.",
-    "Capricorn":   "Your soul values structure, discipline, and legacy. Your spiritual growth comes through sustained effort over time. You build relationships slowly but they last a lifetime.",
-    "Aquarius":    "Your soul is wired for collective progress and unconventional thinking. You are here to contribute to something larger than yourself. Relationships work best with intellectual equals.",
-    "Pisces":      "Your soul is deeply empathic, intuitive, and spiritually porous. Your inner world is rich and complex. Relationships require clear boundaries or your energy will be absorbed by others.",
+    "Aries":       "Soul-level warrior. Inner fire drives purpose despite obstacles. Relationships require independent partners.",
+    "Taurus":      "Soul-level stability. Craves beauty and permanence. Spiritual progress through stillness and material grounding.",
+    "Gemini":      "Soul-level curiosity. Adaptable and iterative. Dharma involves high-bandwidth communication and exchange.",
+    "Cancer":      "Soul-level empathy. Safety-driven mindset. Intuition is the primary spiritual instrument.",
+    "Leo":         "Soul-level authority. Built for creative leadership. Core need for visibility and recognition.",
+    "Virgo":       "Soul-level precision. Fulfillment through service and detail-audit. Relationships require reliability above all.",
+    "Libra":       "Soul-level equilibrium. Drawn to partnership as a mirror. Balance is the primary spiritual lesson.",
+    "Scorpio":     "Soul-level transformation. Intense reinvention cycles. Relationships require absolute data-transparency.",
+    "Sagittarius": "Soul-level expansion. Oriented toward wisdom and scale. Dharma involves teaching or guidance.",
+    "Capricorn":   "Soul-level structure. Values discipline and legacy. Growth through sustained duration and effort.",
+    "Aquarius":    "Soul-level innovation. Wired for collective progress. Optimized for intellectual or systems-level logic.",
+    "Pisces":      "Soul-level sensing. Deeply intuitive and spiritually porous. Requires strict emotional boundaries.",
 }
 
 _D10_MEANINGS = {
-    "Aries":       "In your public life, you are a pioneer. You'll be known for starting new things and leading from the front — often in roles that demand courage and speed.",
-    "Taurus":      "Your career legacy is built on reliability and value creation. You are seen as someone who delivers, accumulates, and builds things that last. Finance and resource management suit you.",
-    "Gemini":      "You will make your mark through communication, ideas, and connection. Writing, media, sales, or education — any field where words and networks are the product.",
-    "Cancer":      "In your career, you are seen as a protector or a nurturer. You'll leave your mark through roles that involve care, management, or public service.",
-    "Leo":         "Your professional identity is tied to visibility and authority. You are remembered for presence, creative leadership, and the ability to command a room. Brand and performance roles suit you.",
-    "Virgo":       "You build professional reputation through precision, analysis, and flawless execution. Roles in operations, healthcare, research, or quality management are where you leave a lasting mark.",
-    "Libra":       "You are known as someone who brings fairness, diplomacy, and aesthetic judgment to everything you touch. Law, design, HR, or client-facing roles will define your legacy.",
-    "Scorpio":     "Your career involves deep investigation and transformation — research, finance, psychology, or crisis management. People trust you with what others can't handle.",
-    "Sagittarius": "Your professional identity is built around knowledge, expansion, and inspiring others. Teaching, consulting, publishing, or entrepreneurship in global markets will define your public legacy.",
-    "Capricorn":   "Your public life is set for sustained rise to authority. You are a builder of institutions and systems. The older you get, the more respected and senior your position becomes.",
-    "Aquarius":    "You are known for bringing innovation and social impact to your field. Your professional legacy involves disrupting the status quo or building something that benefits a community.",
-    "Pisces":      "Your career legacy is built on creativity, empathy, and vision. You are drawn to work that has a spiritual or humanitarian dimension — arts, healing, or social work.",
+    "Aries":       "Public-life pioneer. Known for first-mover launches and front-line leadership.",
+    "Taurus":      "Career legacy of reliability. Seen as a value-creator and asset-builder. Resource management focus.",
+    "Gemini":      "Market mark through ideas and connectivity. mark in media, sales, or networked education.",
+    "Cancer":      "Career mark as a protector. Mark through management, public service, or organizational care.",
+    "Leo":         "Professional identity tied to visibility. remembered for executive presence and creative command.",
+    "Virgo":       "Reputation built on precision. Legacy in operations, research, or quality-audit management.",
+    "Libra":       "Legacy of fairness and aesthetic judgment. Mark in law, design, or high-stakes negotiation.",
+    "Scorpio":     "Career involves deep investigation. Crisis management, research, or hidden-asset management focus.",
+    "Sagittarius": "Public legacy of knowledge and expansion. Global entrepreneurship, consulting, or publishing focus.",
+    "Capricorn":   "Sustained rise to authority. Builder of permanent institutions and systemic structures.",
+    "Aquarius":    "Known for disruptive innovation. Legacy of social-impact or technological breakthroughs.",
+    "Pisces":      "Career legacy of vision and creativity. Drawn to spiritual, humanitarian, or artistic dimensions.",
 }
 
 def get_divisional_impact(d9: Dict, d10: Dict) -> Dict:
@@ -343,37 +532,54 @@ def detect_stellium(planets: Dict[str, Any]) -> str:
     for sign, group in sign_planets.items():
         if len(group) >= 3:
             pl_str = ", ".join(group[:-1]) + " and " + group[-1]
-            return f"You have {pl_str} all in {sign}. This means a huge part of your life energy is focused on {sign}'s themes: it's like a 'power-spot' in your chart that gives you a massive edge."
+            return f"Stellium in {sign}: {pl_str}. High-density focus on {sign} themes. Significant operational edge in this domain."
     return ""
 
 
-def get_retrograde_note(transit_planets: Dict[str, Any]) -> str:
+def get_retrograde_note(transit_planets: Dict[str, Any]) -> Dict[str, str]:
     retro = [n for n in ["Mercury", "Mars", "Jupiter", "Venus", "Saturn"]
              if transit_planets.get(n, {}).get("is_retrograde")]
     if not retro:
-        return "Everything is moving forward today! No cosmic blocks — it's a great time to start something new."
+        return {
+            "meaning": "Direct-motion window. High forward momentum.",
+            "effect": "Low resistance for new launches and outward expression.",
+            "resolution": "Execute high-torque initiatives. Accelerate expansion-cycles."
+        }
+    
     if "Mercury" in retro:
-        return "Mercury is retrograde, which means communication might get a bit messy. Take a breath, double-check your texts, and avoid signing big deals today."
+        return {
+            "meaning": "Solar-Mercurial synchronization friction. High communication-latency.",
+            "effect": "Audit-delays and contract-friction. Increased noise in data-transmission.",
+            "resolution": "Delay high-stakes agreements. Perform redundant audits on all data-outputs."
+        }
+    
     names = " and ".join(retro)
     verb = "is" if len(retro) == 1 else "are"
-    return f"{names} {verb} retrograde. This is a time to look inward and fix things, rather than starting huge new projects. The ground is being prepared."
+    return {
+        "meaning": f"{names} {verb} in apparent retrograde. Internal-scaling window.",
+        "effect": "Systemic entropy if expansion is forced. Focus turns to process-audit.",
+        "resolution": "Arrest the entropy. Prioritize structural debt-clearing over new builds."
+    }
 
 
-def generate_directive(md_lord: str, ad_lord: str, transit_planets: Dict[str, Any]) -> str:
+def generate_directive(md_lord: str, ad_lord: str, transit_planets: Dict[str, Any],
+                       natal_moon_sign: str = None) -> str:
     ad_strategy = AD_STRATEGIES.get(ad_lord, "")
-    retro_note  = get_retrograde_note(transit_planets)
-    all_direct  = "forward momentum" in retro_note.lower()
-
+    retro_fw    = get_retrograde_note(transit_planets)
+    
     parts = []
     if md_lord and ad_lord and ad_strategy:
-        parts.append(f"In your current {md_lord}-{ad_lord} chapter, focus on this: {ad_strategy[0].lower() + ad_strategy[1:]}")
-    
-    if not all_direct:
-        parts.append(retro_note)
-    elif parts:
-        parts.append("The cosmic energy is moving forward today, so go for it.")
+        parts.append(f"In your {md_lord}-{ad_lord} cycle: {ad_strategy}")
 
-    return " ".join(parts) if parts else retro_note
+    if natal_moon_sign:
+        moon_trait = SIGN_THEMES.get(natal_moon_sign, {}).get("energy", "")
+        if moon_trait:
+            parts.append(f"Natal {natal_moon_sign} Moon ({moon_trait}): Primary processing style.")
+
+    # Convert retrograde dict to high-density string for the brief pointer
+    parts.append(f"{retro_fw['meaning']} {retro_fw['resolution']}")
+
+    return " ".join(parts)
 
 
 def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any],
@@ -391,15 +597,35 @@ def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any]
 
     stellium_note = detect_stellium(natal_planets)
 
+    def _planet_card(planet: str, sign: str, house: int) -> Dict[str, str]:
+        interp = PLANET_SIGN_INTERP.get(planet, {}).get(sign, SIGN_NATAL.get(sign, ""))
+        house_domain = HOUSE_SHORT.get(house, "")
+        titles = {
+            "Sun": "Identity", "Moon": "Mindset",
+            "Mars": "Drive", "Jupiter": "Growth", "Saturn": "Discipline"
+        }
+        title = f"{titles.get(planet, planet)} — {sign}"
+        suffix = f" Context: {house_domain}." if house_domain else ""
+        return {"title": title, "description": interp + suffix}
+
+    sun_house  = get_house(sun_sign, lagna_sign)
+    moon_house = get_house(natal_moon_sign, lagna_sign)
+
     superpowers = [
-        {"title": f"The Real You (Sun in {sun_sign})", "description": SIGN_NATAL[sun_sign]},
-        {"title": f"How You Appear ({lagna_sign} Rising)", "description": SIGN_NATAL[lagna_sign]}
+        _planet_card("Sun",  sun_sign,        sun_house),
+        _planet_card("Moon", natal_moon_sign, moon_house),
     ]
 
-    if stellium_note:
-        superpowers.append({"title": "Your Power-Spot", "description": stellium_note})
+    for pname in ("Mars", "Jupiter", "Saturn"):
+        if pname in natal_planets:
+            ps = natal_planets[pname]["sign"]
+            ph = get_house(ps, lagna_sign)
+            superpowers.append(_planet_card(pname, ps, ph))
 
-    directive = generate_directive(md_lord, ad_lord, transit_planets)
+    if stellium_note:
+        superpowers.append({"title": "Power-Spot", "description": stellium_note})
+
+    directive = generate_directive(md_lord, ad_lord, transit_planets, natal_moon_sign)
 
     return {
         "daily_theme": moon_theme["theme"],
@@ -424,13 +650,13 @@ def generate_business_pulse(dashas: List[Dict], current_date: datetime) -> Dict[
     md_theme = DASHA_THEMES.get(md_lord, {"life": "", "focus": ""})
     ad_strategy = AD_STRATEGIES.get(ad_lord, "")
 
-    strategy = f"{md_theme['life']} Focus on this: {ad_strategy}"
+    strategy = f"{md_theme['life']} Current imperative: {ad_strategy}"
 
     return {
         "active_dasha": f"{md_lord}-{ad_lord}",
-        "display_dasha": f"{md_lord} Maha-Dasha · {ad_lord} Bhukti",
+        "display_dasha": f"{md_lord} Major Chapter · {ad_lord} Sub-Chapter",
         "focus": md_theme["focus"],
-        "target_kpi": f"{md_lord} · {ad_lord} sub-cycle",
+        "target_kpi": f"{md_lord} · {ad_lord} cycle",
         "strategy": strategy
     }
 
@@ -456,8 +682,8 @@ def get_cosmic_schedule_advice(events: List[Dict], transit_planets: Dict[str, An
             advice_list.append({
                 "event": summary,
                 "risk": "High",
-                "reason": "Mercury is retrograde, making agreements a bit tricky.",
-                "action": "Double-check every single detail. If you can wait a few days to sign, do it."
+                "reason": "Mercury Retrograde affects agreements.",
+                "action": "Audit all details. Postpone signing if possible."
             })
             continue
 
@@ -468,8 +694,8 @@ def get_cosmic_schedule_advice(events: List[Dict], transit_planets: Dict[str, An
             advice_list.append({
                 "event": summary,
                 "risk": "Low",
-                "reason": f"Your current {active_dasha_lord} chapter is great for this kind of work.",
-                "action": "Go for it. You have the cosmic wind at your back."
+                "reason": f"{active_dasha_lord} cycle synergy.",
+                "action": "Proceed. High cosmic support for this activity."
             })
             continue
 
@@ -477,8 +703,8 @@ def get_cosmic_schedule_advice(events: List[Dict], transit_planets: Dict[str, An
             advice_list.append({
                 "event": summary,
                 "risk": "Moderate",
-                "reason": "This is a big moment for you.",
-                "action": "Take a breath, stay calm, and be yourself. You've got this."
+                "reason": "High-stakes event during neutral window.",
+                "action": "Maintain focus. Standard operational rigor required."
             })
 
     return advice_list

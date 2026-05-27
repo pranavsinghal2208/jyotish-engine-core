@@ -6,7 +6,7 @@ load_dotenv()
 from fastapi import FastAPI, HTTPException, Query, Request, Depends, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime, timedelta
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
@@ -108,6 +108,31 @@ class BirthDetails(BaseModel):
     lon: float
     location_name: str = ""
     timezone_offset: float = 5.5
+
+    @field_validator("date")
+    @classmethod
+    def validate_date_range(cls, v: str) -> str:
+        try:
+            year = int(v.split("-")[0])
+        except (ValueError, IndexError):
+            raise ValueError("date must be YYYY-MM-DD")
+        if not (1900 <= year <= 2100):
+            raise ValueError("birth year must be between 1900 and 2100")
+        return v
+
+    @field_validator("lat")
+    @classmethod
+    def validate_lat(cls, v: float) -> float:
+        if not (-90 <= v <= 90):
+            raise ValueError("latitude must be between -90 and 90")
+        return v
+
+    @field_validator("lon")
+    @classmethod
+    def validate_lon(cls, v: float) -> float:
+        if not (-180 <= v <= 180):
+            raise ValueError("longitude must be between -180 and 180")
+        return v
 
 @app.get("/auth/logout")
 async def logout():
@@ -356,6 +381,47 @@ async def quick_decode(date: str, name: str = ""):
         }
     except Exception as e:
         print(f"Quick decode error: {e}")
+        return {"error": str(e)}
+
+@app.get("/api/sky/today")
+async def sky_today():
+    """Returns today's live sky state for the landing page — no user input required."""
+    try:
+        from datetime import datetime, timezone as tz
+        now = datetime.now(tz.utc)
+        jd = engine.get_julian_day(now)
+        planets = engine.get_planetary_positions(jd)
+
+        sun_lon  = planets.get("Sun",  {}).get("longitude", 0)
+        moon_lon = planets.get("Moon", {}).get("longitude", 0)
+
+        tithi_idx = int(((moon_lon - sun_lon + 360) % 360) / 12)
+        yoga_idx  = int(((sun_lon + moon_lon) % 360) / (360 / 27))
+        paksha    = "Shukla" if tithi_idx < 15 else "Krishna"
+
+        TITHI = ["Pratipada","Dvitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami",
+                 "Ashtami","Navami","Dashami","Ekadashi","Dvadashi","Trayodashi","Chaturdashi","Purnima",
+                 "Pratipada","Dvitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami",
+                 "Ashtami","Navami","Dashami","Ekadashi","Dvadashi","Trayodashi","Chaturdashi","Amavasya"]
+        YOGA  = ["Vishkambha","Preeti","Ayushman","Saubhagya","Shobhana","Atiganda","Sukarma",
+                 "Dhriti","Shoola","Ganda","Vriddhi","Dhruva","Vyaghata","Harshana","Vajra",
+                 "Siddhi","Vyatipata","Variyana","Parigha","Shiva","Siddha","Sadhya","Shubha",
+                 "Shukla","Brahma","Indra","Vaidhriti"]
+
+        retro = [n for n, d in planets.items() if d.get("is_retrograde") and n not in ("Rahu", "Ketu")]
+
+        return {
+            "moon_sign": planets["Moon"]["sign"],
+            "moon_deg":  round(planets["Moon"]["degree_in_sign"], 1),
+            "sun_sign":  planets["Sun"]["sign"],
+            "tithi":     TITHI[tithi_idx],
+            "paksha":    paksha,
+            "yoga":      YOGA[yoga_idx % 27],
+            "retrograde": retro,
+            "date":      now.strftime("%d %b %Y"),
+        }
+    except Exception as e:
+        print(f"Sky today error: {e}")
         return {"error": str(e)}
 
 @app.get("/api/user/profile")
@@ -882,22 +948,16 @@ async def translate_texts(req: TranslateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
 
-# Mount static files last — must come after all API route definitions
-# because app.mount("/") is a catch-all that intercepts anything not yet matched.
-app.mount("/", StaticFiles(directory="src/static", html=True), name="static")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5004)
-
 @app.get("/api/calendar/feed")
 async def calendar_feed(user: User = Depends(get_current_user)):
-    """Generates an ICS calendar feed for the user Daily Brief."""
+    """Generates an ICS calendar feed for the user Daily Brief with real Timing Intelligence."""
     if not user.birth_date:
-        return {"error": "No birth details. Generate chart first."}
+        return JSONResponse(status_code=400, content={"error": "No birth details. Generate chart first."})
     
     try:
         from datetime import datetime, timedelta
+        from .translator import SIGN_THEMES, DASHA_THEMES, AD_STRATEGIES, get_retrograde_note
+        
         cal = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
@@ -908,24 +968,69 @@ async def calendar_feed(user: User = Depends(get_current_user)):
             "METHOD:PUBLISH"
         ]
         
+        # Natal Baseline
+        local_dt = datetime.strptime(f"{user.birth_date} {user.birth_time}", "%Y-%m-%d %H:%M")
+        utc_dt = local_dt - timedelta(hours=user.tz_offset or 5.5)
+        jd_natal = engine.get_julian_day(utc_dt)
+        planets_natal = engine.get_planetary_positions(jd_natal)
+        moon_lon_natal = planets_natal["Moon"]["longitude"]
+        dashas = engine.get_vimshottari_dashas(moon_lon_natal, jd_natal)
+        dob_fmt = datetime.strptime(user.birth_date, "%Y-%m-%d").strftime("%d-%m-%Y")
+
         now = datetime.utcnow()
-        for i in range(14):  # 14 days of feed
-            day = now + timedelta(days=i)
-            # Basic event for morning brief
-            uid = f"brief-{user.id}-{day.strftime('%Y%m%d')}@psbc.com"
-            dt_str = day.strftime('%Y%m%d')
+        for i in range(14):  # 14 days of strategic briefing
+            day_target = now + timedelta(days=i)
+            day_str = day_target.strftime("%Y-%m-%d")
             
-            # Simple placeholder text - in reality we would call the engines here
-            summary = f"✨ Cosmic Brief - Day {i}"
-            desc = "Open Cosmic OS to see your full strategic intelligence for today."
+            # 1. Transits for this day
+            jd_transit = engine.get_julian_day(day_target)
+            planets_transit = engine.get_planetary_positions(jd_transit)
+            moon_sign = planets_transit["Moon"]["sign"]
+            theme = SIGN_THEMES.get(moon_sign, {})
+            
+            # 2. Dasha context
+            active_md = next((d for d in dashas if d["start"] <= day_str <= d["end"]), dashas[0])
+            active_ad = next((b for b in active_md["bhuktis"] if b["start"] <= day_str <= b["end"]), active_md["bhuktis"][0])
+            md_theme = DASHA_THEMES.get(active_md["lord"], {"life": ""})
+            ad_strat = AD_STRATEGIES.get(active_ad["lord"], "")
+            
+            # 3. Numerology
+            ist_day = day_target + timedelta(hours=5, minutes=30)
+            cycles = numerology_engine.get_personal_cycles(dob_fmt, ist_day)
+            pd = cycles["personal_day"]
+            
+            # 4. Retrograde context (Framework style)
+            retro_fw = get_retrograde_note(planets_transit)
+
+            # Build high-density summary
+            summary = f"✦ {theme.get('theme', 'Intelligence')}: {theme.get('energy', 'Direct')}"
+            
+            # Build 3-part framework description
+            description = [
+                f"STRATEGIC CONTEXT: {md_theme['life']}",
+                f"CURRENT IMPERATIVE: {ad_strat}",
+                f"DAILY VIBE (Moon in {moon_sign}): {theme.get('daily', '')}",
+                f"NUMEROLOGY: Personal Day {pd['number']} ({pd['theme']}). {pd['focus']}",
+                "",
+                "OPERATIONAL RIGOR:",
+                f"Meaning: {retro_fw['meaning']}",
+                f"Personal Impact: {retro_fw['effect']}",
+                f"Actionable Resolution: {retro_fw['resolution']}",
+                "",
+                "Generated by Cosmic OS. Empowering Strategic Clarity."
+            ]
+            
+            uid = f"cosmic-{user.id}-{day_target.strftime('%Y%m%d')}@psbc.com"
+            dt_stamp = now.strftime('%Y%m%dT%H%M%SZ')
+            dt_start = day_target.strftime('%Y%m%d')
             
             cal.extend([
                 "BEGIN:VEVENT",
                 f"UID:{uid}",
-                f"DTSTAMP:{now.strftime('%Y%m%dT%H%M%SZ')}",
-                f"DTSTART;VALUE=DATE:{dt_str}",
+                f"DTSTAMP:{dt_stamp}",
+                f"DTSTART;VALUE=DATE:{dt_start}",
                 f"SUMMARY:{summary}",
-                f"DESCRIPTION:{desc}",
+                "DESCRIPTION:" + "\\n".join(description),
                 "END:VEVENT"
             ])
             
@@ -933,7 +1038,9 @@ async def calendar_feed(user: User = Depends(get_current_user)):
         from fastapi.responses import Response
         return Response(content="\n".join(cal), media_type="text/calendar")
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+        print(traceback.format_exc())
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 @app.get("/api/v2/admin/ecosystem-pulse")
 async def admin_pulse(db: Session = Depends(get_db)):
@@ -941,3 +1048,10 @@ async def admin_pulse(db: Session = Depends(get_db)):
     metrics = get_ecosystem_metrics(db)
     economics = calculate_unit_economics(metrics)
     return {"metrics": metrics, "economics": economics}
+
+# Mount static files last — must come after all API route definitions
+app.mount("/", StaticFiles(directory="src/static", html=True), name="static")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=5004)

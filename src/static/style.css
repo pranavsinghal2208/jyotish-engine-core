@@ -3,15 +3,15 @@
     --bg:       #fbfbfd; /* Apple-inspired off-white */
     --surface:  #ffffff;
     --hero-bg:  #1d1d1f; /* Apple-inspired dark grey/black */
-    --accent:   #0066cc; /* Sophisticated blue accent */
+    --accent:   #635bff; /* PSBC accent */
     --cta:      #635bff; /* PSBC accent */
     --text:     #1d1d1f; /* Deep charcoal */
     --muted:    #86868b; /* Apple-style muted grey */
-    --border:   rgba(0, 0, 0, 0.08);
-    --shadow:   0 4px 24px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.08);
-    --radius:   20px;
-    --radius-sm: 12px;
+    --border:   rgba(0, 0, 0, 0.05);
+    --shadow:   0 8px 32px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 16px 48px rgba(0, 0, 0, 0.06);
+    --radius:   24px;
+    --radius-sm: 14px;
 }
 
 /* ── Reset ── */
@@ -20,9 +20,9 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.47059;
+    line-height: 1.5;
     font-weight: 400;
-    letter-spacing: -0.022em; /* Apple-style tracking */
+    letter-spacing: -0.015em; /* Refined SF Pro-style tracking */
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
 }
@@ -38,8 +38,8 @@ body {
 .landing-left {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 64px 56px;
+    justify-content: flex-start;
+    padding: 72px 56px 56px;
     border-right: 1px solid var(--border);
 }
 
@@ -3321,4 +3321,209 @@ h1, h2, .landing-h1 { letter-spacing: -0.022em; }
     .zodiac-sign:nth-child(10) { transform: rotate(270deg) translateY(-109px) rotate(-270deg); }
     .zodiac-sign:nth-child(11) { transform: rotate(300deg) translateY(-109px) rotate(-300deg); }
     .zodiac-sign:nth-child(12) { transform: rotate(330deg) translateY(-109px) rotate(-330deg); }
+}
+
+/* ══════════════════════════════════════════════════════
+   LIVE SKY PANEL — Landing page right side
+══════════════════════════════════════════════════════ */
+.live-sky-panel {
+    background: var(--hero-bg);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    color: #fff;
+}
+.live-sky-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.live-sky-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #C8A86A;
+}
+.live-sky-date {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+}
+.live-sky-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.sky-item-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.38);
+    margin-bottom: 5px;
+}
+.sky-item-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+.sky-item-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.42);
+    margin-top: 3px;
+    font-style: italic;
+}
+.sky-retro {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+.sky-retro-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.38);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.sky-retro-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.sky-retro-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(245,158,11,0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245,158,11,0.18);
+    font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════════
+   GRAND SYNTHESIS CARD — Top of Strategic view
+══════════════════════════════════════════════════════ */
+.grand-synthesis {
+    background: linear-gradient(145deg, #0f0f1a 0%, #1a1025 60%, #0f1a18 100%);
+    border-radius: var(--radius);
+    padding: 32px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(200,168,106,0.15);
+}
+.grand-synthesis::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(99,91,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.synthesis-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #C8A86A;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.synthesis-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: #C8A86A;
+    opacity: 0.6;
+}
+.synthesis-text {
+    font-size: 16px;
+    line-height: 1.72;
+    font-weight: 400;
+    color: rgba(255,255,255,0.88);
+    margin-bottom: 22px;
+    max-width: 680px;
+}
+.synthesis-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.synthesis-chip {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 13px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.10);
+    letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════════════════════
+   CHART OVERVIEW — Technical view
+══════════════════════════════════════════════════════ */
+.chart-overview-card {
+    border-left: 3px solid #C8A86A;
+    padding-left: 24px;
+}
+.overview-row {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+.overview-row:last-child { border-bottom: none; }
+.overview-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.overview-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+}
+.overview-note {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    font-style: italic;
+}
+
+/* ══════════════════════════════════════════════════════
+   NUMEROLOGY SYNTHESIS — top of Numbers tab
+══════════════════════════════════════════════════════ */
+.num-synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid #C8A86A;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+}
+.num-synthesis-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #C8A86A;
+    margin-bottom: 10px;
+}
+.num-synthesis-text {
+    font-size: 14px;
+    line-height: 1.72;
+    color: var(--text);
 }

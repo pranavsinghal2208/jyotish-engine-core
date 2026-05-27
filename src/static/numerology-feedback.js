@@ -190,6 +190,12 @@ async function loadMyNumerology() {
         document.getElementById('jyMissingNums').textContent =
             d.lo_shu_grid.missing.length ? d.lo_shu_grid.missing.join(', ') : 'None';
 
+        // Numerology synthesis card
+        if (typeof buildNumSynthesis === 'function') {
+            const _dcForSynth = d.driver_conductor_profile;
+            buildNumSynthesis(d.mulank, d.bhagyank, _dcForSynth?.mode, `${d.mulank}~${d.bhagyank}`);
+        }
+
         const dc = d.driver_conductor_profile;
         if (dc) {
             document.getElementById('jyDcLabel').textContent      = `${d.mulank}~${d.bhagyank}`;
@@ -216,10 +222,23 @@ async function loadMyNumerology() {
         (d.missing_remedies || []).forEach(r => {
             const card = document.createElement('div');
             card.className = 'jy-remedy-card';
+            
+            let frameworkHtml = '';
+            if (r.framework) {
+                frameworkHtml = `
+                    <div class="remedy-framework" style="margin-bottom:12px; border-top:1px solid var(--border); padding-top:12px; font-size:12px">
+                        <div style="margin-bottom:4px"><strong>Meaning:</strong> ${r.framework.meaning}</div>
+                        <div style="margin-bottom:4px"><strong>Personal Impact:</strong> ${r.framework.effect}</div>
+                        <div style="margin-bottom:4px"><strong>Actionable Resolution:</strong> ${r.framework.resolution}</div>
+                    </div>`;
+            }
+
             card.innerHTML = `
                 <div class="remedy-num">#${r.number}</div>
                 <div class="remedy-planet">${r.planet} · ${r.color}</div>
                 <div class="remedy-element">${r.element}</div>
+                ${frameworkHtml}
+                <div class="remedy-list-label" style="font-size:11px; font-weight:700; color:var(--muted); margin-top:8px">SYSTEMIC REMEDIES</div>
                 <ul class="remedy-list">${r.remedies.map(x => `<li>${x}</li>`).join('')}</ul>
             `;
             row.appendChild(card);
