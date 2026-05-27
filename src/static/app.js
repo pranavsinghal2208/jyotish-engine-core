@@ -1286,9 +1286,9 @@ function populateAdvancedAnalysis(data) {
     let strategyHtml = '';
     if (isStrong) {
         strategyHtml = `<p class="interp-body" style="font-weight:600; color:var(--text)">${houseData.if_strong}</p>`;
-    } else if (isWeak && typeof houseData.if_weak === 'object') {
+    } else if (typeof houseData.if_weak === 'object' && houseData.if_weak !== null) {
         strategyHtml = `
-            <div class="interp-structured" style="color:var(--text)">
+            <div class="interp-structured">
                 <div class="interp-struct-item" style="margin-bottom:8px"><strong>Meaning:</strong> ${houseData.if_weak.meaning}</div>
                 <div class="interp-struct-item" style="margin-bottom:8px"><strong>Personal Impact:</strong> ${houseData.if_weak.effect}</div>
                 <div class="interp-struct-item"><strong>Actionable Resolution:</strong> ${houseData.if_weak.resolution}</div>
