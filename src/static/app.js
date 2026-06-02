@@ -406,6 +406,190 @@ function populateStrategicView(data) {
 
     // Grand Synthesis card
     buildGrandSynthesis(data);
+
+    // Initialize Blended State of Mind Dial & Cosmic Weather Gauge
+    initStateOfMindDial(data);
+    updateCosmicWeatherGauge(data);
+    loadMonthlyMilestones();
+}
+
+/* ── Blended State of Mind Dial ── */
+let currentFocus = 'vitality';
+function initStateOfMindDial(data) {
+    const btns = document.querySelectorAll('.dial-btn');
+    if (!btns || btns.length === 0) return;
+    
+    btns.forEach(btn => {
+        // Clone to remove previous listeners securely
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', (e) => {
+            document.querySelectorAll('.dial-btn').forEach(b => b.classList.remove('active'));
+            newBtn.classList.add('active');
+            updateDashboardFocus(newBtn.dataset.focus, data);
+        });
+    });
+    // Initialize default focus
+    updateDashboardFocus('vitality', data);
+}
+
+function updateDashboardFocus(focus, data) {
+    currentFocus = focus;
+    const { insights, business_pulse } = data;
+    
+    const themeEl = document.getElementById('dailyTheme');
+    const signatureEl = document.getElementById('energySignature');
+    const narrativeEl = document.getElementById('upliftNarrative');
+    const directiveEl = document.getElementById('operationalPointer');
+    const actionsList = document.getElementById('dailyActionsList');
+    const actionsWrap = document.getElementById('dailyActionsWrap');
+
+    const savedName = localStorage.getItem('cosmicOsName') || 'Pranav Singhal';
+
+    // Evocative, jargon-free, deeply human Micro-Journal copy variables
+    let focusedTheme = insights.daily_theme;
+    let focusedSignature = insights.energy_signature;
+    let focusedNarrative = insights.uplift_narrative;
+    let focusedDirective = insights.operational_pointer;
+    let focusedActions = insights.daily_actions || [];
+
+    if (focus === 'vitality') {
+        focusedTheme = "🔋 Energy Battery & Vitality";
+        focusedNarrative = `Hi ${savedName}. Today, the cosmic weather places focus directly on your physical battery and personal boundaries. Saturn is moving through your zones of physical energy. If you feel a slow drag or minor physical fatigue, it is not a block; it is an invitation to slow down and practice solid energy hygiene. Your primary win today is self-care and recovery.`;
+        focusedDirective = "Prioritize vital posture and physical boundaries. Refuse commitments that drain your battery today.";
+        focusedActions = [
+            "Secure 15 minutes of early morning sunlight to align your physical battery.",
+            "Complete a thorough 10-minute desk declutter to clear mental space.",
+            "Set a hard screen-free boundary at 9:30 PM to guarantee deep, restorative rest."
+        ];
+    } else if (focus === 'career') {
+        focusedTheme = "💼 Career Timing & Momentum";
+        focusedNarrative = `Hi ${savedName}. Your current life era is heavily tuned toward professional authority and strategic output. Today, the transiting Moon aspects your work sectors, creating a stable decisional torque. Skip the doubt, stand tall, and tackle the most challenging items on your career plate with focused confidence.`;
+        focusedDirective = "Command your space with quiet, grounded competence. Pitch high-value skilled solutions today.";
+        focusedActions = [
+            "Tackle the most complex skills-stack chore on your list before noon.",
+            "Schedule a key professional catch-up to review co-founder or partner terms.",
+            "Brighten your work environment with natural lighting to invite high-torque focus."
+        ];
+    } else if (focus === 'relationships') {
+        focusedTheme = "🤝 Relationship Harmony & Alliances";
+        focusedNarrative = `Hi ${savedName}. Your key relationship zones—both personal connection and business co-founder alliances—are highly active today. Balance your expectations, wear a soothing fragrance to shift your personal vibration, and practice deep, open-hearted listening. Harmony is your leverage.`;
+        focusedDirective = "Build lasting alliances through strict fairness, clear boundaries, and high-trust agreements.";
+        focusedActions = [
+            "Conduct an open-hearted, deep-listening session with a key partner or co-founder.",
+            "Wear a soothing natural floral fragrance to shift your personal vibration.",
+            "Send a message of genuine appreciation to one key strategic friend or sibling."
+        ];
+    } else if (focus === 'peace') {
+        focusedTheme = "🏡 Emotional Peace & Anchors";
+        focusedNarrative = `Hi ${savedName}. The transiting Moon aspects your zone of emotional peace and maternal bonds. The outside world might feel high-velocity, but your sanctuary is within. Create quiet tech-free windows in your schedule to restore stability.`;
+        focusedDirective = "Slow down and establish deep emotional calm. Let go of what you cannot control today.";
+        focusedActions = [
+            "Place a glass bowl of fresh water in the quietest north corner of your bedroom to absorb stress.",
+            "Spend 5 minutes in silent box-breathing to ground your physical battery before lunch.",
+            "Express active respect or support to a maternal figure or mentor in your life."
+        ];
+    }
+
+    if (themeEl) themeEl.textContent = focusedTheme;
+    if (signatureEl) signatureEl.textContent = focusedSignature;
+    if (narrativeEl) narrativeEl.textContent = focusedNarrative;
+    if (directiveEl) directiveEl.textContent = focusedDirective;
+
+    // Render actions
+    if (actionsList) {
+        actionsList.innerHTML = '';
+        focusedActions.forEach(a => {
+            const li = document.createElement('li');
+            li.textContent = a;
+            actionsList.appendChild(li);
+        });
+        if (actionsWrap) actionsWrap.classList.remove('hidden');
+    }
+}
+
+/* ── Cosmic Weather Gauge ── */
+function updateCosmicWeatherGauge(data) {
+    const fill = document.getElementById('weatherFill');
+    const score = document.getElementById('weatherCoefficient');
+    const status = document.getElementById('weatherStatus');
+    const desc = document.getElementById('weatherDescription');
+    
+    if (!fill || !score || !status || !desc) return;
+    
+    // Calculate score (1-10) using ashtakavarga total or business pulse
+    let rawScore = 8;
+    if (data.business_pulse && typeof data.business_pulse.ashtakavarga_score === 'number') {
+        rawScore = Math.round((data.business_pulse.ashtakavarga_score / 40) * 10);
+    } else if (data.ashtakavarga && typeof data.ashtakavarga.total === 'number') {
+        rawScore = Math.round((data.ashtakavarga.total / 40) * 10);
+    }
+    
+    if (rawScore < 1) rawScore = 1;
+    if (rawScore > 10) rawScore = 10;
+    
+    score.textContent = `${rawScore}/10`;
+    fill.style.width = `${rawScore * 10}%`;
+    
+    let weatherStatus = "Clear Skies & Momentum";
+    let weatherDesc = "Excellent physical stamina and mental focus. Perfect for bold launches, key pitches, and relationship connection.";
+    
+    if (rawScore >= 8) {
+        weatherStatus = "Clear Skies & Decisional Torque (High)";
+        weatherDesc = "Excellent physical stamina and mental focus. Perfect for bold career launches, pitches, and deep personal relationship connection. Pushing today yields maximum momentum.";
+    } else if (rawScore >= 5) {
+        weatherStatus = "Grounded & Stable Skies (Moderate)";
+        weatherDesc = "Mild ambient support. Excellent for steady compounding effort, standard meetings, and comfortable personal routines. Stick to the proven plan.";
+    } else {
+        weatherStatus = "Heavy Headwinds & Friction (Caution)";
+        weatherDesc = "Stamina is lower today. Postpone sensitive contract negotiations and avoid initiating delicate family debates. Perfect for clearing admin work, organizing your desk, and resting.";
+    }
+    
+    status.textContent = weatherStatus;
+    desc.textContent = weatherDesc;
+}
+
+/* ── Monthly Milestones & Challenges ── */
+async function loadMonthlyMilestones() {
+    try {
+        const res = await fetch('/api/milestones/monthly');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const lunarTitle = document.getElementById('lunarTitle');
+        const lunarDesc = document.getElementById('lunarDesc');
+        const peakTitle = document.getElementById('peakTitle');
+        const peakDesc = document.getElementById('peakDesc');
+        const challengeTitle = document.getElementById('challengeTitle');
+        const challengeDesc = document.getElementById('challengeDesc');
+        
+        const today = new Date();
+        const curDay = today.getDate();
+        
+        let activeLunar = data.lunar_events[0]; // New Moon
+        if (curDay > 15) activeLunar = data.lunar_events[1]; // Full Moon
+        
+        const activePeak = data.peak_days[0] || {title: "Your Career Peak Day", date: "2026-05-12", description: "Moon in 10H."};
+        const challenge = data.challenges[0];
+        
+        if (lunarTitle && lunarDesc) {
+            lunarTitle.textContent = `${activeLunar.title} (${activeLunar.date.split('-')[2]}th)`;
+            lunarDesc.textContent = activeLunar.description;
+        }
+        
+        if (peakTitle && peakDesc) {
+            peakTitle.textContent = `${activePeak.title} (${activePeak.date.split('-')[2]}th)`;
+            peakDesc.textContent = activePeak.description;
+        }
+        
+        if (challengeTitle && challengeDesc) {
+            challengeTitle.textContent = `${challenge.title} (${challenge.duration})`;
+            challengeDesc.textContent = challenge.steps.join(' · ');
+        }
+    } catch (e) {
+        console.error("Failed to load milestones:", e);
+    }
 }
 
 async function loadMorningBrief() {
@@ -2173,4 +2357,194 @@ function _restoreEnglish(btn) {
     btn.classList.remove('hindi');
     btn.textContent = 'EN | हिं';
     _currentLang = 'en';
+}
+
+/* ── Conversational Sanctuary Chat Widget ── */
+let _chatOpen = false;
+let _speechRecognition = null;
+let _isRecording = false;
+
+function toggleCosmicChat() {
+    const chatWin = document.getElementById('cosmicChatWindow');
+    if (!chatWin) return;
+    _chatOpen = !_chatOpen;
+    if (_chatOpen) {
+        chatWin.classList.remove('hidden');
+        _scrollChatToBottom();
+        // Hide trigger badge if needed
+        const badge = document.querySelector('.chat-trigger-pulse');
+        if (badge) badge.style.display = 'none';
+    } else {
+        chatWin.classList.add('hidden');
+        if (_isRecording) {
+            _stopSpeechRecognition();
+        }
+    }
+}
+
+function handleChatKey(e) {
+    if (e.key === 'Enter') {
+        sendChatMessage();
+    }
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('cosmicChatInput');
+    const msgContainer = document.getElementById('cosmicChatMessages');
+    if (!input || !msgContainer) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    
+    // Add user message
+    _appendChatMessage('user', text);
+    _scrollChatToBottom();
+
+    // Add typing indicator
+    const typingId = _appendChatTypingIndicator();
+    _scrollChatToBottom();
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        });
+        
+        _removeChatTypingIndicator(typingId);
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        
+        // Add coach response
+        _appendChatMessage('coach', data.response);
+
+        // Update token consumption widget under the chat!
+        _updateTokenMetrics(data.usage);
+        _scrollChatToBottom();
+
+    } catch (err) {
+        console.error('[Chat] Failed to get response:', err);
+        _removeChatTypingIndicator(typingId);
+        _appendChatMessage('error', `Sanctuary Offline. Connection issue or API quota exceeded. (${err.message})`);
+        _scrollChatToBottom();
+    }
+}
+
+function _appendChatMessage(sender, text) {
+    const msgContainer = document.getElementById('cosmicChatMessages');
+    if (!msgContainer) return;
+    const msg = document.createElement('div');
+    msg.classList.add('chat-message', sender);
+    msg.textContent = text;
+    msgContainer.appendChild(msg);
+}
+
+function _appendChatTypingIndicator() {
+    const msgContainer = document.getElementById('cosmicChatMessages');
+    if (!msgContainer) return null;
+    const id = 'typing_' + Date.now();
+    const msg = document.createElement('div');
+    msg.classList.add('chat-message', 'typing');
+    msg.id = id;
+    msg.innerHTML = 'Coach is contemplating<span></span><span></span><span></span>';
+    msgContainer.appendChild(msg);
+    return id;
+}
+
+function _removeChatTypingIndicator(id) {
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+function _updateTokenMetrics(usage) {
+    const promptEl = document.getElementById('tokenPrompt');
+    const compEl = document.getElementById('tokenCompletion');
+    const totalEl = document.getElementById('tokenTotal');
+    if (usage && promptEl && compEl && totalEl) {
+        promptEl.textContent = usage.prompt_tokens || 0;
+        compEl.textContent = usage.completion_tokens || 0;
+        totalEl.textContent = usage.total_tokens || 0;
+    }
+}
+
+function _scrollChatToBottom() {
+    const msgContainer = document.getElementById('cosmicChatMessages');
+    if (msgContainer) {
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+}
+
+/* ── HTML5 Speech Recognition (Voice Command) ── */
+function toggleVoiceInput() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+        alert("Speech recognition is not supported in this browser. Please use Chrome, Safari, or Edge.");
+        return;
+    }
+
+    if (_isRecording) {
+        _stopSpeechRecognition();
+    } else {
+        _startSpeechRecognition(SpeechRec);
+    }
+}
+
+function _startSpeechRecognition(SpeechRec) {
+    const micBtn = document.getElementById('cosmicVoiceBtn');
+    const voiceInd = document.getElementById('chatVoiceIndicator');
+    
+    _speechRecognition = new SpeechRec();
+    _speechRecognition.continuous = false;
+    _speechRecognition.interimResults = false;
+    _speechRecognition.lang = _currentLang === 'hi' ? 'hi-IN' : 'en-US';
+
+    _speechRecognition.onstart = () => {
+        _isRecording = true;
+        if (micBtn) micBtn.classList.add('recording');
+        if (voiceInd) voiceInd.classList.remove('hidden');
+    };
+
+    _speechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const input = document.getElementById('cosmicChatInput');
+        if (input && transcript) {
+            input.value = transcript;
+            // Automatically submit speech query
+            sendChatMessage();
+        }
+    };
+
+    _speechRecognition.onerror = (event) => {
+        console.error('[SpeechRecognition] error:', event.error);
+        _stopSpeechRecognition();
+    };
+
+    _speechRecognition.onend = () => {
+        _stopSpeechRecognition();
+    };
+
+    _speechRecognition.start();
+}
+
+function _stopSpeechRecognition() {
+    _isRecording = false;
+    const micBtn = document.getElementById('cosmicVoiceBtn');
+    const voiceInd = document.getElementById('chatVoiceIndicator');
+    if (micBtn) micBtn.classList.remove('recording');
+    if (voiceInd) voiceInd.classList.add('hidden');
+    
+    if (_speechRecognition) {
+        try {
+            _speechRecognition.stop();
+        } catch (e) {}
+        _speechRecognition = null;
+    }
 }

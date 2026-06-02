@@ -110,8 +110,8 @@ Each entry follows this structure:
 - **Status:** Active
 
 ### S-003 · Secrets in .env, Never Hardcoded
-- **Decision:** All API keys, secrets, and OAuth credentials are in `.env` (gitignored). `.env.example` is committed with placeholder values.
-- **Why:** Previous sessions had secrets hardcoded in source. Moved to `.env` to prevent accidental exposure via git. `.env.example` documents what's needed without leaking values.
+- **Decision:** All API keys, secrets, and OAuth credentials are in `.env` (gitignored). `env.template` is committed with placeholder values.
+- **Why:** Previous sessions had secrets hardcoded in source. Moved to `.env` to prevent accidental exposure via git. `env.template` documents what's needed without leaking values.
 - **Date:** 2026-05-10
 - **Status:** Active
 

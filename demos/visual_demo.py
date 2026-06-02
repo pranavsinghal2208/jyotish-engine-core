@@ -7,7 +7,7 @@ Produces a structured verdict at the end.
 import asyncio
 from playwright.async_api import async_playwright
 
-URL   = "http://127.0.0.1:8000"
+URL   = "http://127.0.0.1:5004"
 NAME  = "Pranav Singhal"
 DOB   = "1987-08-22"
 TIME  = "21:55"
@@ -57,7 +57,7 @@ async def check_visible(page, selector):
 # ─────────────────────────────────────────────────────────────
 async def audit():
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False, slow_mo=1500)
+        browser = await p.chromium.launch(headless=True, slow_mo=100)
         context = await browser.new_context(viewport={"width": 1280, "height": 800}, record_video_dir="/tmp/cosmic_os_audit_videos/")
         await context.grant_permissions(["clipboard-read", "clipboard-write"])
         page = await context.new_page()
@@ -145,7 +145,7 @@ async def audit():
             await page.click(".city-item")
             await asyncio.sleep(0.5)
 
-        await page.fill("#time", TIME)
+        await page.evaluate(f"document.getElementById('time').value = '{TIME}';")
         time_hint = await safe_text(page, ".field-hint")
         observe("ACT 2", "ok" if time_hint else "warn", f"Time hint: '{time_hint}' — helpful for users who don't know exact birth time")
 

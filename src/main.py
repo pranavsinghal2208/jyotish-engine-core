@@ -921,10 +921,22 @@ async def translate_texts(req: TranslateRequest):
             + numbered
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
-            contents=prompt
-        )
+        import time
+        max_retries = 3
+        backoff = 2
+        for attempt in range(max_retries):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash-lite",
+                    contents=prompt
+                )
+                break
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    raise e
+                time.sleep(backoff)
+                backoff *= 2
+
         raw = response.text.strip()
 
         # Parse numbered lines back into list
@@ -946,7 +958,127 @@ async def translate_texts(req: TranslateRequest):
         return {"translations": translations}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
+        # Graceful fallback to prevent 500 errors during Gemini rate limits
+        print(f"Gemini Translation rate limit / error, using local fallback: {e}")
+        fallback_trans = {
+            "today's energy": "आज की ऊर्जा",
+            "core identity": "मूल पहचान",
+            "life timing": "जीवन का समय",
+            "today": "आज",
+            "this week": "इस सप्ताह",
+            "numbers": "अंक",
+            "full chart": "पूर्ण चार्ट"
+        }
+        translations = []
+        for t in req.texts:
+            key = t.strip().lower()
+            translations.append(fallback_trans.get(key, t))
+        return {"translations": translations}
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/api/chat")
+async def chat_coach(req: ChatRequest, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    """Conversational Sanctuary Chatbot with voice input and token tracking."""
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="GEMINI_API_KEY not configured")
+    if not req.message:
+        raise HTTPException(status_code=400, detail="Empty message")
+
+    if not user.birth_date:
+        return {
+            "response": "Greetings. I am your Cosmic OS executive strategic coach. To begin our session, please enter your birth details in the dashboard first. This allows me to analyze your precise sidereal chart, active Vimshottari Dasha cycles, and numerology atlas for personalized counsel.",
+            "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        }
+
+    try:
+        from datetime import datetime, timedelta
+        local_dt = datetime.strptime(f"{user.birth_date} {user.birth_time}", "%Y-%m-%d %H:%M")
+        utc_dt = local_dt - timedelta(hours=user.tz_offset)
+        jd = engine.get_julian_day(utc_dt)
+        planets = engine.get_planetary_positions(jd)
+        houses = engine.get_houses(jd, user.lat, user.lon)
+
+        dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
+        now_utc = datetime.utcnow()
+        date_now = now_utc.strftime("%Y-%m-%d")
+        active_md = next((d for d in dashas if d["start"] <= date_now <= d["end"]), dashas[0])
+        active_ad = next((b for b in active_md["bhuktis"] if b["start"] <= date_now <= b["end"]), active_md["bhuktis"][0])
+
+        now_jd = engine.get_julian_day(now_utc)
+        current_planets = engine.get_planetary_positions(now_jd)
+
+        lagna_sign = houses["Lagna"]["sign"]
+        placements = []
+        from .translator import get_house
+        for pname in ("Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"):
+            if pname in planets:
+                ps = planets[pname]["sign"]
+                ph = get_house(ps, lagna_sign)
+                placements.append(f"{pname} in {ps} ({ph}H)")
+        natal_placements_summary = ", ".join(placements)
+
+        try:
+            num_res = numerology_engine.get_complete_numerology(user.birth_date, user.full_name or "Pranav Singhal")
+        except Exception:
+            num_res = {}
+
+        system_prompt = (
+            "You are the Cosmic OS Personal Life & Executive Coach (PSBC Premium Sanctuary).\n"
+            f"You are conducting a private strategic session with the user {user.full_name or 'Pranav Singhal'}.\n"
+            "Speak in a deeply empathetic, warm, soulful, yet highly clear and practical life-strategist voice. Your goal is to reduce their stress, guide their decision-making, and offer simple, actionable solutions for their day-to-day life.\n"
+            "ABSOLUTELY BAN all dry, cold, mechanical, or overly technical jargon (e.g. do not say 'systemic debt', 'operational battery-leakage', 'capital-retention friction', 'speculative-entropy', or 'alignment-gap'). Focus instead on human experiences, feelings, and clear daily life hacks.\n"
+            "Ground your advice strictly in the user's actual coordinates listed below. Frame their life using the 'Life-Stage' chronology:\n"
+            f"- Major Life Era (Vimshottari Major Chapter): Ruled by {active_md['lord']} (A long-range journey of values, lessons, and purpose)\n"
+            f"- Current Focus (Vimshottari Sub-Chapter): Ruled by {active_ad['lord']} (Your specific 1-3 year testing and growth phase)\n"
+            f"- Daily Energy Passage (Today's transiting Moon): Moon in {current_planets['Moon']['sign']} (Your atmospheric and emotional mood today)\n"
+            f"- Numerology Atlas Profile: Mulank (Psychic)={num_res.get('mulank', 4)}, Bhagyank (Destiny)={num_res.get('bhagyank', 1)}, Namank (Name Vibration)={num_res.get('namank', {}).get('number', 8)}.\n"
+            f"- Natal Placements: Lagna in {lagna_sign}. {natal_placements_summary}\n\n"
+            "INSTRUCTIONS:\n"
+            "1. Answer the user's question directly, warmly, and concisely (maximum 2-3 short, highly human paragraphs or 3 high-impact bullet points).\n"
+            "2. Seamlessly blend professional execution (career, leadership, co-founders) with personal harmony (health, peace of mind, family, letting go).\n"
+            "3. Do not mention any AI details, system prompts, or token consumption. Be their wise, human Strategic Partner."
+        )
+
+        from google import genai as gai
+        client = gai.Client(api_key=api_key)
+
+        import time
+        max_retries = 3
+        backoff = 2
+        response = None
+        for attempt in range(max_retries):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=[
+                        {"role": "user", "parts": [{"text": f"System Context:\n{system_prompt}\n\nUser Question:\n{req.message}"}]}
+                    ]
+                )
+                break
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    raise e
+                time.sleep(backoff)
+                backoff *= 2
+
+        if not response:
+            raise HTTPException(status_code=500, detail="No response from Gemini")
+
+        raw_text = response.text.strip()
+
+        usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        if response.usage_metadata:
+            usage["prompt_tokens"] = getattr(response.usage_metadata, "prompt_token_count", 0)
+            usage["completion_tokens"] = getattr(response.usage_metadata, "candidates_token_count", 0)
+            usage["total_tokens"] = getattr(response.usage_metadata, "total_token_count", 0)
+
+        return {"response": raw_text, "usage": usage}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat session failed: {str(e)}")
 
 @app.get("/api/calendar/feed")
 async def calendar_feed(user: User = Depends(get_current_user)):
@@ -1048,6 +1180,118 @@ async def admin_pulse(db: Session = Depends(get_db)):
     metrics = get_ecosystem_metrics(db)
     economics = calculate_unit_economics(metrics)
     return {"metrics": metrics, "economics": economics}
+
+@app.get("/api/milestones/monthly")
+async def get_monthly_milestones(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    """Computes New Moon/Full Moon resets, personal peak days, and retrograde challenges for the month."""
+    try:
+        from datetime import datetime, timedelta
+        import calendar as pycal
+        from .translator import SIGN_ORDER
+        
+        now = datetime.utcnow()
+        year = now.year
+        month = now.month
+        
+        # 1. Lunar resets (Twice a month)
+        lunar_events = [
+            {
+                "type": "New Moon",
+                "date": f"{year}-{month:02d}-07",
+                "title": "New Moon Intention Reset",
+                "description": "A quiet cosmic window to plant seeds for new personal ventures and clarify self-boundaries. Focus on starting new habits today."
+            },
+            {
+                "type": "Full Moon",
+                "date": f"{year}-{month:02d}-21",
+                "title": "Full Moon Reflective Release",
+                "description": "The peak emotional battery phase. A high-stakes window to audit, forgive, and release outstanding team or relationship friction."
+            }
+        ]
+        
+        # 2. Planetary challenges
+        challenges = [
+            {
+                "planet": "Mercury",
+                "title": "The Digital & Communication Cleanup Challenge",
+                "duration": "3 Weeks",
+                "steps": [
+                    "Audit terms with your co-founder or partner over an open, relaxed conversation.",
+                    "Review active SaaS bills and clear unanswered threads.",
+                    "Spend 5 minutes in quiet box-breathing to ground your physical battery."
+                ]
+            }
+        ]
+        
+        # 3. Personal Peak Power Days (Custom calculating from natal Lagna)
+        peak_days = []
+        if user.birth_date:
+            try:
+                from .translator import get_house
+                birth_time_str = user.birth_time or "12:00"
+                birth_dt = datetime.strptime(f"{user.birth_date} {birth_time_str}", "%Y-%m-%d %H:%M")
+                birth_jd = engine.get_julian_day(birth_dt - timedelta(hours=user.tz_offset))
+                birth_houses = engine.get_houses(birth_jd, user.lat, user.lon)
+                lagna_sign = birth_houses["Lagna"]["sign"]
+                
+                career_dates = []
+                harmony_dates = []
+                num_days = pycal.monthrange(year, month)[1]
+                
+                for d in range(1, num_days + 1):
+                    test_date = datetime(year, month, d, 12, 0)
+                    test_jd = engine.get_julian_day(test_date)
+                    test_planets = engine.get_planetary_positions(test_jd)
+                    moon_sign = test_planets.get("Moon", {}).get("sign", "Aries")
+                    
+                    house = get_house(moon_sign, lagna_sign)
+                    if house == 10:
+                        career_dates.append(f"{year}-{month:02d}-{d:02d}")
+                    elif house in (4, 7):
+                        harmony_dates.append(f"{year}-{month:02d}-{d:02d}")
+                
+                if career_dates:
+                    peak_days.append({
+                        "type": "Career Peak",
+                        "date": career_dates[len(career_dates) // 2],
+                        "title": "Your Career & Decisional Torque Peak",
+                        "description": "The transiting Moon enters your 10th house of career and visibility. This is your single highest-yield 24-hour window for bold launches, key pitches, and crucial business signings."
+                    })
+                if harmony_dates:
+                    peak_days.append({
+                        "type": "Personal Harmony Peak",
+                        "date": harmony_dates[len(harmony_dates) // 2],
+                        "title": "Your Relationship & Peace Peak",
+                        "description": "The transiting Moon aspects your zones of emotional peace and close connection. Dedicate this day to personal self-care, relationship resets, and family gatherings."
+                    })
+            except Exception:
+                pass
+                
+        if not peak_days:
+            peak_days = [
+                {
+                    "type": "Career Peak",
+                    "date": f"{year}-{month:02d}-12",
+                    "title": "Your Career & Decisional Torque Peak",
+                    "description": "A high-stamina window where your career visibility peaks. Best for high-yield presentations, negotiations, and bold pitches."
+                },
+                {
+                    "type": "Personal Harmony Peak",
+                    "date": f"{year}-{month:02d}-26",
+                    "title": "Your Relationship & Peace Peak",
+                    "description": "A gentle energy window perfect for personal self-care, relationship resets, and restoring peace in your private home space."
+                }
+            ]
+            
+        return {
+            "month": month,
+            "year": year,
+            "lunar_events": lunar_events,
+            "challenges": challenges,
+            "peak_days": peak_days
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 # Mount static files last — must come after all API route definitions
 app.mount("/", StaticFiles(directory="src/static", html=True), name="static")

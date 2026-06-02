@@ -1,6 +1,6 @@
 # Cosmic OS — Audit Report
-**Run:** 2026-05-25 23:31
-**Score:** ✅ 46 · ⚠️  1 · ❌ 0 (total 47)
+**Run:** 2026-05-27 22:21
+**Score:** ✅ 47 · ⚠️  0 · ❌ 0 (total 47)
 
 > Paste this summary into `docs/AUDIT_SPEC.md → LAST REPORT SUMMARY` section.
 > For every ❌ or ⚠️, add a tighter check to the relevant dimension in AUDIT_SPEC.md.
@@ -11,7 +11,7 @@
 - ✅ **API-03**: /api/brief/morning → all fields present | date_ok=True
 - ✅ **API-04**: /api/timing/advisor → 6 actions
 - ✅ **API-05**: /api/translate → 3 translations | devanagari=True
-- ✅ **API-06**: /api/numerology/jyotish → {'mulank': 4, 'bhagyank': 1, 'kua_number': 4, 'namank': {'number': 8, 'meaning': 'The Executive — Your name vibrates with power and material success. You are seen as ambitious, authoritative, and capable of big results.'}}
+- ✅ **API-06**: /api/numerology/jyotish → {'mulank': 4, 'bhagyank': 1, 'kua_number': 4, 'namank': {'number': 8, 'meaning': 'Executive Vibration — Power-led identity. Optimized for material scaling and authoritative asset command.'}}
 - ✅ **API-09**: /api/translate with empty texts → [] (correct)
 - ✅ **API-10**: Invalid date → 422 (correct rejection)
 
@@ -23,23 +23,23 @@
 - ✅ **SEC-06**: lat=999 → 422 (correct rejection)
 
 ## UJ
-- ✅ **UJ-01**: Headline: 'Walk away knowing three things:what today feels like, what t'
+- ✅ **UJ-01**: Headline: 'Know your chart.Know your timing.Know your next move.'
 - ✅ **UJ-02**: Sub-headline: 'Takes 30 seconds. Built on 5000 years of Vedic timing scienc'
 - ✅ **UJ-03**: Feature pills: 5
 - ✅ **UJ-05**: Chart generated — results screen visible
-- ✅ **UJ-06**: TL;DR card: 'Expect the unexpected. Travel, pivot, adapt. Freed'
+- ✅ **UJ-06**: TL;DR card: 'Process-audit window. Retreat and introspect. Focu'
 - ✅ **UJ-07**: Tab 'technical' navigates correctly
 - ✅ **UJ-07**: Tab 'numerology' navigates correctly
 - ✅ **UJ-07**: Tab 'strategic' navigates correctly
 - ✅ **UJ-11**: Hindi toggle button present in header
-- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 25 May 2026
+- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 27 May 2026
 
-Theme: Focus'
+Theme: Syste'
 
 ## CQ
-- ✅ **CQ-01**: Daily theme present: 'Focus & Care'
-- ✅ **CQ-02**: Directive references planet: 'In your current Venus-Saturn chapter, focus on this: finish '
-- ✅ **CQ-05**: Section titles: 8 found, none empty
+- ✅ **CQ-01**: Daily theme present: 'Strategic Alignment'
+- ✅ **CQ-02**: Directive references planet: 'In your Venus-Saturn cycle: Master the boring. Excellence in'
+- ✅ **CQ-05**: Section titles: 7 found, none empty
 - ✅ **CQ-06**: 28 tooltips, all meaningful
 - ✅ **CQ-04**: No '—' placeholders in TL;DR chips
 - ✅ **CQ-03**: Morning brief contains today's date
@@ -54,7 +54,7 @@ Theme: Focus'
 - ✅ **DT-07**: No horizontal overflow at 390px mobile
 
 ## FC
-- ✅ **FC-01**: Today tab section titles: 8
+- ✅ **FC-01**: Today tab section titles: 7
 - ✅ **FC-04**: Total ? tooltips across app: 28
 - ✅ **FC-06**: U-001: interpretation card precedes planetary grid
 - ✅ **FC-07**: Hindi toggle #langToggleBtn present
@@ -65,16 +65,8 @@ Theme: Focus'
 - ✅ **FC-14**: People Compat: discover CTA + section-title both present
 
 ## RES
-- ⚠️  **RES-01**: No-name test skipped: Page.wait_for_selector: Timeout 15000ms exceeded.
-Call log:
-  - waiting for locator("#resultsScreen:not(.hidden)") to be visible
-
+- ✅ **RES-01**: No name → #jyNameRequired shown
 - ✅ **RES-05**: Invalid DOB → generate button stays hidden
-
-## Items Requiring Attention
-- ⚠️  **RES-01**: No-name test skipped: Page.wait_for_selector: Timeout 15000ms exceeded.
-Call log:
-  - waiting for locator("#resultsScreen:not(.hidden)") to be visible
 
 
 ## Self-Update Instructions for Next AI Session

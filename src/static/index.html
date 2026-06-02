@@ -253,6 +253,30 @@
         <div id="strategicView" class="view-panel">
             <div class="panel-inner">
 
+                <!-- STATE OF MIND FILTER (Blended Enabler) -->
+                <div id="stateOfMindDial" class="state-of-mind-dial">
+                    <span class="dial-label">Select Your Focus:</span>
+                    <div class="dial-buttons">
+                        <button class="dial-btn active" data-focus="vitality">🔋 Vitality</button>
+                        <button class="dial-btn" data-focus="career">💼 Career</button>
+                        <button class="dial-btn" data-focus="relationships">🤝 Connection</button>
+                        <button class="dial-btn" data-focus="peace">🏡 Inner Peace</button>
+                    </div>
+                </div>
+
+                <!-- COSMIC WEATHER GAUGE -->
+                <div id="cosmicWeatherWidget" class="weather-widget">
+                    <div class="weather-header">
+                        <span class="weather-title">Today's Cosmic Weather</span>
+                        <span id="weatherCoefficient" class="weather-score">8/10</span>
+                    </div>
+                    <div class="weather-bar-container">
+                        <div id="weatherFill" class="weather-bar-fill" style="width: 80%;"></div>
+                    </div>
+                    <div id="weatherStatus" class="weather-status">Clear Skies & Momentum</div>
+                    <div id="weatherDescription" class="weather-desc">Clear mental focus and physical vitality. Excellent for bold launches, key pitches, and relationship connection.</div>
+                </div>
+
                 <!-- GRAND SYNTHESIS — full picture in one card -->
                 <div id="grandSynthesisCard" class="grand-synthesis hidden">
                     <div class="synthesis-eyebrow">Your Complete Picture</div>
@@ -288,6 +312,39 @@
                         <span class="panch-item"><span class="panch-label">Tithi <span class="qmark" data-tooltip="The lunar day in the Hindu calendar — one of 30 phases of the Moon's cycle. Each Tithi has a quality (auspicious, neutral, challenging) that affects the energy of activities done on that day.">?</span></span><span id="tithiName" class="panch-value"></span></span>
                         <span class="panch-dot">·</span>
                         <span class="panch-item"><span class="panch-label">Yoga <span class="qmark" data-tooltip="A daily combination formed by the Sun and Moon's combined longitude. 27 Yogas cycle through, each with a name and quality that influences the overall flavor of a day.">?</span></span><span id="yogaName" class="panch-value"></span></span>
+                    </div>
+                </div>
+
+                <!-- MONTHLY MILESTONES & CHALLENGES -->
+                <div id="monthlyMilestonesCard" class="milestones-card">
+                    <div class="card-label">Monthly Occasions & Challenges</div>
+                    <div class="milestones-container">
+                        <!-- Lunar Reset Milestone -->
+                        <div id="milestoneLunar" class="milestone-item">
+                            <div class="milestone-icon">🌑</div>
+                            <div class="milestone-content">
+                                <div id="lunarTitle" class="milestone-title">New Moon Intention Reset</div>
+                                <div id="lunarDesc" class="milestone-desc">Set clear personal intentions and daily boundary systems today.</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Peak Power Day Milestone -->
+                        <div id="milestonePeak" class="milestone-item">
+                            <div class="milestone-icon">👑</div>
+                            <div class="milestone-content">
+                                <div id="peakTitle" class="milestone-title">Your Career Peak Day</div>
+                                <div id="peakDesc" class="milestone-desc">Moon transits your 10th house. Perfect for pitches and major professional signings.</div>
+                            </div>
+                        </div>
+
+                        <!-- Planetary Challenge Milestone -->
+                        <div id="milestoneChallenge" class="milestone-item">
+                            <div class="milestone-icon">☄️</div>
+                            <div class="milestone-content">
+                                <div id="challengeTitle" class="milestone-title">The Communication Cleanup Challenge</div>
+                                <div id="challengeDesc" class="milestone-desc">Mercury is Retrograde. Audit outstanding email threads and co-founder terms.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -420,17 +477,17 @@
 
         <!-- Planetary Positions + Planet Reading — full-width row below Kundali & Life Chapters -->
         <div class="tech-planet-row">
+            <!-- Interpretation — updates on planet tap -->
+            <div class="card interp-card" id="interpCard">
+                <div class="card-label">Planet Reading <span style="font-size:10px;font-weight:400;color:var(--cta);text-transform:none;letter-spacing:0">tap any planet</span></div>
+                <div id="techInterpretation" class="interp-placeholder">
+                    Tap any planet in the grid to see its personalised reading here.
+                </div>
+            </div>
             <div class="card">
                 <div class="card-label">Planetary Positions <span class="qmark" data-tooltip="Tap any planet to read its personalised interpretation. Each planet occupies a zodiac sign and a house — the combination shapes a specific area of your life.">?</span></div>
                 <div class="card-hint">Tap any planet for its reading</div>
                 <div id="planetGrid"></div>
-            </div>
-            <!-- Interpretation — updates on planet tap -->
-            <div class="card interp-card" id="interpCard">
-                <div class="card-label">Planet Reading <span style="font-size:10px;font-weight:400;color:var(--cta);text-transform:none;letter-spacing:0">← tap any planet above</span></div>
-                <div id="techInterpretation" class="interp-placeholder">
-                    Tap any planet in the grid above to see its personalised reading here.
-                </div>
             </div>
         </div>
 
@@ -755,6 +812,52 @@
                 <button class="consent-decline" onclick="declineConsent()">Not Now</button>
             </div>
             <div class="consent-footer">By continuing you accept our <a href="#" onclick="return false">Privacy Policy</a></div>
+        </div>
+    </div>
+
+    <!-- Conversational Sanctuary Chatbot Widget -->
+    <div id="cosmicChatTrigger" class="chat-trigger" onclick="toggleCosmicChat()" title="Open Cosmic Coach Sanctuary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span class="chat-trigger-pulse"></span>
+    </div>
+
+    <div id="cosmicChatWindow" class="chat-window hidden">
+        <div class="chat-header">
+            <div class="chat-header-title">
+                <span class="chat-status-dot"></span>
+                Cosmic Sanctuary Chat
+            </div>
+            <button class="chat-close-btn" onclick="toggleCosmicChat()" title="Close chat">×</button>
+        </div>
+        <div class="chat-messages" id="cosmicChatMessages">
+            <div class="chat-message system">
+                Greetings. I am your Cosmic OS executive strategic coach. You can type or speak a question about your birth chart, Vimshottari Dasha cycles, transits, or business timing, and I will synthesize personalized, actionable guidance.
+            </div>
+        </div>
+        
+        <!-- Voice Transcript Indicator -->
+        <div id="chatVoiceIndicator" class="voice-indicator hidden">
+            <span class="voice-ripple"></span>
+            Listening...
+        </div>
+
+        <div class="chat-input-area">
+            <div class="chat-input-row">
+                <input type="text" id="cosmicChatInput" placeholder="Ask about your dasha, career, timing..." onkeydown="handleChatKey(event)">
+                <!-- Voice Activation Command Button -->
+                <button id="cosmicVoiceBtn" class="chat-voice-btn" onclick="toggleVoiceInput()" title="Speak your question (Voice Command)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mic"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                </button>
+                <button class="chat-send-btn" onclick="sendChatMessage()" title="Send message">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+            
+            <!-- Token Consumption Widget -->
+            <div class="chat-token-widget" id="chatTokenWidget">
+                <span class="token-icon">✦</span>
+                <span class="token-metrics">Tokens: <span id="tokenPrompt" class="token-val">0</span> in · <span id="tokenCompletion" class="token-val">0</span> out · <span id="tokenTotal" class="token-val">0</span> total</span>
+            </div>
         </div>
     </div>
 

@@ -100,152 +100,152 @@ PLANET_SIGN_INTERP = {
 
 HOUSE_MEANINGS = {
     1: {
-        "name": "Self & Health", 
-        "impact": "Core presence and physical battery.",
-        "if_strong": "Natural authority. High trust-coefficient. Leverage for leadership and physical risks.",
+        "name": "Self & Vitality", 
+        "impact": "Your physical energy, presence, and personal boundaries.",
+        "if_strong": "Natural confidence, high stamina, and clear self-direction. Perfect for leading others and taking bold leaps.",
         "if_weak": {
-            "meaning": "Operational battery-leakage. Identity-matrix friction.",
-            "effect": "Low decisional torque. Increased susceptibility to external energy-drain.",
-            "resolution": "Implement strict Energy Hygiene. Solar-alignment (Morning Sun). Prioritize vital posture and decisional boundaries."
+            "meaning": "Physical fatigue, low motivation, or feeling easily drained by other people's stress.",
+            "effect": "Struggles with self-starting, self-doubt, or losing track of your own goals.",
+            "resolution": "Implement solid energy hygiene. Protect your boundaries, stand tall, and get early morning sun to recharge."
         },
-        "remedy": "Solar alignment. Early morning light exposure. Focus on vital posture."
+        "remedy": "Solar alignment. Secure early morning sunlight. Maintain a tall, open posture."
     },
     2: {
-        "name": "Wealth & Family", 
-        "impact": "Asset accumulation and early programming.",
-        "if_strong": "High wealth-retention. Optimized for long-term compounding and family legacy.",
+        "name": "Wealth & Expression", 
+        "impact": "Savings, speech, and early family roots.",
+        "if_strong": "Durable savings habits, clear and persuasive communication, and deep ancestral pride.",
         "if_weak": {
-            "meaning": "Capital-retention friction. Speech-transmission leakage.",
-            "effect": "Revenue-leakage via impulse. Domestic-resource instability.",
-            "resolution": "Automate savings to bypass impulse. Practice precise, honest speech. Keep silver in contact with wealth-zones."
+            "meaning": "Impulsive spending under emotional pressure, or talking too fast when anxious.",
+            "effect": "Financial leakages on comfort items, or being misunderstood during sensitive discussions.",
+            "resolution": "Set automated savings to bypass impulse buy urges, practice slow and mindful speech, and place a small silver element near your work desk."
         },
-        "remedy": "Keep silver in contact with wealth. Practice precise, honest speech."
+        "remedy": "Keep a silver coin on your desk. Practice slow, mindful breathing before speaking."
     },
     3: {
-        "name": "Effort & Communication", 
-        "impact": "Courage, initiative, and peer-networks.",
-        "if_strong": "High-execution bias. Excels in short-range projects, writing, and hands-on builds.",
+        "name": "Effort & Courage", 
+        "impact": "Initiative, micro-projects, and peer networks.",
+        "if_strong": "Action-biased execution. Excels in getting things off the ground, writing, and peer connection.",
         "if_weak": {
-            "meaning": "Initiative inertia. Connectivity-friction in short-range projects.",
-            "effect": "Start-stop execution cycle. Peer-network entropy.",
-            "resolution": "Initialize high-torque physical training. Partner with high-velocity peer groups. Execute on Wednesdays."
+            "meaning": "Initiative inertia, creative blocks, or constant start-stop routine cycles.",
+            "effect": "Procrastination on critical tasks, or feeling distant from your core friends.",
+            "resolution": "Start your day with physical movement, break big goals into a single 15-minute micro-action, and schedule collaborative peer work."
         },
-        "remedy": "Intense physical training. Action-oriented output on Wednesdays."
+        "remedy": "Intense morning physical movement. Check off one micro-goal before noon."
     },
     4: {
-        "name": "Home & Peace", 
-        "impact": "Emotional infrastructure and fixed assets.",
-        "if_strong": "Deep stability. High property-coefficient. Secure inner-foundation by default.",
+        "name": "Home & Inner Peace", 
+        "impact": "Maternal bond, emotional battery, and domestic stability.",
+        "if_strong": "Deep emotional resilience. A peaceful, supportive home environment that acts as your anchor.",
         "if_weak": {
-            "meaning": "Infrastructure volatility. Foundation-entropy.",
-            "effect": "Restless internal state. High-friction in domestic or fixed-asset acquisition.",
-            "resolution": "Environment Design optimization. Create tech-free zones. North-quadrant water-element alignment."
+            "meaning": "Restless thoughts, feeling unsettled in your body, or tension in your private space.",
+            "effect": "Anxiety during downtime, or domestic distractions that pull you away from focus.",
+            "resolution": "Establish tech-free evening wind-down hours, declutter your private space, and place a small glass bowl of fresh water in the quietest north corner of your bedroom to absorb stress."
         },
-        "remedy": "Water-element alignment in the North. Support maternal figures."
+        "remedy": "Bowl of fresh water in the North corner of your room. Dedicate quality time to maternal figures today."
     },
     5: {
-        "name": "Intellect & Creativity", 
-        "impact": "Speculative logic and legacy-creation.",
-        "if_strong": "High-precision intuition. Excels in speculation and complex creative solutions.",
+        "name": "Creativity & Instinct", 
+        "impact": "Creative flow, learning, and gut intuition.",
+        "if_strong": "High creative confidence, sharp intuitive foresight, and a natural capacity to learn complex skills.",
         "if_weak": {
-            "meaning": "Logic-fog. Speculative-entropy.",
-            "effect": "Decision-delays. Misalignment in complex creative or educational cycles.",
-            "resolution": "Implement rigorous checklist-systems. Support educational initiatives. Saffron-tilak alignment."
+            "meaning": "Analytical overthinking, mental fog, or second-guessing your gut instincts.",
+            "effect": "Creative blocks, decision fatigue, or feeling disconnected from play and joy.",
+            "resolution": "Implement simple structured checklists, support a local educational cause, and apply a touch of sandalwood or saffron scent to clear the mind."
         },
-        "remedy": "Saffron-tilak alignment. Support educational initiatives."
+        "remedy": "Sandalwood scent to ground thoughts. Dedicate 15 minutes to pure, unstructured reading."
     },
     6: {
-        "name": "Daily Work & Adversity", 
-        "impact": "Operations, debt, and competition.",
-        "if_strong": "High resilience. Thrives on competition. Optimized for managing complex operations.",
+        "name": "Daily Routine & Resilience", 
+        "impact": "Work habits, health, and overcoming obstacles.",
+        "if_strong": "High discipline, strong health hygiene, and a natural ability to solve crises under pressure.",
         "if_weak": {
-            "meaning": "Operational friction. Resistance-gap.",
-            "effect": "Low friction-tolerance. Debt-leakage risk. Systemic clutter in daily workflow.",
-            "resolution": "Zero-clutter workspace audit. Prioritize gut-health. Maintain strict debt-hygiene."
+            "meaning": "Clutter in your schedule, low physical battery, or feeling overwhelmed by minor chores.",
+            "effect": "Avoidance of daily tasks, gut sensitivity, or letting small administrative issues pile up.",
+            "resolution": "Do a thorough 10-minute desk declutter, prioritize raw/light foods for gut health, and avoid short-term debt."
         },
-        "remedy": "Support service animals. Maintain a zero-clutter workspace."
+        "remedy": "Clean your desk completely. Support service or shelter animals."
     },
     7: {
-        "name": "Partnerships & Public", 
-        "impact": "Strategic alliances and public-facing ROI.",
-        "if_strong": "Leverage through others. High partnership-coefficient. Excels in public negotiation.",
+        "name": "Partnerships & Alliances", 
+        "impact": "Primary relationships—your spouse/partner and co-founders.",
+        "if_strong": "Harmonious collaborations, balanced boundaries, and deep mutual trust in business and personal life.",
         "if_weak": {
-            "meaning": "Alliance-gap. Boundary-leakage.",
-            "effect": "Yield-leakage in public negotiation. Energy-drain through unoptimized partnerships.",
-            "resolution": "Strict legal and emotional contract-audits. Daily premium fragrance alignment. White-element donations."
+            "meaning": "Unequal compromises, boundary leakages, or communication gaps in your closest circles.",
+            "effect": "Feeling unappreciated by your partner, or getting exhausted by public-facing roles.",
+            "resolution": "Draft clear, open-hearted agreements with key partners, wear a soothing natural floral fragrance, and dedicate a quiet evening to a deep-listening date."
         },
-        "remedy": "White-element donations. Daily use of premium fragrances."
+        "remedy": "Natural floral fragrance. Conduct an open-hearted listening session with a key partner."
     },
     8: {
-        "name": "Transformation & Secrets", 
-        "impact": "Crisis management and hidden resources.",
-        "if_strong": "High-volatility tolerance. Excels in research, depth, and managing external assets.",
+        "name": "Transformation & Depth", 
+        "impact": "Managing unexpected shifts, deep research, and long-term security.",
+        "if_strong": "Superb crisis resilience. Highly capable of transmuting difficult moments into personal growth.",
         "if_weak": {
-            "meaning": "Change-inertia. Volatility-friction.",
-            "effect": "Low resilience to sudden data-shifts. Crisis-management latency.",
-            "resolution": "Initialize intense focused meditation. Align with transformation-cycles. Build deep-roots through spiritual rigor."
+            "meaning": "Resistance to change, fear of sudden shifts, or chronic stress/exhaustion.",
+            "effect": "Feeling stuck in outdated situations, or panic when faced with volatility.",
+            "resolution": "Practice 5 minutes of quiet box-breathing, let go of what you cannot control, and dive into a research subject that fascinates you."
         },
-        "remedy": "Intense focused meditation. Align with transformation-cycles."
+        "remedy": "5 minutes of quiet box-breathing. Release attachment to the day's outcomes."
     },
     9: {
-        "name": "Fortune & Wisdom", 
-        "impact": "Systemic luck and higher-order logic.",
-        "if_strong": "High-order networking. Access to elite mentorship and global opportunities.",
+        "name": "Wisdom & Purpose", 
+        "impact": "Higher learning, mentorship, and life perspective.",
+        "if_strong": "Aligned sense of purpose, supportive mentors, and an optimistic, big-picture view of your path.",
         "if_weak": {
-            "meaning": "Luck-friction. Mentorship-gap.",
-            "effect": "Information-insulation. High systemic resistance in expansion-ventures.",
-            "resolution": "Self-driven technical study. Active respect for mentors. Regular knowledge-center immersion."
+            "meaning": "Feeling disconnected from a larger purpose, or a lack of real guidance and direction.",
+            "effect": "Cynicism, feeling spiritually dry, or struggle in finding expansion opportunities.",
+            "resolution": "Nurture connection with a wise elder or mentor, read a chapter from a classic text, and immerse yourself in inspiring knowledge environments."
         },
-        "remedy": "Regular visit to knowledge-centers. Active respect for mentors."
+        "remedy": "Read a page of timeless wisdom. Write down three things you are deeply grateful for."
     },
     10: {
-        "name": "Career & Status", 
-        "impact": "Professional authority and public output.",
-        "if_strong": "Built for scale. Natural rise to seniority. High institutional-impact coefficient.",
+        "name": "Career & Output", 
+        "impact": "Professional path, career standing, and public output.",
+        "if_strong": "Natural leadership presence, stable career trajectory, and a focus on long-term systemic impact.",
         "if_weak": {
-            "meaning": "Visibility-gap. Authority-entropy.",
-            "effect": "Unstable professional path. Latency in institutional recognition.",
-            "resolution": "Pivot to Niche-Mastery. Focus on specialized skill-stacks. Career-networking for others to build goodwill."
+            "meaning": "Feeling invisible or unappreciated at work, or feeling unaligned with your current career track.",
+            "effect": "Struggles with motivation at work, or anxiety about public standing.",
+            "resolution": "Declutter your workspace to let light in, focus on mastering one highly specialized skills-stack, and network by helping others secure jobs."
         },
-        "remedy": "Employment-networking for others. Clean, high-light work environment."
+        "remedy": "Clean your keyboard and monitor. Brighten your workspace with natural light."
     },
     11: {
-        "name": "Gains & Network", 
-        "impact": "Revenue-flow and social net-worth.",
-        "if_strong": "High-yield networking. Financial compounding through social circle. 'Midas' ROI.",
+        "name": "Gains & Social Connections", 
+        "impact": "True friendships, support networks, and social flow.",
+        "if_strong": "High-trust friendships, supportive groups, and ease in materializing long-term aspirations.",
         "if_weak": {
-            "meaning": "Yield-gap. Network-friction.",
-            "effect": "Unsupportive social circle. Revenue-leakage via social commitments.",
-            "resolution": "Quality-over-quantity pivot. Nurture top 3 strategic influencers. Strategic charitable giving on Saturdays."
+            "meaning": "Superficial connections, feeling isolated in crowds, or social circles that drain your battery.",
+            "effect": "Wasting energy on social commitments you don't care about, or lack of support from peers.",
+            "resolution": "Focus heavily on quality over quantity. Deepen your relationship with your top 3 close friends, and support a charitable cause on Saturdays."
         },
-        "remedy": "Strategic charitable giving on Saturdays. Support siblings."
+        "remedy": "Support a local community cause on Saturdays. Call an old friend just to check in."
     },
     12: {
-        "name": "Expenses & Growth", 
-        "impact": "Revenue leakage and inner-scaling.",
-        "if_strong": "Global-scale energy. High-efficiency 'letting go'. Optimized for foreign/remote ROI.",
+        "name": "Rest & Letting Go", 
+        "impact": "Sleep quality, letting go of control, and private self-care.",
+        "if_strong": "Superb sleep quality, ability to detach and surrender control, and rich inner fantasy/creativity.",
         "if_weak": {
-            "meaning": "Hidden-leakage. Resource-entropy.",
-            "effect": "Disturbed rest-cycles. Financial/Legal leakage via unmonitored vectors.",
-            "resolution": "Voluntary charity as a strategic shield. South-facing rest alignment. Support hospital/blind-care."
+            "meaning": "Disturbed sleep cycles, high nighttime anxiety, or sudden unexpected costs.",
+            "effect": "Worrying in the dark, inability to relax, or feeling a drain on your vital reserves.",
+            "resolution": "Set up a clean screen-free bedroom environment, sleep with your head facing South to align with electromagnetic fields, and practice voluntary charitable giving."
         },
-        "remedy": "South-facing rest alignment. Support hospital/blind-care."
+        "remedy": "Sleep with your head facing South. Do a 15-minute screen-free wind-down routine tonight."
     }
 }
 
 SIGN_THEMES = {
-    "Aries":       {"theme": "Direct Execution",     "energy": "High Torque",         "daily": "Immediate-action window. Skip the permission-phase. Execute the boldest item on your stack now."},
-    "Taurus":      {"theme": "Value Compounding",    "energy": "Steady torque",        "daily": "Low-velocity, high-impact day. Build for next year, not next week. Stick to the proven routine."},
-    "Gemini":      {"theme": "Data Processing",      "energy": "High Bandwidth",      "daily": "Signal-capture day. Follow high-interest conversations. One interaction may trigger a Q3 pivot."},
-    "Cancer":      {"theme": "Intuition-Led Ops",    "energy": "Sub-text Radar",      "daily": "Trust non-linear signals. Logical proof is lagging; move based on gut-security. Optimize home-base."},
-    "Leo":         {"theme": "Strategic Visibility", "energy": "Central Authority",   "daily": "Visibility-window. Your authority is the primary leverage today. Direct the room; don't hide."},
-    "Virgo":       {"theme": "Process Audit",        "energy": "Precision Logic",     "daily": "Zero-error window. Victory through micro-details. One deliberate, optimized act outweighs 10 fast ones."},
-    "Libra":       {"theme": "Strategic Alignment",  "energy": "Diplomatic Leverage", "daily": "Decision-point in a complex balance. Opt for the truthful move, not the popular one. Renegotiate terms."},
-    "Scorpio":     {"theme": "Deep Data",            "energy": "Hidden Leverage",     "daily": "Senses sub-surface agendas. You are likely correct. Go deeper; the real ROI isn't visible yet."},
-    "Sagittarius": {"theme": "Global Scale",         "energy": "Expansion Logic",     "daily": "Big-picture window. Say yes to the 'too big' opportunity. Growth is found in the furthest reach."},
-    "Capricorn":   {"theme": "Execution Endurance",  "energy": "Structural Torque",   "daily": "Compounding-day. Results are lagging but the work is landing. Showing up is 90% of the win today."},
-    "Aquarius":    {"theme": "Systems Innovation",   "energy": "Original Logic",      "daily": "Share the disruptive idea. Convention is the bottleneck. You don't need a consensus to proceed."},
-    "Pisces":      {"theme": "Non-linear Signal",    "energy": "Fluid Flow",          "daily": "Logic is the secondary tool today. Allow imagination to run. Breakthroughs arrive in the quiet gaps."}
+    "Aries":       {"theme": "Bold Initiative",      "energy": "Physical battery active", "daily": "A powerful window for bold starts. Skip the doubts, stand tall, and tackle the most challenging conversation or initiative on your plate first."},
+    "Taurus":      {"theme": "Steady Growth",        "energy": "Grounded pace",       "daily": "A low-speed, high-impact day. Build for the long haul rather than looking for immediate dopamine wins. Stick to a cozy, supportive routine."},
+    "Gemini":      {"theme": "Signal Capture",       "energy": "Mental curiosity",     "daily": "An information-rich day. Follow high-interest conversations and read deeply. A single conversation today could trigger a beautiful personal pivot."},
+    "Cancer":      {"theme": "Intuitive Recharge",   "energy": "Sub-text sensitivity",  "daily": "Trust your gut sensations today. If your emotional battery feels low, withdraw slightly to secure your home foundation and family connection."},
+    "Leo":         {"theme": "Creative Play",        "energy": "Radiant expression",  "daily": "Command your space with warm, generous energy. Express your creative ideas openly and uplift the people around you with authentic recognition."},
+    "Virgo":       {"theme": "Mindful Organization",  "energy": "Detail focus",        "daily": "A perfect day for inner and outer alignment. Declutter your desk, organize your physical space, and forgive yourself for what didn’t get completed yesterday."},
+    "Libra":       {"theme": "Harmonious Dialogue",  "energy": "Strategic connection", "daily": "Focus heavily on win-win partnerships. Schedule quiet, deep-listening sessions with close partners or co-founders to rebuild alignment."},
+    "Scorpio":     {"theme": "Deep Transmutation",   "energy": "High resilience",     "daily": "A high-intensity day. You are uniquely equipped to process stress and transform volatility into personal power. Let go of what you cannot control."},
+    "Sagittarius": {"theme": "Expansive Vision",     "energy": "Big-picture optimism", "daily": "A great day for big-picture thinking and perspective resets. Read wisdom literature, plan long-range journeys, and let go of minor daily annoyances."},
+    "Capricorn":   {"theme": "Systemic Grounding",   "energy": "Sustained discipline", "daily": "Durable effort is your superpower today. Put in solid work toward structural foundations, and remember that real mastery takes duration."},
+    "Aquarius":    {"theme": "Impact & Networks",    "energy": "Visionary logic",     "daily": "Connect with forward-thinking friends or communities. Look at how your efforts serve the collective good, and explore unique creative ideas."},
+    "Pisces":      {"theme": "Flow & Sensing",       "energy": "Fluid sensing",       "daily": "Non-linear thoughts and rich imagination rule today. Do not force logical rigidity; let your mind wander, rest your eyes, and listen to inspiring music."}
 }
 
 SIGN_NATAL = {
@@ -627,6 +627,88 @@ def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any]
 
     directive = generate_directive(md_lord, ad_lord, transit_planets, natal_moon_sign)
 
+    # -----------------------------------------------------------------------
+    # Gemini-Powered Narrative Synthesis (Unified Executive Briefing)
+    # -----------------------------------------------------------------------
+    import os
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    if api_key:
+        try:
+            from google import genai as gai
+            from google.genai import types
+            from pydantic import BaseModel, Field
+            from typing import List
+
+            class SuperpowerCard(BaseModel):
+                title: str = Field(description="Strategic title of the placement, e.g. 'Identity Drive — Sun in Leo (10H)'")
+                description: str = Field(description="1-2 sentences translating this placement into their active strategic asset for today's cycles.")
+
+            class CoachInsightsSchema(BaseModel):
+                daily_theme: str = Field(description="Short 2-3 word theme, e.g. 'Structural Arbitrage'")
+                energy_signature: str = Field(description="Transit description, e.g. 'Moon in Scorpio · High-Leverage Depth'")
+                uplift_narrative: str = Field(description="Unified, 2-3 sentence strategic executive overview providing deep, empathetic, doable clarity.")
+                superpowers: List[SuperpowerCard] = Field(description="Exactly 3 dynamic natal placements that are actively triggered by today's cycles.")
+                operational_pointer: str = Field(description="1-2 sentence high-stakes daily directive.")
+                daily_actions: List[str] = Field(description="Exactly 3 highly specific, actionable operational daily tasks.")
+
+            # Compile raw coordinates to pass in the prompt (No Hallucination Zone)
+            natal_str = f"Lagna (Ascendant): {lagna_sign}\n"
+            for pname in ("Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"):
+                if pname in natal_planets:
+                    ps = natal_planets[pname]["sign"]
+                    ph = get_house(ps, lagna_sign)
+                    natal_str += f"- {pname} in {ps} ({ph}H)\n"
+
+            transit_str = f"Moon is in {transit_moon_sign}\n"
+            retro_planets = [p for p, data in transit_planets.items() if data.get("is_retrograde")]
+            if retro_planets:
+                transit_str += f"- Retrograde transiting planets: {', '.join(retro_planets)}\n"
+
+            prompt = (
+                "Construct a highly personalized, warm, and evocative blended life strategist brief for the user Pranav Singhal.\n"
+                "You are the PSBC Personal Executive & Life Coach for Cosmic OS. Speak in a deeply empathetic, soulful, and warm performance-coach voice—like a personal letter from a wise mentor (the 'Micro-Journal' style).\n"
+                "The target user is an overwhelmed high-achiever seeking deep emotional clarity and gentle decisional support. Seamlessly blend professional execution (career, co-founder dynamics, capital momentum) and personal well-being (emotional battery, physical rest, family peace).\n"
+                "ABSOLUTELY BAN all cold, dry, mechanical, or overly technical jargon (e.g., do not say 'systemic debt', 'operational battery-leakage', 'capital-retention friction', 'speculative-entropy', or 'alignment-gap'). Keep everything clear, relatable, and deeply human.\n\n"
+                "Raw Astrological Coordinates (Do not invent or change these facts):\n"
+                f"1. Natal Placements:\n{natal_str}\n"
+                f"2. Active Dasha Cycle: Major Chapter rules {md_lord}, Sub-Chapter rules {ad_lord} ({md_lord}-{ad_lord} cycle).\n"
+                f"3. Today's Sky Transits:\n{transit_str}\n\n"
+                "Instructions:\n"
+                "- Daily Theme: Synthesize a warm, evocative 2-3 word theme (e.g., 'The Heavy Lift', 'Grounded Focus', 'The Quiet Anchor', 'The Open Door').\n"
+                "- Energy Signature: Highlight the primary transit signature in warm, human-first terms.\n"
+                "- Uplift Narrative: 2-3 sentences max. Write a beautiful, poetic, yet highly practical message synthesizing their active planetary energies into a highly coherent daily guide. Direct it straight to their emotional/decisional challenges today, providing instant peace and motivating execution.\n"
+                "- Superpowers: Highlight exactly 3 natal placements that are currently activated by today's transits or active Dasha. Explain how they can use them as active leverage in both their work and personal connection today, in plain, jargon-free English.\n"
+                "- Operational Pointer: A single, high-stakes tactical directive (1-2 sentences) balancing personal peace and work actions.\n"
+                "- Daily Actions: Exactly 3 highly specific, actionable daily tasks (life hacks) blending personal harmony and work priorities (e.g. 'Conduct a 15-minute desk declutter to refresh your mind', 'Align terms with your highest-stakes partner over an open, relaxed conversation', 'Spend 5 minutes in quiet box-breathing to reset your physical battery before lunch'). Never use generic placeholders."
+            )
+
+            client = gai.Client(api_key=api_key)
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=CoachInsightsSchema,
+                    temperature=0.2
+                ),
+            )
+            import json
+            data = json.loads(response.text)
+            
+            # Map back to our exact output format
+            return {
+                "daily_theme": data.get("daily_theme", moon_theme["theme"]),
+                "energy_signature": data.get("energy_signature", f"Moon in {transit_moon_sign} · {moon_theme['energy']}"),
+                "uplift_narrative": data.get("uplift_narrative", moon_theme["daily"]),
+                "superpowers": [dict(s) for s in data.get("superpowers", [])],
+                "operational_pointer": data.get("operational_pointer", directive),
+                "daily_actions": data.get("daily_actions", DAILY_ACTIONS.get(transit_moon_sign, [])),
+                "natal_moon_sign": natal_moon_sign
+            }
+        except Exception as e:
+            # Silent fallback to rule-based system
+            print(f"Gemini Synthesis Fallback Triggered: {e}")
+
     return {
         "daily_theme": moon_theme["theme"],
         "energy_signature": f"Moon in {transit_moon_sign} · {moon_theme['energy']}",
@@ -636,6 +718,7 @@ def generate_coach_insights(natal_planets: Dict[str, Any], lagna: Dict[str, Any]
         "daily_actions": DAILY_ACTIONS.get(transit_moon_sign, []),
         "natal_moon_sign": natal_moon_sign
     }
+
 
 
 def generate_business_pulse(dashas: List[Dict], current_date: datetime) -> Dict[str, Any]:

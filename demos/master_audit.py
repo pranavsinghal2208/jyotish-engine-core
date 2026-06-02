@@ -319,7 +319,7 @@ async def _fill_form_and_generate(page):
     await page.fill("#dobMM", mm)
     await page.fill("#dobYYYY", yyyy)
     await asyncio.sleep(1.5)
-    await page.fill("#time", SAMPLE["time"])
+    await page.evaluate(f"document.getElementById('time').value = '{SAMPLE['time']}';")
     # City
     try:
         await page.fill("#citySearch", "Muzaffarnagar")
@@ -632,7 +632,7 @@ async def _dim7_resilience(page, ctx):
     await page.fill("#dobMM", mm)
     await page.fill("#dobYYYY", yyyy)
     await asyncio.sleep(1.5)
-    await page.fill("#time", "21:55")
+    await page.evaluate("document.getElementById('time').value = '21:55';")
     try:
         await page.fill("#citySearch", "Mumbai")
         await asyncio.sleep(1.0)
