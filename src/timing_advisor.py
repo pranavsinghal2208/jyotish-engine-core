@@ -114,7 +114,7 @@ NAK_LORD = {
 
 
 def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
-                  nakshatra: str, personal_day: int = 0) -> Dict[str, Any]:
+                  nakshatra: str, personal_day: int = 0, planet_house: Dict[str, int] = None) -> Dict[str, Any]:
     rules = ACTION_RULES[action_key]
 
     # Dasha contribution (0-40)
@@ -134,8 +134,12 @@ def _score_action(action_key: str, dasha_lord: str, current_planets: Dict,
     caution_transits = []
     for p in rules["favorable_planets"]:
         if p in current_planets:
-            transit_score += 5
-            favorable_transits.append(p)
+            if planet_house and planet_house.get(p) in [6, 8, 12]:
+                transit_score += 1
+                caution_transits.append(p)
+            else:
+                transit_score += 5
+                favorable_transits.append(p)
     for p in rules["avoid_planets"]:
         if p in current_planets:
             transit_score -= 4
@@ -200,6 +204,7 @@ def get_timing_advice(
     current_planets: Dict,
     nakshatra: str,
     personal_day: int = 0,
+    planet_house: Dict[str, int] = None,
 ) -> Dict[str, Any]:
     """
     Return action-by-action timing scores for today and best weekday this week.
@@ -209,7 +214,7 @@ def get_timing_advice(
     md_lord = active_dasha.split("-")[0].strip() if active_dasha else "Sun"
 
     actions = [
-        _score_action(k, md_lord, current_planets, nakshatra, personal_day)
+        _score_action(k, md_lord, current_planets, nakshatra, personal_day, planet_house)
         for k in ACTION_RULES
     ]
     actions.sort(key=lambda x: x["score"], reverse=True)

@@ -742,6 +742,17 @@ async def timing_advisor(user: User = Depends(get_current_user)):
         dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
         nakshatra = engine.get_nakshatra(planets["Moon"]["longitude"])
 
+        lat = user.lat if user.lat is not None else 28.6139
+        lon = user.lon if user.lon is not None else 77.2090
+        natal_houses = engine.get_houses(jd, lat, lon)
+        lagna_sign = natal_houses["Lagna"]["sign"]
+
+        from .astro_tools import _house
+        planet_house = {}
+        for p, info in current_planets.items():
+            if "sign" in info:
+                planet_house[p] = _house(info["sign"], lagna_sign)
+
         from .translator import generate_business_pulse
         pulse = generate_business_pulse(dashas, datetime.utcnow())
         active_dasha = pulse.get("active_dasha", "Sun-Sun")
@@ -751,7 +762,8 @@ async def timing_advisor(user: User = Depends(get_current_user)):
         cycles_ta = numerology_engine.get_personal_cycles(dob_fmt, today_ist_ta)
         advice = get_timing_advice(
             active_dasha, current_planets, nakshatra.get("name", ""),
-            personal_day=cycles_ta["personal_day"]["number"]
+            personal_day=cycles_ta["personal_day"]["number"],
+            planet_house=planet_house
         )
         return advice
     except Exception as e:
@@ -773,6 +785,17 @@ async def morning_brief(user: User = Depends(get_current_user)):
         dashas = engine.get_vimshottari_dashas(planets["Moon"]["longitude"], jd)
         nakshatra = engine.get_nakshatra(planets["Moon"]["longitude"])
 
+        lat = user.lat if user.lat is not None else 28.6139
+        lon = user.lon if user.lon is not None else 77.2090
+        natal_houses = engine.get_houses(jd, lat, lon)
+        lagna_sign = natal_houses["Lagna"]["sign"]
+
+        from .astro_tools import _house
+        planet_house = {}
+        for p, info in current_planets.items():
+            if "sign" in info:
+                planet_house[p] = _house(info["sign"], lagna_sign)
+
         from .translator import generate_business_pulse
         pulse = generate_business_pulse(dashas, datetime.utcnow())
         active_dasha = pulse.get("active_dasha", "Sun-Sun")
@@ -783,7 +806,8 @@ async def morning_brief(user: User = Depends(get_current_user)):
 
         timing = get_timing_advice(
             active_dasha, current_planets, nakshatra.get("nakshatra", ""),
-            personal_day=cycles["personal_day"]["number"]
+            personal_day=cycles["personal_day"]["number"],
+            planet_house=planet_house
         )
         top_action = timing["actions"][0] if timing["actions"] else {}
 
