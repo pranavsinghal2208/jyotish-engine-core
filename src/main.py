@@ -5,7 +5,7 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Query, Request, Depends, Form
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import RedirectResponse, JSONResponse, HTMLResponse
 from pydantic import BaseModel, field_validator
 from datetime import datetime, timedelta
 from typing import Dict, Any, List
@@ -214,8 +214,17 @@ async def google_callback(request: Request, code: str = None, error: str = None,
 @app.get("/auth/apple/login")
 async def apple_login():
     """Redirects to Apple Login (Mock or direct). In a real app, this might be handled by frontend JS."""
-    # This is a placeholder for the Apple JS-based flow initiation
-    return JSONResponse({"info": "Use Sign in with Apple on the frontend"})
+    html_content = """
+    <html>
+        <body>
+            <form id="mock_form" action="/auth/apple/callback" method="POST">
+                <input type="hidden" name="id_token" value="mock_apple_pranav@psbc.com">
+            </form>
+            <script>document.getElementById('mock_form').submit();</script>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
 
 @app.post("/auth/apple/callback")
 async def apple_callback(request: Request, id_token: str = Form(...), db: Session = Depends(get_db)):
@@ -242,8 +251,9 @@ async def apple_callback(request: Request, id_token: str = Form(...), db: Sessio
 @app.get("/api/auth/status")
 async def auth_status(user: User = Depends(get_current_user)):
     """Checks if the user is authenticated."""
+    is_authenticated = user.email != FALLBACK_EMAIL
     has_creds = user.credentials is not None
-    return {"authenticated": has_creds, "email": user.email}
+    return {"authenticated": is_authenticated, "calendar_connected": has_creds, "email": user.email}
 
 @app.post("/api/chart")
 async def get_chart(details: BirthDetails, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

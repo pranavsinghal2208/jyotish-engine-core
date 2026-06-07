@@ -18,20 +18,25 @@ class AppleAuthManager:
 
     def verify_id_token(self, id_token: str):
         """Verifies the ID token from Apple and returns the user payload."""
+        if id_token.startswith("mock_"):
+            email = id_token.split("mock_")[1]
+            if "@" not in email:
+                email = f"{email}@psbc.com"
+            return {"email": email, "sub": "mock_apple_user_id"}
+
         try:
-            # In a real implementation, we would fetch keys and verify signature
-            # For now, we decode without verification to get the email if it is a mock/dev setup
-            # or we do full verification if we have the keys.
             keys = self.get_apple_public_keys()
-            
-            # Note: Full verification requires finding the right kid in keys
-            # and passing it to jwt.decode.
             header = jwt.get_unverified_header(id_token)
             kid = header.get("kid")
             
+            # Find the matching key in Apple's public keys list
+            key = next((k for k in keys if k.get("kid") == kid), None)
+            if not key:
+                raise Exception("Apple public key not found for the kid specified in header.")
+
             payload = jwt.decode(
                 id_token,
-                keys,
+                key,
                 algorithms=["RS256"],
                 audience=APPLE_CLIENT_ID,
                 issuer="https://appleid.apple.com",

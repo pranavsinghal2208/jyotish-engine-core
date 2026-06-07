@@ -4,7 +4,7 @@ let currentChartData = null;
 async function checkAuthStatus() {
     try {
         const res = await fetch("/api/auth/status");
-        const { authenticated, email } = await res.json();
+        const { authenticated, calendar_connected, email } = await res.json();
 
         // Results header
         const authLinks = document.getElementById("authLinks");
@@ -13,7 +13,7 @@ async function checkAuthStatus() {
         
         if (authLinks) authLinks.classList.toggle("hidden", authenticated);
         if (logoutBtn) logoutBtn.classList.toggle("hidden", !authenticated);
-        if (authBadge) authBadge.classList.toggle("hidden", !authenticated);
+        if (authBadge) authBadge.classList.toggle("hidden", !calendar_connected);
 
         // Update name chip if authenticated but no name set
         if (authenticated && email && !localStorage.getItem("cosmicOsName")) {
