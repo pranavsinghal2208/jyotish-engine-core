@@ -1911,7 +1911,10 @@ body {
     margin-top: 16px;
 }
 @media (max-width: 800px) { .timing-grid { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 500px) { .timing-grid { grid-template-columns: 1fr; } }
+@media (max-width: 500px) {
+    .timing-grid { grid-template-columns: 1fr; }
+    .brief-cycles-row { grid-template-columns: 1fr; }
+}
 
 .timing-action-card {
     background: var(--surface);
@@ -2469,6 +2472,18 @@ body {
     .tab-nav::-webkit-scrollbar { display: none; }
     .auth-links, #headerLogoutBtn, #editDetailsBtn {
         order: 2;
+    }
+    .auth-btn-text {
+        display: none !important;
+    }
+    .auth-btn-signin {
+        padding: 6px 8px !important;
+    }
+    .auth-links {
+        gap: 6px !important;
+    }
+    .header-right {
+        gap: 8px !important;
     }
     /* Hide Cosmic ID download + Share button in mobile header — too cluttered */
     .header-right a[download], #shareReadingBtn {

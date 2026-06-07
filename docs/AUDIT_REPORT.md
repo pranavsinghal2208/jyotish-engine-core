@@ -1,6 +1,6 @@
 # Cosmic OS — Audit Report
-**Run:** 2026-05-27 22:21
-**Score:** ✅ 47 · ⚠️  0 · ❌ 0 (total 47)
+**Run:** 2026-06-07 19:37
+**Score:** ✅ 46 · ⚠️  1 · ❌ 0 (total 47)
 
 > Paste this summary into `docs/AUDIT_SPEC.md → LAST REPORT SUMMARY` section.
 > For every ❌ or ⚠️, add a tighter check to the relevant dimension in AUDIT_SPEC.md.
@@ -27,18 +27,18 @@
 - ✅ **UJ-02**: Sub-headline: 'Takes 30 seconds. Built on 5000 years of Vedic timing scienc'
 - ✅ **UJ-03**: Feature pills: 5
 - ✅ **UJ-05**: Chart generated — results screen visible
-- ✅ **UJ-06**: TL;DR card: 'Process-audit window. Retreat and introspect. Focu'
+- ✅ **UJ-06**: TL;DR card: 'Domestic scaling and service. Deepen commitments a'
 - ✅ **UJ-07**: Tab 'technical' navigates correctly
 - ✅ **UJ-07**: Tab 'numerology' navigates correctly
 - ✅ **UJ-07**: Tab 'strategic' navigates correctly
 - ✅ **UJ-11**: Hindi toggle button present in header
-- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 27 May 2026
+- ✅ **UJ-10**: Share copies: '✦ My Cosmic OS Reading — 7 June 2026
 
-Theme: Syste'
+Theme: Impac'
 
 ## CQ
-- ✅ **CQ-01**: Daily theme present: 'Strategic Alignment'
-- ✅ **CQ-02**: Directive references planet: 'In your Venus-Saturn cycle: Master the boring. Excellence in'
+- ✅ **CQ-01**: Daily theme present: '🔋 Energy Battery & Vitality'
+- ⚠️  **CQ-02**: Directive may be generic (no planet found): 'Prioritize vital posture and physical boundaries. Refuse com'
 - ✅ **CQ-05**: Section titles: 7 found, none empty
 - ✅ **CQ-06**: 28 tooltips, all meaningful
 - ✅ **CQ-04**: No '—' placeholders in TL;DR chips
@@ -68,6 +68,8 @@ Theme: Syste'
 - ✅ **RES-01**: No name → #jyNameRequired shown
 - ✅ **RES-05**: Invalid DOB → generate button stays hidden
 
+## Items Requiring Attention
+- ⚠️  **CQ-02**: Directive may be generic (no planet found): 'Prioritize vital posture and physical boundaries. Refuse com'
 
 ## Self-Update Instructions for Next AI Session
 1. For each ❌ above: strengthen the check or fix the feature

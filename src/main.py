@@ -1103,6 +1103,44 @@ async def chat_coach(req: ChatRequest, db: Session = Depends(get_db), user: User
 
         raw_text = response.text.strip()
 
+        # Validate response for factual drift
+        try:
+            from .reading.facts import build_fact_table
+            from .reading.validator import validate_reading
+
+            chart_data = {
+                "lagna": {"sign": lagna_sign},
+                "planets": planets,
+                "dashas": dashas
+            }
+            fact_table = build_fact_table(chart_data, today=date_now)
+            violations = validate_reading(raw_text, fact_table)
+
+            if violations:
+                print(f"[factual_drift] Attempt 1 detected {len(violations)} violations. Retrying with correction prompt...")
+                correction_prompt = (
+                    f"System Context:\n{system_prompt}\n\n"
+                    f"User Question:\n{req.message}\n\n"
+                    "CRITICAL ERROR: In your previous draft, you made the following factual errors:\n"
+                    + "\n".join(f"- {str(v)}" for v in violations)
+                    + "\n\nPlease rewrite your response. Ground it strictly in the facts and correct these mistakes completely."
+                )
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=[
+                        {"role": "user", "parts": [{"text": correction_prompt}]}
+                    ]
+                )
+                raw_text = response.text.strip()
+                # Re-validate
+                violations = validate_reading(raw_text, fact_table)
+                if violations:
+                    print(f"[factual_drift] Attempt 2 still has {len(violations)} violations: {[str(v) for v in violations]}")
+                else:
+                    print("[factual_drift] Successfully corrected drift in attempt 2!")
+        except Exception as val_err:
+            print(f"[factual_drift] Validation/correction failed: {val_err}")
+
         usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
         if response.usage_metadata:
             usage["prompt_tokens"] = getattr(response.usage_metadata, "prompt_token_count", 0)
