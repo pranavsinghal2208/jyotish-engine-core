@@ -291,8 +291,8 @@ class NumerologyEngine:
     # ------------------------------------------------------------------
 
     def _parse_dob(self, dob: str) -> datetime:
-        """Parse DD-MM-YYYY or DD-Mon-YYYY into a datetime."""
-        for fmt in ("%d-%m-%Y", "%d-%b-%Y", "%d/%m/%Y"):
+        """Parse DD-MM-YYYY or DD-Mon-YYYY or YYYY-MM-DD into a datetime."""
+        for fmt in ("%d-%m-%Y", "%d-%b-%Y", "%d/%m/%Y", "%Y-%m-%d"):
             try:
                 return datetime.strptime(dob.strip(), fmt)
             except ValueError:

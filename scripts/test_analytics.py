@@ -45,7 +45,8 @@ def test_analytics():
     print("\n📊 Google Analytics Status:")
     if tracker.ga_measurement_id:
         print(f"   ✅ GA Measurement ID: {tracker.ga_measurement_id[:10]}...")
-        print("   ✅ Google Analytics integration ready"    else:
+        print("   ✅ Google Analytics integration ready")
+    else:
         print("   ⚠️  Google Analytics not configured (optional)")
         print("      Set GA_MEASUREMENT_ID and GA_API_SECRET environment variables")
     
