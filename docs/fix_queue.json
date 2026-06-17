@@ -94,5 +94,83 @@
     "file": "unknown",
     "description": "No auto-fix pattern matched \u2014 human review needed",
     "timestamp": "2026-05-25T23:32:32.152378"
+  },
+  {
+    "failure": "\u274c [API-01] /health \u2192 unreachable: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /health (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:28.599223"
+  },
+  {
+    "failure": "\u274c [SEC-07] /api/translate empty \u2192 crashed: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/translate (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:28.599271"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [SEC-06] Lat boundary test \u2192 HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/chart (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:28.599386"
+  },
+  {
+    "failure": "\u274c [API-01] /health \u2192 unreachable: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /health (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.065877"
+  },
+  {
+    "failure": "\u274c [SEC-07] /api/translate empty \u2192 crashed: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/translate (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.065906"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [SEC-06] Lat boundary test \u2192 HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/chart (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.065915"
+  },
+  {
+    "failure": "\u274c [API-01] /health \u2192 unreachable: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /health (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.560175"
+  },
+  {
+    "failure": "\u274c [SEC-07] /api/translate empty \u2192 crashed: HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/translate (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.560200"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [SEC-06] Lat boundary test \u2192 HTTPConnectionPool(host='127.0.0.1', port=5004): Max retries exceeded with url: /api/chart (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=5004): Failed to establish a new connection: [Errno 61] Connection refused\"))",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:20:29.560209"
+  },
+  {
+    "failure": "\u274c [API-02] /api/chart \u2192 exception: HTTPConnectionPool(host='127.0.0.1', port=5004): Read timed out. (read timeout=15)",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:28:17.431577"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [CQ-02] Directive may be generic (no planet found): 'Prioritize vital posture and physical boundaries. Refuse com'",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:28:17.431635"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [CQ-02] Directive may be generic (no planet found): 'Prioritize vital posture and physical boundaries. Refuse com'",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:30:21.606604"
+  },
+  {
+    "failure": "\u26a0\ufe0f  [CQ-02] Directive may be generic (no planet found): 'Prioritize vital posture and physical boundaries. Refuse com'",
+    "file": "unknown",
+    "description": "No auto-fix pattern matched \u2014 human review needed",
+    "timestamp": "2026-06-17T01:31:43.331781"
   }
 ]
